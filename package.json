@@ -1,0 +1,16 @@
+{
+  "name": "portfolio-app",
+  "version": "1.2.0",
+  "description": "Full-stack portfolio application",
+  "scripts": {
+    "install-pack": "npm install && concurrently \"cd server && npm install\" \"cd client && npm install\"",
+    "build": "cd client && npx vite build",
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "start:server": "cd server && npm run start-server",
+    "start:client": "npm run wait && cd client && npm run start-client",
+    "wait": "node -e \"setTimeout(() => process.exit(0), 3500)\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

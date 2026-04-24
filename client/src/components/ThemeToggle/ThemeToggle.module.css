@@ -1,0 +1,97 @@
+/* ==========================================================================
+   THEME TOGGLE — Premium Sun/Moon button
+   ========================================================================== */
+
+.toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+}
+
+.toggle:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  transform: scale(1.05);
+}
+
+.toggle:active {
+  transform: scale(0.95);
+}
+
+/* Focus ring for keyboard a11y */
+.toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Icon container ───────────────────────────────────────── */
+.iconWrapper {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Visibility states ────────────────────────────────────── */
+.visible {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Sun hides by spinning out */
+.sunIcon.hidden {
+  transform: rotate(90deg) scale(0.6);
+}
+
+/* Moon hides by spinning the other direction */
+.moonIcon.hidden {
+  transform: rotate(-90deg) scale(0.6);
+}
+
+/* ── Subtle idle animation on the visible icon ────────────── */
+@keyframes gentle-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0px transparent);
+  }
+  50% {
+    filter: drop-shadow(0 0 4px var(--accent-glow));
+  }
+}
+
+.toggle:hover .visible {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
