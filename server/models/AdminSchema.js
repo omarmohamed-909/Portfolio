@@ -2,20 +2,20 @@ import mongoose from "mongoose";
 const adminSchema = mongoose.Schema({
   userName: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
-    minlenth: 4,
-    maxlenth: 20,
+    minlength: 4,
+    maxlength: 20,
   },
   password: {
     type: String,
-    require: true,
-    minlenth: 6,
-    maxlenth: 50,
+    required: true,
+    minlength: 6,
+    maxlength: 50,
   },
   role: {
     type: String,
-    require: true,
+    required: true,
     enum: ["admin"],
     default: "admin",
   },

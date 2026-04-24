@@ -341,7 +341,7 @@ async function initializeData() {
   await setupHomeData_DefaultValues();
   await setupStaticSeo_DefaultValues();
   await setupSeo_DefaultValues();
-  mongoose.connection.close;
+  await mongoose.connection.close();
   process.exit(0);
 }
 initializeData();

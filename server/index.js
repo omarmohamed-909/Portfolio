@@ -10,7 +10,7 @@ import AdminDashboardSecurity from "./routers/AdminDashboard_securityRule.js";
 import EditAboutData from "./routers/EditAboutData.js";
 import EditFooter from "./routers/EditFooter.js";
 import EditSkills from "./routers/EditSkillsData.js";
-import EdirCv from "./routers/EditCv.js";
+import EditCv from "./routers/EditCv.js";
 import Contact from "./routers/Contact.js";
 import EditSeo from "./routers/EditSeo.js";
 import cors from "cors";
@@ -73,7 +73,6 @@ app.use((req, res, next) => {
 
   // Additional security headers
   res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-XSS-Protection", "1; mode=block");
 
   next();
 });
@@ -178,7 +177,7 @@ app.use("/api/", EditHomeData);
 app.use("/api/", EditAboutData);
 app.use("/api/", AddProjectRouter);
 app.use("/api/", EditSkills);
-app.use("/api/", EdirCv);
+app.use("/api/", EditCv);
 app.use("/api/", EditFooter);
 app.use("/api/", Contact);
 

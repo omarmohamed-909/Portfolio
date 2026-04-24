@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const CvShema = mongoose.Schema({
   Cv: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
   },
 });

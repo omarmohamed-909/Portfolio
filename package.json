@@ -2,6 +2,7 @@
   "name": "portfolio-app",
   "version": "1.2.0",
   "description": "Full-stack portfolio application",
+  "packageManager": "npm@10.9.2",
   "scripts": {
     "install-pack": "npm install && concurrently \"cd server && npm install\" \"cd client && npm install\"",
     "build": "cd client && npx vite build",

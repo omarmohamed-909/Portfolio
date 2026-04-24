@@ -1,15 +1,20 @@
 import HomeData from "../models/HomeDataSchema.js";
-import StatsData from "../models/StatsSchema.js";
 import AboutUsData from "../models/AboutUsSchema.js";
-import AboutUsSlides from "../models/AboutUsSlidesSchema.js";
 import Project from "../models/ProjectSchema.js";
 import Footer from "../models/FooterSchema.js";
-import FooterSocialLinksModel from "../models/FooterSocialLinksSchema.js";
 import express from "express";
 const Router = express.Router();
 Router.get("/home/main/data", async (req, res) => {
   try {
-    const homeData = await HomeData.findOne();
+    const homeData = await HomeData.findOne()
+      .select(
+        "HomeLogo DisplayName MainRoles description Clients_Counting Rateing Stats"
+      )
+      .populate({
+        path: "Stats",
+        select: "StatsNumber StatsLabel",
+      });
+
     if (!homeData) {
       // Return empty defaults instead of 404 so frontend doesn't break
       return res.status(200).json({
@@ -29,29 +34,27 @@ Router.get("/home/main/data", async (req, res) => {
       });
     }
 
-    const StatsInfo = await HomeData.findOne()
-      .populate("Stats")
-      .select("StatsNumber StatsLabel");
-
-    const AboutUsInfo = await AboutUsData.findOne().select(
-      "AboutUsTitle AboutUsDescription AboutSkills"
-    );
-
-    const AboutUsSlides = await AboutUsData.findOne()
-      .populate("AboutUsSlides")
-      .select("slideImage slideTitle slideDescription");
-    const FeaturedProjects = await Project.find({ Featured: true }).sort({
-      FeaturedDisplayOrder: 1,
-      createdAt: -1,
-    });
-
-    const FooterInfo = await Footer.findOne().select(
-      "FooterTitle FooterDescription OwnerEmail OwnerPhone OwnerAddress"
-    );
-
-    const footersociallinks = await Footer.findOne()
-      .populate("FooterSocialLinks")
-      .select("SocialIcon SocialLink");
+    const [aboutUsInfo, aboutUsSlidesInfo, featuredProjects, footerInfo, footerSocialLinks] =
+      await Promise.all([
+        AboutUsData.findOne().select(
+          "AboutUsTitle AboutUsDescription AboutSkills"
+        ),
+        AboutUsData.findOne().select("AboutUsSlides").populate({
+          path: "AboutUsSlides",
+          select: "slideImage slideTitle slideDescription",
+        }),
+        Project.find({ Featured: true }).sort({
+          FeaturedDisplayOrder: 1,
+          createdAt: -1,
+        }),
+        Footer.findOne().select(
+          "FooterTitle FooterDescription OwnerEmail OwnerPhone OwnerAddress"
+        ),
+        Footer.findOne().select("FooterSocialLinks").populate({
+          path: "FooterSocialLinks",
+          select: "SocialIcon SocialLink",
+        }),
+      ]);
 
     const filteredData = {
       HomeLogo: homeData.HomeLogo,
@@ -60,12 +63,12 @@ Router.get("/home/main/data", async (req, res) => {
       description: homeData.description,
       Clients_Counting: homeData.Clients_Counting,
       Rateing: homeData.Rateing,
-      Stats: StatsInfo?.Stats || [],
-      AboutUs: AboutUsInfo,
-      AboutUsSlides: AboutUsSlides,
-      FeaturedProjects: FeaturedProjects,
-      FooterInfo: FooterInfo,
-      footersociallinks: footersociallinks,
+      Stats: homeData.Stats || [],
+      AboutUs: aboutUsInfo,
+      AboutUsSlides: aboutUsSlidesInfo,
+      FeaturedProjects: featuredProjects,
+      FooterInfo: footerInfo,
+      footersociallinks: footerSocialLinks,
     };
     return res.status(200).json(filteredData);
   } catch (error) {

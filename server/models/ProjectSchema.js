@@ -27,7 +27,7 @@ const ProjectSchema = new mongoose.Schema(
     ProjectLiveUrl: {
       type: String,
       trim: true,
-      require: false,
+      required: false,
       default: "",
     },
     Project_technologies: {
@@ -51,7 +51,7 @@ const ProjectSchema = new mongoose.Schema(
         "achievement",
         "archived",
       ],
-      default: [],
+      default: "planning",
     },
     DisplayOrder: {
       type: Number,

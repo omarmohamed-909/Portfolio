@@ -235,9 +235,7 @@ function detectSuspiciousBehavior(req, keys) {
       "bot",
       "crawler",
       "scraper",
-      "insomnia",
       "httpie",
-      "postman",
     ];
 
     if (suspicious.some((s) => userAgent.toLowerCase().includes(s))) {

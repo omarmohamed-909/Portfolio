@@ -173,7 +173,7 @@ Router.put(
       }
       const findstat = await Stats.findById(id);
       if (!findstat) {
-        res.status(404).json({ message: "Stat not found" });
+        return res.status(404).json({ message: "Stat not found" });
       }
       const updatedStat = await Stats.findByIdAndUpdate(
         id,

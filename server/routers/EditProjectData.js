@@ -7,6 +7,18 @@ import { upload } from "../controllers/storage.js";
 import PorjectsLogoFolderValidation from "../middlewares/ProjectsLogos.js";
 import { access, unlink } from "fs/promises";
 import mongoose from "mongoose";
+
+const ALLOWED_PROJECT_UPDATE_FIELDS = new Set([
+  "Title",
+  "ShortDescription",
+  "Description",
+  "ProjectLiveUrl",
+  "Project_technologies",
+  "Porject_Status",
+  "DisplayOrder",
+  "Featured",
+  "FeaturedDisplayOrder",
+]);
 // Route to add a new project
 // This route expects a POST request with project details in the request body
 Router.post(
@@ -92,9 +104,65 @@ Router.put(
         return res.status(404).json({ message: "Project Not Found" });
       }
 
-      const NewData = {
-        ...req.body,
-      };
+      const bodyKeys = Object.keys(req.body || {});
+      const unexpectedFields = bodyKeys.filter(
+        (key) => !ALLOWED_PROJECT_UPDATE_FIELDS.has(key)
+      );
+
+      if (unexpectedFields.length > 0) {
+        return res.status(400).json({
+          message: `Unexpected fields: ${unexpectedFields.join(", ")}`,
+        });
+      }
+
+      const NewData = Object.fromEntries(
+        Object.entries(req.body || {}).filter(([key]) =>
+          ALLOWED_PROJECT_UPDATE_FIELDS.has(key)
+        )
+      );
+
+      if ("Featured" in NewData) {
+        NewData.Featured = String(NewData.Featured).toLowerCase() === "true";
+      }
+
+      if ("DisplayOrder" in NewData) {
+        const displayOrder = Number(NewData.DisplayOrder);
+        if (Number.isNaN(displayOrder)) {
+          return res
+            .status(400)
+            .json({ message: "DisplayOrder must be a valid number" });
+        }
+        NewData.DisplayOrder = displayOrder;
+      }
+
+      if ("FeaturedDisplayOrder" in NewData) {
+        const featuredDisplayOrder = Number(NewData.FeaturedDisplayOrder);
+        if (Number.isNaN(featuredDisplayOrder)) {
+          return res
+            .status(400)
+            .json({ message: "FeaturedDisplayOrder must be a valid number" });
+        }
+        NewData.FeaturedDisplayOrder = featuredDisplayOrder;
+      }
+
+      if ("Project_technologies" in NewData) {
+        if (Array.isArray(NewData.Project_technologies)) {
+          NewData.Project_technologies = NewData.Project_technologies;
+        } else if (typeof NewData.Project_technologies === "string") {
+          NewData.Project_technologies = NewData.Project_technologies
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+        } else {
+          return res.status(400).json({
+            message: "Project_technologies must be an array or comma-separated string",
+          });
+        }
+      }
+
+      if (Object.keys(NewData).length === 0 && !image) {
+        return res.status(400).json({ message: "No valid fields provided" });
+      }
 
       if (image) {
         NewData.Image = image;

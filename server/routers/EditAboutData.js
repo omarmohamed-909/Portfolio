@@ -9,6 +9,21 @@ import SlidesLogoFolderValidation from "../middlewares/SlidesLogo.js";
 import mongoose from "mongoose";
 import { access, unlink } from "fs/promises";
 
+async function removeAboutSlideImage(filename) {
+  if (!filename) {
+    return;
+  }
+
+  const filePath = `${process.cwd()}/uploads/aboutimg/${filename}`;
+  try {
+    await unlink(filePath);
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      console.error("Failed to remove uploaded slide image:", error);
+    }
+  }
+}
+
 Router.post(
   "/aboutslide/add/slide",
   isAdminLogged,
@@ -22,10 +37,7 @@ Router.post(
       }
 
       if (!req.body.slideTitle || !req.body.slideDescription) {
-        const path = process.cwd();
-        const DeleteImage = `${path}` + `/uploads/aboutimg/` + `${slideImage}`;
-        await access(DeleteImage);
-        await unlink(DeleteImage);
+        await removeAboutSlideImage(slideImage);
         return res.status(400).json({ message: "All fields Required" });
       }
       const NewSlide = new AboutUsSlides({

@@ -1,7 +1,7 @@
 import express from "express";
 import { Resend } from "resend";
 import dotenv from "dotenv";
-import fs from "fs";
+import { readFile } from "fs/promises";
 import path from "path";
 import HomeData from "../models/HomeDataSchema.js";
 import contactLimiter from "../middlewares/RateLimit.js";
@@ -11,27 +11,51 @@ const Router = express.Router();
 const resend = new Resend(process.env.RESEND_API || "missing-api-key");
 
 const AdminMail = process.env.ADMIN_MAIL;
+let cachedEmailTemplate = null;
 
-async function getEmailTemplate({ fullname, address, subject, message }) {
-  const adminDoc = await HomeData.findOne();
-  const AdminName = adminDoc?.DisplayName || "Admin";
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+async function readEmailTemplate() {
+  if (cachedEmailTemplate) {
+    return cachedEmailTemplate;
+  }
+
   const templatePath = path.join(
     process.cwd(),
     "EmailTemplate",
     "emailTemplate.html"
   );
 
-  let template = fs.readFileSync(templatePath, "utf-8");
+  cachedEmailTemplate = await readFile(templatePath, "utf-8");
+  return cachedEmailTemplate;
+}
 
-  template = template
-    .replace("{{AdminName}}", AdminName)
-    .replace("{{fullname}}", fullname)
-    .replace("{{email}}", address)
-    .replace("{{subject}}", subject)
-    .replace("{{message}}", message)
-    .replace("{{year}}", new Date().getFullYear());
+async function getEmailTemplate({ fullname, address, subject, message }) {
+  const adminDoc = await HomeData.findOne();
+  const template = await readEmailTemplate();
 
-  return template;
+  const replacements = {
+    AdminName: escapeHtml(adminDoc?.DisplayName || "Admin"),
+    fullname: escapeHtml(fullname),
+    email: escapeHtml(address),
+    subject: escapeHtml(subject),
+    message: escapeHtml(message),
+    year: String(new Date().getFullYear()),
+  };
+
+  let parsedTemplate = template;
+  for (const [key, value] of Object.entries(replacements)) {
+    parsedTemplate = parsedTemplate.replaceAll(`{{${key}}}`, value);
+  }
+
+  return parsedTemplate;
 }
 
 Router.post("/contact", contactLimiter, async (req, res) => {

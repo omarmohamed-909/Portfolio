@@ -1,9 +1,32 @@
-import React, { useEffect } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Frontend_Admin_Url, Backend_Root_Url } from "./config/AdminUrl.js";
 
 const adminUrl = "/" + Frontend_Admin_Url;
 const adminDashboard_Url = adminUrl + "/dashboard";
+
+const HomePage = lazy(() => import("./components/Home/Home.jsx"));
+const ProjectsPage = lazy(() => import("./components/PorjectsPage/ProjectsPage.jsx"));
+const SkillsPage = lazy(() => import("./components/SkillsPage/SkillsPage.jsx"));
+const CvPage = lazy(() => import("./components/MyCv/cv.jsx"));
+const ContactPage = lazy(() => import("./components/contact/Contact.jsx"));
+const AuthPage = lazy(() => import("./components/auth/auth.jsx"));
+const DashboardPage = lazy(() =>
+  import("./components/AdminDashboard/main/Dashboard_Restructured.jsx")
+);
+const DeniedPage = lazy(() => import("./components/AccesDenied/DeniedPage.jsx"));
+const NotFoundPage = lazy(() => import("./components/404/404page.jsx"));
+
+const RouteFallback = (
+  <div className="loading-overlay">
+    <div className="loading-container">
+      <div className="loading-spinner">
+        <div className="spinner-ring"></div>
+      </div>
+      <p className="loading-text">Loading Page...</p>
+    </div>
+  </div>
+);
 // SEO Manager Component - Only runs on main pages
 const SEOManager = () => {
   const location = useLocation();
@@ -236,24 +259,11 @@ const SEOManager = () => {
 };
 
 // Lazy loading component
-const LazyRoute = ({ importFunc }) => {
-  const LazyComponent = React.lazy(importFunc);
-
+const LazyRoute = ({ Component }) => {
   return (
-    <React.Suspense
-      fallback={
-        <div className="loading-overlay">
-          <div className="loading-container">
-            <div className="loading-spinner">
-              <div className="spinner-ring"></div>
-            </div>
-            <p className="loading-text">Loading Page...</p>
-          </div>
-        </div>
-      }
-    >
-      <LazyComponent />
-    </React.Suspense>
+    <Suspense fallback={RouteFallback}>
+      <Component />
+    </Suspense>
   );
 };
 
@@ -264,81 +274,39 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={
-            <LazyRoute
-              importFunc={() => import("./components/Home/Home.jsx")}
-            />
-          }
+          element={<LazyRoute Component={HomePage} />}
         />
         <Route
           path="/projects"
-          element={
-            <LazyRoute
-              importFunc={() =>
-                import("./components/PorjectsPage/ProjectsPage.jsx")
-              }
-            />
-          }
+          element={<LazyRoute Component={ProjectsPage} />}
         />
         <Route
           path="/skills"
-          element={
-            <LazyRoute
-              importFunc={() =>
-                import("./components/SkillsPage/SkillsPage.jsx")
-              }
-            />
-          }
+          element={<LazyRoute Component={SkillsPage} />}
         />
         <Route
           path="/cv"
-          element={
-            <LazyRoute importFunc={() => import("./components/MyCv/cv.jsx")} />
-          }
+          element={<LazyRoute Component={CvPage} />}
         />
         <Route
           path="/contact"
-          element={
-            <LazyRoute
-              importFunc={() => import("./components/contact/Contact.jsx")}
-            />
-          }
+          element={<LazyRoute Component={ContactPage} />}
         />
         <Route
           path={adminUrl}
-          element={
-            <LazyRoute
-              importFunc={() => import("./components/auth/auth.jsx")}
-            />
-          }
+          element={<LazyRoute Component={AuthPage} />}
         />
         <Route
           path={adminDashboard_Url}
-          element={
-            <LazyRoute
-              importFunc={() =>
-                import(
-                  "./components/AdminDashboard/main/Dashboard_Restructured.jsx"
-                )
-              }
-            />
-          }
+          element={<LazyRoute Component={DashboardPage} />}
         />
         <Route
           path="/denied"
-          element={
-            <LazyRoute
-              importFunc={() =>
-                import("./components/AccesDenied/DeniedPage.jsx")
-              }
-            />
-          }
+          element={<LazyRoute Component={DeniedPage} />}
         />
         <Route
           path="*"
-          element={
-            <LazyRoute importFunc={() => import("./components/404/404page")} />
-          }
+          element={<LazyRoute Component={NotFoundPage} />}
         />
       </Routes>
     </BrowserRouter>
