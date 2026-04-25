@@ -5,8 +5,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(12px);
+  /* Navy-tinted backdrop instead of pure black */
+  background: rgba(7, 13, 26, 0.80);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,14 +21,18 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
 
 .modalContainer {
-  background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0f1419 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  /* Dark glassmorphism — navy rgba + blur-md */
+  background: rgba(7, 13, 26, 0.90);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(0, 212, 255, 0.14);
   border-radius: 24px;
   max-width: 950px;
   width: 100%;
@@ -35,8 +41,10 @@
   overflow: hidden;
   position: relative;
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 32px 64px rgba(0, 0, 0, 0.70),
+    0 0 0 1px rgba(0, 212, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
   display: flex;
   flex-direction: column;
 }
@@ -46,6 +54,7 @@
     opacity: 0;
     transform: translateY(40px) scale(0.92);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -100,13 +109,13 @@
 }
 
 .modalContent::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.4);
+  background: rgba(0, 212, 255, 0.35);
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 .modalContent::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.6);
+  background: rgba(0, 212, 255, 0.60);
 }
 
 /* Image Container - When image exists */
@@ -151,12 +160,10 @@
 /* Header when no image - more compact */
 .projectHeaderNoImage {
   padding: 2rem 2rem 1rem 2rem;
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.08),
-    rgba(147, 51, 234, 0.08)
-  );
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg,
+      rgba(0, 212, 255, 0.06),
+      rgba(8, 145, 178, 0.08));
+  border-bottom: 1px solid rgba(0, 212, 255, 0.10);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,10 +176,10 @@
   justify-content: center;
   width: 80px;
   height: 80px;
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+  background: rgba(0, 212, 255, 0.10);
+  color: #00d4ff;
   border-radius: 20px;
-  border: 2px solid rgba(59, 130, 246, 0.2);
+  border: 2px solid rgba(0, 212, 255, 0.22);
 }
 
 .projectIconPlaceholder svg {
@@ -250,66 +257,54 @@
 /* Status Badge Styles */
 
 .statusCompleted {
-  background: linear-gradient(
-    135deg,
-    rgba(34, 197, 94, 0.15),
-    rgba(16, 185, 129, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(34, 197, 94, 0.15),
+      rgba(16, 185, 129, 0.25));
   color: #10b981;
   border: 1px solid rgba(16, 185, 129, 0.4);
   box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
 }
 
 .statusInProgress {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.15),
-    rgba(37, 99, 235, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.15),
+      rgba(37, 99, 235, 0.25));
   color: #2563eb;
   border: 1px solid rgba(59, 130, 246, 0.4);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .statusPlanning {
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.15),
-    rgba(147, 51, 234, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.15),
+      rgba(147, 51, 234, 0.25));
   color: #9333ea;
   border: 1px solid rgba(168, 85, 247, 0.4);
   box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);
 }
 
 .statusPlanned {
-  background: linear-gradient(
-    135deg,
-    rgba(99, 102, 241, 0.15),
-    rgba(79, 70, 229, 0.25)
-  );
-  color: #4f46e5;
-  border: 1px solid rgba(99, 102, 241, 0.4);
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+  background: linear-gradient(135deg,
+      rgba(0, 212, 255, 0.12),
+      rgba(8, 145, 178, 0.20));
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.32);
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.16);
 }
 
 .statusOnHold {
-  background: linear-gradient(
-    135deg,
-    rgba(251, 113, 133, 0.15),
-    rgba(244, 63, 94, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(251, 113, 133, 0.15),
+      rgba(244, 63, 94, 0.25));
   color: #f43f5e;
   border: 1px solid rgba(251, 113, 133, 0.4);
   box-shadow: 0 2px 8px rgba(251, 113, 133, 0.2);
 }
 
 .statusCanceled {
-  background: linear-gradient(
-    135deg,
-    rgba(239, 68, 68, 0.15),
-    rgba(220, 38, 38, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(239, 68, 68, 0.15),
+      rgba(220, 38, 38, 0.25));
   color: #dc2626;
   border: 1px solid rgba(239, 68, 68, 0.4);
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
@@ -328,72 +323,60 @@
 }
 
 .statusPrototype {
-  background: linear-gradient(
-    135deg,
-    rgba(129, 140, 248, 0.15),
-    rgba(99, 102, 241, 0.25),
-    rgba(165, 180, 252, 0.15)
-  );
-  color: #6366f1;
-  border: 1px solid rgba(129, 140, 248, 0.4);
-  box-shadow: 0 2px 8px rgba(129, 140, 248, 0.2);
+  background: linear-gradient(135deg,
+      rgba(0, 212, 255, 0.12),
+      rgba(8, 145, 178, 0.20),
+      rgba(0, 212, 255, 0.10));
+  color: #22d3ee;
+  border: 1px solid rgba(0, 212, 255, 0.30);
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.16);
 }
 
 .statusLaunched {
-  background: linear-gradient(
-    135deg,
-    rgba(192, 31, 192, 0.15),
-    rgba(192, 31, 192, 0.25),
-    rgba(192, 31, 192, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(192, 31, 192, 0.15),
+      rgba(192, 31, 192, 0.25),
+      rgba(192, 31, 192, 0.15));
   color: #c01fc0;
   border: 1px solid rgba(192, 31, 192, 0.4);
   box-shadow: 0 2px 8px rgba(192, 31, 192, 0.3);
 }
 
 .statusMetrics {
-  background: linear-gradient(
-    135deg,
-    rgba(96, 165, 250, 0.15),
-    rgba(59, 130, 246, 0.25),
-    rgba(147, 197, 253, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(96, 165, 250, 0.15),
+      rgba(59, 130, 246, 0.25),
+      rgba(147, 197, 253, 0.15));
   color: #3b82f6;
   border: 1px solid rgba(96, 165, 250, 0.4);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .statusAwarded {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 154, 0, 0.15),
-    rgba(255, 109, 0, 0.25),
-    rgba(230, 81, 0, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 154, 0, 0.15),
+      rgba(255, 109, 0, 0.25),
+      rgba(230, 81, 0, 0.15));
   color: #ca5801;
   border: 1px solid rgba(255, 154, 0, 0.4);
   box-shadow: 0 2px 8px rgba(255, 109, 0, 0.3);
 }
 
 .statusPassed {
-  background: linear-gradient(
-    135deg,
-    rgba(144, 238, 144, 0.25),
-    rgba(101, 185, 9, 0.35),
-    rgba(173, 255, 47, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(144, 238, 144, 0.25),
+      rgba(101, 185, 9, 0.35),
+      rgba(173, 255, 47, 0.25));
   color: #b4ff04;
   border: 1px solid rgba(180, 255, 4, 0.8);
   box-shadow: 0 2px 6px rgba(180, 255, 4, 0.4);
 }
 
 .statusAchievement {
-  background: linear-gradient(
-    135deg,
-    rgba(218, 165, 32, 0.18),
-    rgba(184, 134, 11, 0.28),
-    rgba(218, 165, 32, 0.18)
-  );
+  background: linear-gradient(135deg,
+      rgba(218, 165, 32, 0.18),
+      rgba(184, 134, 11, 0.28),
+      rgba(218, 165, 32, 0.18));
   color: #daa520;
   font-weight: 600;
   border: 1px solid rgba(218, 165, 32, 0.75);
@@ -404,13 +387,12 @@
 }
 
 .statusArchived {
-  background: linear-gradient(
-    135deg,
-    rgba(156, 163, 175, 0.18),
-    rgba(120, 85, 60, 0.25),
-    rgba(75, 85, 99, 0.18)
-  );
-  color: #6b4f3f; /* muted brown-gray text */
+  background: linear-gradient(135deg,
+      rgba(156, 163, 175, 0.18),
+      rgba(120, 85, 60, 0.25),
+      rgba(75, 85, 99, 0.18));
+  color: #6b4f3f;
+  /* muted brown-gray text */
   border: 1px solid rgba(120, 85, 60, 0.5);
   box-shadow: 0 2px 6px rgba(107, 114, 128, 0.2);
   border-radius: 8px;
@@ -419,11 +401,9 @@
 }
 
 .statusDefault {
-  background: linear-gradient(
-    135deg,
-    rgba(148, 163, 184, 0.15),
-    rgba(100, 116, 139, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(148, 163, 184, 0.15),
+      rgba(100, 116, 139, 0.25));
   color: #64748b;
   border: 1px solid rgba(148, 163, 184, 0.4);
   box-shadow: 0 2px 8px rgba(148, 163, 184, 0.1);
@@ -431,20 +411,24 @@
 
 /* Animations for specific statuses */
 @keyframes pulse-blue {
+
   0%,
   100% {
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
   }
+
   50% {
     box-shadow: 0 2px 15px rgba(59, 130, 246, 0.4);
   }
 }
 
 @keyframes pulse-yellow {
+
   0%,
   100% {
     box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
   }
+
   50% {
     box-shadow: 0 2px 15px rgba(251, 191, 36, 0.4);
   }
@@ -454,6 +438,7 @@
   0% {
     background-position: -100% 0;
   }
+
   100% {
     background-position: 100% 0;
   }
@@ -463,17 +448,20 @@
   0% {
     box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
   }
+
   100% {
     box-shadow: 0 4px 20px rgba(16, 185, 129, 0.6);
   }
 }
 
 @keyframes sparkle {
+
   0%,
   100% {
     transform: scale(1);
     box-shadow: 0 2px 8px rgba(251, 146, 60, 0.3);
   }
+
   50% {
     transform: scale(1.05);
     box-shadow: 0 4px 15px rgba(251, 146, 60, 0.5);
@@ -481,10 +469,12 @@
 }
 
 @keyframes achievement-glow {
+
   0%,
   100% {
     box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
   }
+
   50% {
     box-shadow: 0 4px 20px rgba(236, 72, 153, 0.6),
       0 0 30px rgba(236, 72, 153, 0.3);
@@ -493,6 +483,7 @@
 
 /* Disable animations for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
+
   .statusInProgress,
   .statusOnHold,
   .statusPrototype,
@@ -504,26 +495,57 @@
 }
 
 .liveLinkButton {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 16px;
+  /* Full pill shape */
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
+  letter-spacing: 0.03em;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  background: linear-gradient(135deg, #0891b2, #00d4ff);
+  color: #ffffff;
+  border: 1.5px solid rgba(0, 212, 255, 0.45);
+  /* Glowing cyan pill shadow */
+  box-shadow: 0 4px 18px rgba(0, 212, 255, 0.38),
+    0 0 0 0 rgba(0, 212, 255, 0);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer overlay on hover */
+.liveLinkButton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #00d4ff, #0891b2);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+
+.liveLinkButton:hover::before {
+  opacity: 1;
+}
+
+.liveLinkButton>* {
+  position: relative;
+  z-index: 1;
 }
 
 .liveLinkButton:hover {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 12px 32px rgba(0, 212, 255, 0.55),
+    0 0 24px rgba(0, 212, 255, 0.25);
+  border-color: rgba(0, 212, 255, 0.70);
+}
+
+.liveLinkButton:active {
+  transform: translateY(-1px) scale(0.98);
 }
 
 .descriptionSection {
@@ -547,13 +569,13 @@
 }
 
 .descriptionSection::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.4);
+  background: rgba(0, 212, 255, 0.32);
   border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .descriptionSection::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.6);
+  background: rgba(0, 212, 255, 0.58);
 }
 
 /* Fade effect at bottom when content is scrollable */
@@ -587,7 +609,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  flex-shrink: 0; /* Prevent tags from shrinking */
+  flex-shrink: 0;
+  /* Prevent tags from shrinking */
 }
 
 .sectionTitle {
@@ -616,7 +639,7 @@
 
 .techTag:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.20);
+  box-shadow: 0 4px 14px rgba(0, 212, 255, 0.22);
 }
 
 
@@ -765,6 +788,7 @@
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
+
   .modalOverlay,
   .modalContainer {
     animation: none;
@@ -817,6 +841,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -844,6 +869,7 @@
     opacity: 0;
     transform: translateY(40px) scale(0.92);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -949,11 +975,9 @@
 /* Header when no image - more compact */
 .projectHeaderNoImage {
   padding: 2rem 2rem 1rem 2rem;
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.08),
-    rgba(147, 51, 234, 0.08)
-  );
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.08),
+      rgba(147, 51, 234, 0.08));
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
@@ -1008,7 +1032,8 @@
   flex-direction: column;
   gap: 1rem;
   flex: 1;
-  min-width: 0; /* Allow text to wrap */
+  min-width: 0;
+  /* Allow text to wrap */
 }
 
 .projectTitle {
@@ -1048,66 +1073,54 @@
 /* Status Badge Styles - Each with gradient colors that truly represent their meaning */
 
 .statusCompleted {
-  background: linear-gradient(
-    135deg,
-    rgba(34, 197, 94, 0.15),
-    rgba(16, 185, 129, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(34, 197, 94, 0.15),
+      rgba(16, 185, 129, 0.25));
   color: #10b981;
   border: 1px solid rgba(16, 185, 129, 0.4);
   box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
 }
 
 .statusInProgress {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.15),
-    rgba(37, 99, 235, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.15),
+      rgba(37, 99, 235, 0.25));
   color: #2563eb;
   border: 1px solid rgba(59, 130, 246, 0.4);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .statusPlanning {
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.15),
-    rgba(147, 51, 234, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.15),
+      rgba(147, 51, 234, 0.25));
   color: #9333ea;
   border: 1px solid rgba(168, 85, 247, 0.4);
   box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);
 }
 
 .statusPlanned {
-  background: linear-gradient(
-    135deg,
-    rgba(99, 102, 241, 0.15),
-    rgba(79, 70, 229, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(99, 102, 241, 0.15),
+      rgba(79, 70, 229, 0.25));
   color: #4f46e5;
   border: 1px solid rgba(99, 102, 241, 0.4);
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
 }
 
 .statusOnHold {
-  background: linear-gradient(
-    135deg,
-    rgba(251, 113, 133, 0.15),
-    rgba(244, 63, 94, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(251, 113, 133, 0.15),
+      rgba(244, 63, 94, 0.25));
   color: #f43f5e;
   border: 1px solid rgba(251, 113, 133, 0.4);
   box-shadow: 0 2px 8px rgba(251, 113, 133, 0.2);
 }
 
 .statusCanceled {
-  background: linear-gradient(
-    135deg,
-    rgba(239, 68, 68, 0.15),
-    rgba(220, 38, 38, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(239, 68, 68, 0.15),
+      rgba(220, 38, 38, 0.25));
   color: #dc2626;
   border: 1px solid rgba(239, 68, 68, 0.4);
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
@@ -1126,72 +1139,60 @@
 }
 
 .statusPrototype {
-  background: linear-gradient(
-    135deg,
-    rgba(129, 140, 248, 0.15),
-    rgba(99, 102, 241, 0.25),
-    rgba(165, 180, 252, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(129, 140, 248, 0.15),
+      rgba(99, 102, 241, 0.25),
+      rgba(165, 180, 252, 0.15));
   color: #6366f1;
   border: 1px solid rgba(129, 140, 248, 0.4);
   box-shadow: 0 2px 8px rgba(129, 140, 248, 0.2);
 }
 
 .statusLaunched {
-  background: linear-gradient(
-    135deg,
-    rgba(192, 31, 192, 0.15),
-    rgba(192, 31, 192, 0.25),
-    rgba(192, 31, 192, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(192, 31, 192, 0.15),
+      rgba(192, 31, 192, 0.25),
+      rgba(192, 31, 192, 0.15));
   color: #c01fc0;
   border: 1px solid rgba(192, 31, 192, 0.4);
   box-shadow: 0 2px 8px rgba(192, 31, 192, 0.3);
 }
 
 .statusMetrics {
-  background: linear-gradient(
-    135deg,
-    rgba(96, 165, 250, 0.15),
-    rgba(59, 130, 246, 0.25),
-    rgba(147, 197, 253, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(96, 165, 250, 0.15),
+      rgba(59, 130, 246, 0.25),
+      rgba(147, 197, 253, 0.15));
   color: #3b82f6;
   border: 1px solid rgba(96, 165, 250, 0.4);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .statusAwarded {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 154, 0, 0.15),
-    rgba(255, 109, 0, 0.25),
-    rgba(230, 81, 0, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 154, 0, 0.15),
+      rgba(255, 109, 0, 0.25),
+      rgba(230, 81, 0, 0.15));
   color: #ca5801;
   border: 1px solid rgba(255, 154, 0, 0.4);
   box-shadow: 0 2px 8px rgba(255, 109, 0, 0.3);
 }
 
 .statusPassed {
-  background: linear-gradient(
-    135deg,
-    rgba(144, 238, 144, 0.25),
-    rgba(101, 185, 9, 0.35),
-    rgba(173, 255, 47, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(144, 238, 144, 0.25),
+      rgba(101, 185, 9, 0.35),
+      rgba(173, 255, 47, 0.25));
   color: #b4ff04;
   border: 1px solid rgba(180, 255, 4, 0.8);
   box-shadow: 0 2px 6px rgba(180, 255, 4, 0.4);
 }
 
 .statusAchievement {
-  background: linear-gradient(
-    135deg,
-    rgba(218, 165, 32, 0.18),
-    rgba(184, 134, 11, 0.28),
-    rgba(218, 165, 32, 0.18)
-  );
+  background: linear-gradient(135deg,
+      rgba(218, 165, 32, 0.18),
+      rgba(184, 134, 11, 0.28),
+      rgba(218, 165, 32, 0.18));
   color: #daa520;
   font-weight: 600;
   border: 1px solid rgba(218, 165, 32, 0.75);
@@ -1202,13 +1203,12 @@
 }
 
 .statusArchived {
-  background: linear-gradient(
-    135deg,
-    rgba(156, 163, 175, 0.18),
-    rgba(120, 85, 60, 0.25),
-    rgba(75, 85, 99, 0.18)
-  );
-  color: #6b4f3f; /* muted brown-gray text */
+  background: linear-gradient(135deg,
+      rgba(156, 163, 175, 0.18),
+      rgba(120, 85, 60, 0.25),
+      rgba(75, 85, 99, 0.18));
+  color: #6b4f3f;
+  /* muted brown-gray text */
   border: 1px solid rgba(120, 85, 60, 0.5);
   box-shadow: 0 2px 6px rgba(107, 114, 128, 0.2);
   border-radius: 8px;
@@ -1217,11 +1217,9 @@
 }
 
 .statusDefault {
-  background: linear-gradient(
-    135deg,
-    rgba(148, 163, 184, 0.15),
-    rgba(100, 116, 139, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(148, 163, 184, 0.15),
+      rgba(100, 116, 139, 0.25));
   color: #64748b;
   border: 1px solid rgba(148, 163, 184, 0.4);
   box-shadow: 0 2px 8px rgba(148, 163, 184, 0.1);
@@ -1229,20 +1227,24 @@
 
 /* Animations for specific statuses */
 @keyframes pulse-blue {
+
   0%,
   100% {
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
   }
+
   50% {
     box-shadow: 0 2px 15px rgba(59, 130, 246, 0.4);
   }
 }
 
 @keyframes pulse-yellow {
+
   0%,
   100% {
     box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
   }
+
   50% {
     box-shadow: 0 2px 15px rgba(251, 191, 36, 0.4);
   }
@@ -1252,6 +1254,7 @@
   0% {
     background-position: -100% 0;
   }
+
   100% {
     background-position: 100% 0;
   }
@@ -1261,17 +1264,20 @@
   0% {
     box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
   }
+
   100% {
     box-shadow: 0 4px 20px rgba(16, 185, 129, 0.6);
   }
 }
 
 @keyframes sparkle {
+
   0%,
   100% {
     transform: scale(1);
     box-shadow: 0 2px 8px rgba(251, 146, 60, 0.3);
   }
+
   50% {
     transform: scale(1.05);
     box-shadow: 0 4px 15px rgba(251, 146, 60, 0.5);
@@ -1279,10 +1285,12 @@
 }
 
 @keyframes achievement-glow {
+
   0%,
   100% {
     box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
   }
+
   50% {
     box-shadow: 0 4px 20px rgba(236, 72, 153, 0.6),
       0 0 30px rgba(236, 72, 153, 0.3);
@@ -1291,6 +1299,7 @@
 
 /* Disable animations for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
+
   .statusInProgress,
   .statusOnHold,
   .statusPrototype,
@@ -1302,26 +1311,54 @@
 }
 
 .liveLinkButton {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.6rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 16px;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  white-space: nowrap;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  background: linear-gradient(135deg, #0891b2, #00d4ff);
+  color: #ffffff;
+  border: 1.5px solid rgba(0, 212, 255, 0.45);
+  box-shadow: 0 4px 18px rgba(0, 212, 255, 0.38),
+    0 0 0 0 rgba(0, 212, 255, 0);
+  position: relative;
+  overflow: hidden;
+}
+
+.liveLinkButton::before {
+  content: none;
 }
 
 .liveLinkButton:hover {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(0, 212, 255, 0.55),
+    0 0 24px rgba(0, 212, 255, 0.25);
+  border-color: rgba(0, 212, 255, 0.7);
+}
+
+.liveLinkButton:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.liveLinkButton svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.liveLinkButton > * {
+  position: relative;
+  z-index: 1;
 }
 
 .descriptionSection {
@@ -1439,7 +1476,7 @@
 }
 
 /* Last element in description gets no bottom margin */
-.projectDescription > *:last-child {
+.projectDescription>*:last-child {
   margin-bottom: 0;
 }
 
@@ -1447,7 +1484,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  flex-shrink: 0; /* Prevent tags from shrinking */
+  flex-shrink: 0;
+  /* Prevent tags from shrinking */
 }
 
 .sectionTitle {
@@ -1645,6 +1683,7 @@
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
+
   .modalOverlay,
   .modalContainer {
     animation: none;
@@ -1705,6 +1744,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -1733,6 +1773,7 @@
     opacity: 0;
     transform: translateY(40px) scale(0.92);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1873,11 +1914,9 @@
 /* Header when no image - more compact */
 .projectHeaderNoImage {
   padding: 2rem 2rem 1rem 2rem;
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.08),
-    rgba(147, 51, 234, 0.08)
-  );
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.08),
+      rgba(147, 51, 234, 0.08));
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
@@ -1933,7 +1972,8 @@
   flex-direction: column;
   gap: 1rem;
   flex: 1;
-  min-width: 0; /* Allow text to wrap */
+  min-width: 0;
+  /* Allow text to wrap */
 }
 
 .projectTitle {
@@ -1976,66 +2016,54 @@
 
 /* Status Badge Styles - Consistent with main page */
 .statusCompleted {
-  background: linear-gradient(
-    135deg,
-    rgba(34, 197, 94, 0.15),
-    rgba(16, 185, 129, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(34, 197, 94, 0.15),
+      rgba(16, 185, 129, 0.25));
   color: #10b981;
   border: 1px solid rgba(16, 185, 129, 0.4);
   box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
 }
 
 .statusInProgress {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.15),
-    rgba(37, 99, 235, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.15),
+      rgba(37, 99, 235, 0.25));
   color: #2563eb;
   border: 1px solid rgba(59, 130, 246, 0.4);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .statusPlanning {
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.15),
-    rgba(147, 51, 234, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.15),
+      rgba(147, 51, 234, 0.25));
   color: #9333ea;
   border: 1px solid rgba(168, 85, 247, 0.4);
   box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);
 }
 
 .statusPlanned {
-  background: linear-gradient(
-    135deg,
-    rgba(99, 102, 241, 0.15),
-    rgba(79, 70, 229, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(99, 102, 241, 0.15),
+      rgba(79, 70, 229, 0.25));
   color: #4f46e5;
   border: 1px solid rgba(99, 102, 241, 0.4);
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
 }
 
 .statusOnHold {
-  background: linear-gradient(
-    135deg,
-    rgba(251, 113, 133, 0.15),
-    rgba(244, 63, 94, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(251, 113, 133, 0.15),
+      rgba(244, 63, 94, 0.25));
   color: #f43f5e;
   border: 1px solid rgba(251, 113, 133, 0.4);
   box-shadow: 0 2px 8px rgba(251, 113, 133, 0.2);
 }
 
 .statusCanceled {
-  background: linear-gradient(
-    135deg,
-    rgba(239, 68, 68, 0.15),
-    rgba(220, 38, 38, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(239, 68, 68, 0.15),
+      rgba(220, 38, 38, 0.25));
   color: #dc2626;
   border: 1px solid rgba(239, 68, 68, 0.4);
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
@@ -2054,72 +2082,60 @@
 }
 
 .statusPrototype {
-  background: linear-gradient(
-    135deg,
-    rgba(129, 140, 248, 0.15),
-    rgba(99, 102, 241, 0.25),
-    rgba(165, 180, 252, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(129, 140, 248, 0.15),
+      rgba(99, 102, 241, 0.25),
+      rgba(165, 180, 252, 0.15));
   color: #6366f1;
   border: 1px solid rgba(129, 140, 248, 0.4);
   box-shadow: 0 2px 8px rgba(129, 140, 248, 0.2);
 }
 
 .statusLaunched {
-  background: linear-gradient(
-    135deg,
-    rgba(192, 31, 192, 0.15),
-    rgba(192, 31, 192, 0.25),
-    rgba(192, 31, 192, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(192, 31, 192, 0.15),
+      rgba(192, 31, 192, 0.25),
+      rgba(192, 31, 192, 0.15));
   color: #c01fc0;
   border: 1px solid rgba(192, 31, 192, 0.4);
   box-shadow: 0 2px 8px rgba(192, 31, 192, 0.3);
 }
 
 .statusMetrics {
-  background: linear-gradient(
-    135deg,
-    rgba(96, 165, 250, 0.15),
-    rgba(59, 130, 246, 0.25),
-    rgba(147, 197, 253, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(96, 165, 250, 0.15),
+      rgba(59, 130, 246, 0.25),
+      rgba(147, 197, 253, 0.15));
   color: #3b82f6;
   border: 1px solid rgba(96, 165, 250, 0.4);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .statusAwarded {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 154, 0, 0.15),
-    rgba(255, 109, 0, 0.25),
-    rgba(230, 81, 0, 0.15)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 154, 0, 0.15),
+      rgba(255, 109, 0, 0.25),
+      rgba(230, 81, 0, 0.15));
   color: #ca5801;
   border: 1px solid rgba(255, 154, 0, 0.4);
   box-shadow: 0 2px 8px rgba(255, 109, 0, 0.3);
 }
 
 .statusPassed {
-  background: linear-gradient(
-    135deg,
-    rgba(144, 238, 144, 0.25),
-    rgba(101, 185, 9, 0.35),
-    rgba(173, 255, 47, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(144, 238, 144, 0.25),
+      rgba(101, 185, 9, 0.35),
+      rgba(173, 255, 47, 0.25));
   color: #b4ff04;
   border: 1px solid rgba(180, 255, 4, 0.8);
   box-shadow: 0 2px 6px rgba(180, 255, 4, 0.4);
 }
 
 .statusAchievement {
-  background: linear-gradient(
-    135deg,
-    rgba(218, 165, 32, 0.18),
-    rgba(184, 134, 11, 0.28),
-    rgba(218, 165, 32, 0.18)
-  );
+  background: linear-gradient(135deg,
+      rgba(218, 165, 32, 0.18),
+      rgba(184, 134, 11, 0.28),
+      rgba(218, 165, 32, 0.18));
   color: #daa520;
   font-weight: 600;
   border: 1px solid rgba(218, 165, 32, 0.75);
@@ -2130,13 +2146,12 @@
 }
 
 .statusArchived {
-  background: linear-gradient(
-    135deg,
-    rgba(156, 163, 175, 0.18),
-    rgba(120, 85, 60, 0.25),
-    rgba(75, 85, 99, 0.18)
-  );
-  color: #6b4f3f; /* muted brown-gray text */
+  background: linear-gradient(135deg,
+      rgba(156, 163, 175, 0.18),
+      rgba(120, 85, 60, 0.25),
+      rgba(75, 85, 99, 0.18));
+  color: #6b4f3f;
+  /* muted brown-gray text */
   border: 1px solid rgba(120, 85, 60, 0.5);
   box-shadow: 0 2px 6px rgba(107, 114, 128, 0.2);
   border-radius: 8px;
@@ -2145,11 +2160,9 @@
 }
 
 .statusDefault {
-  background: linear-gradient(
-    135deg,
-    rgba(148, 163, 184, 0.15),
-    rgba(100, 116, 139, 0.25)
-  );
+  background: linear-gradient(135deg,
+      rgba(148, 163, 184, 0.15),
+      rgba(100, 116, 139, 0.25));
   color: #64748b;
   border: 1px solid rgba(148, 163, 184, 0.4);
   box-shadow: 0 2px 8px rgba(148, 163, 184, 0.1);
@@ -2157,26 +2170,54 @@
 
 /* Live Link Button - Enhanced */
 .liveLinkButton {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.6rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 16px;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  white-space: nowrap;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  background: linear-gradient(135deg, #0891b2, #00d4ff);
+  color: #ffffff;
+  border: 1.5px solid rgba(0, 212, 255, 0.45);
+  box-shadow: 0 4px 18px rgba(0, 212, 255, 0.38),
+    0 0 0 0 rgba(0, 212, 255, 0);
+  position: relative;
+  overflow: hidden;
+}
+
+.liveLinkButton::before {
+  content: none;
 }
 
 .liveLinkButton:hover {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(0, 212, 255, 0.55),
+    0 0 24px rgba(0, 212, 255, 0.25);
+  border-color: rgba(0, 212, 255, 0.7);
+}
+
+.liveLinkButton:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.liveLinkButton svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.liveLinkButton > * {
+  position: relative;
+  z-index: 1;
 }
 
 .descriptionSection {
@@ -2239,7 +2280,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  flex-shrink: 0; /* Prevent tags from shrinking */
+  flex-shrink: 0;
+  /* Prevent tags from shrinking */
 }
 
 .sectionTitle {
@@ -2470,6 +2512,7 @@
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
+
   .modalOverlay,
   .modalContainer {
     animation: none;

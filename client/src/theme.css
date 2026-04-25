@@ -1,114 +1,106 @@
 /* ==========================================================================
-   PORTFOLIO THEME SYSTEM
-   A sophisticated dark/light color palette using modern Slate tones
-   with an elegant indigo accent that works beautifully in both modes.
+   PORTFOLIO THEME SYSTEM — Cyan Edition
+   Deep navy dark mode + crisp light mode with #00d4ff cyan accent.
    ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   Google Fonts — Inter for a clean, premium feel
-   -------------------------------------------------------------------------- */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Sora:wght@400;600;700;800&display=swap");
 
 /* --------------------------------------------------------------------------
    LIGHT MODE (default)
-   Soft off-whites + Slate grays — never pure #000 or #FFF.
    -------------------------------------------------------------------------- */
 :root {
   /* ── Backgrounds ──────────────────────────────────────────── */
-  --bg-primary: #f8fafc;          /* Main page background — cool off-white  */
-  --bg-secondary: #f1f5f9;       /* Cards, surfaces, navbar               */
-  --bg-tertiary: #e2e8f0;        /* Deeper surfaces, hover states         */
+  --bg-primary:   #f0f9ff;          /* Very slight cyan tint — premium feel  */
+  --bg-secondary: #e0f2fe;          /* Cards / surfaces                      */
+  --bg-tertiary:  #bae6fd;          /* Hover states                          */
 
   /* ── Text ─────────────────────────────────────────────────── */
-  --text-primary: #0f172a;       /* Headings — rich dark navy             */
-  --text-secondary: #475569;     /* Body copy — muted slate               */
-  --text-tertiary: #94a3b8;      /* Captions, timestamps — lighter        */
+  --text-primary:   #0c1a29;        /* Rich dark navy — headings             */
+  --text-secondary: #334155;        /* Body — slate-700                      */
+  --text-tertiary:  #64748b;        /* Captions                              */
 
-  /* ── Accent / Brand ──────────────────────────────────────── */
-  --accent: #6366f1;             /* Elegant indigo — works on both modes  */
-  --accent-hover: #4f46e5;       /* Slightly deeper on hover              */
-  --accent-soft: rgba(99, 102, 241, 0.12); /* Tinted backgrounds          */
-  --accent-glow: rgba(99, 102, 241, 0.25); /* Shadow / glow               */
+  /* ── Accent / Brand ─ CYAN ───────────────────────────────── */
+  --accent:       #0891b2;          /* Darker cyan for light-mode contrast   */
+  --accent-hover: #0e7490;
+  --accent-soft:  rgba(8, 145, 178, 0.10);
+  --accent-glow:  rgba(8, 145, 178, 0.22);
 
   /* ── Borders & Dividers ──────────────────────────────────── */
-  --border: #e2e8f0;             /* Subtle dividers                       */
-  --border-hover: #cbd5e1;       /* Slightly stronger on hover            */
+  --border:       #cbd5e1;
+  --border-hover: rgba(8, 145, 178, 0.40);
 
-  /* ── Surfaces with transparency (glass effects) ──────────── */
-  --glass-bg: rgba(248, 250, 252, 0.8);
-  --glass-border: rgba(226, 232, 240, 0.6);
+  /* ── Glass effects ───────────────────────────────────────── */
+  --glass-bg:     rgba(240, 249, 255, 0.85);
+  --glass-border: rgba(186, 230, 253, 0.60);
 
   /* ── Shadows ─────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.08);
-  --shadow-xl: 0 20px 48px rgba(15, 23, 42, 0.10);
+  --shadow-sm: 0 1px 2px  rgba(12, 26, 41, 0.05);
+  --shadow-md: 0 4px 12px rgba(12, 26, 41, 0.07);
+  --shadow-lg: 0 12px 32px rgba(12, 26, 41, 0.09);
+  --shadow-xl: 0 20px 48px rgba(12, 26, 41, 0.12);
 
-  /* ── Gradient overlays ───────────────────────────────────── */
-  --gradient-hero: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-  --gradient-accent: linear-gradient(135deg, #6366f1, #818cf8);
-  --gradient-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(99, 102, 241, 0.02));
+  /* ── Gradients ───────────────────────────────────────────── */
+  --gradient-hero:   linear-gradient(135deg, #f0f9ff 0%, #e0f7fa 50%, #f0f9ff 100%);
+  --gradient-accent: linear-gradient(135deg, #0891b2, #00d4ff);
+  --gradient-subtle: linear-gradient(135deg, rgba(8,145,178,0.06), rgba(0,212,255,0.03));
 
   /* ── Misc ────────────────────────────────────────────────── */
-  --overlay: rgba(15, 23, 42, 0.4);
-  --scrollbar-thumb: #cbd5e1;
-  --scrollbar-track: #f1f5f9;
-  --code-bg: #f1f5f9;
+  --overlay:          rgba(12, 26, 41, 0.50);
+  --scrollbar-thumb:  #7dd3fc;
+  --scrollbar-track:  #e0f2fe;
+  --code-bg:          #e0f2fe;
 }
 
 /* --------------------------------------------------------------------------
-   DARK MODE
-   Deep navy / Slate 900-950 foundations — never pure black.
+   DARK MODE — Deep navy / Slate-950 foundations
    -------------------------------------------------------------------------- */
 [data-theme="dark"] {
   /* ── Backgrounds ──────────────────────────────────────────── */
-  --bg-primary: #0f172a;          /* Deep navy — main background           */
-  --bg-secondary: #1e293b;       /* Cards, surfaces                       */
-  --bg-tertiary: #334155;        /* Deeper surfaces, hover states         */
+  --bg-primary:   #070d1a;          /* Ultra-deep navy                       */
+  --bg-secondary: #0f172a;          /* Slate-900 — cards                     */
+  --bg-tertiary:  #1e293b;          /* Slate-800 — hover states              */
 
   /* ── Text ─────────────────────────────────────────────────── */
-  --text-primary: #f1f5f9;       /* Headings — soft off-white             */
-  --text-secondary: #94a3b8;     /* Body copy — cool gray                 */
-  --text-tertiary: #64748b;      /* Captions — muted                      */
+  --text-primary:   #e2e8f0;        /* Slate-200 — high readability          */
+  --text-secondary: #94a3b8;        /* Slate-400                             */
+  --text-tertiary:  #475569;        /* Slate-600 — muted                     */
 
-  /* ── Accent / Brand ──────────────────────────────────────── */
-  --accent: #818cf8;             /* Lighter indigo for dark backgrounds    */
-  --accent-hover: #6366f1;       /* Richer on hover                       */
-  --accent-soft: rgba(129, 140, 248, 0.12);
-  --accent-glow: rgba(129, 140, 248, 0.20);
+  /* ── Accent / Brand ─ CYAN ───────────────────────────────── */
+  --accent:       #00d4ff;          /* Vivid cyan on dark                    */
+  --accent-hover: #00e5ff;
+  --accent-soft:  rgba(0, 212, 255, 0.12);
+  --accent-glow:  rgba(0, 212, 255, 0.22);
 
   /* ── Borders & Dividers ──────────────────────────────────── */
-  --border: rgba(148, 163, 184, 0.12);
-  --border-hover: rgba(148, 163, 184, 0.20);
+  --border:       rgba(148, 163, 184, 0.10);
+  --border-hover: rgba(0, 212, 255, 0.30);
 
-  /* ── Surfaces with transparency (glass effects) ──────────── */
-  --glass-bg: rgba(15, 23, 42, 0.8);
-  --glass-border: rgba(148, 163, 184, 0.1);
+  /* ── Glass effects ───────────────────────────────────────── */
+  --glass-bg:     rgba(7, 13, 26, 0.82);
+  --glass-border: rgba(0, 212, 255, 0.08);
 
   /* ── Shadows ─────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.20);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.30);
-  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 1px 2px  rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.40);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.50);
+  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.60);
 
-  /* ── Gradient overlays ───────────────────────────────────── */
-  --gradient-hero: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-  --gradient-accent: linear-gradient(135deg, #818cf8, #6366f1);
-  --gradient-subtle: linear-gradient(135deg, rgba(129, 140, 248, 0.08), rgba(129, 140, 248, 0.03));
+  /* ── Gradients ───────────────────────────────────────────── */
+  --gradient-hero:   linear-gradient(135deg, #070d1a 0%, #0f172a 60%, #070d1a 100%);
+  --gradient-accent: linear-gradient(135deg, #00d4ff, #0099bb);
+  --gradient-subtle: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(0,212,255,0.03));
 
   /* ── Misc ────────────────────────────────────────────────── */
-  --overlay: rgba(0, 0, 0, 0.6);
-  --scrollbar-thumb: #334155;
-  --scrollbar-track: #1e293b;
-  --code-bg: #1e293b;
+  --overlay:          rgba(0, 0, 0, 0.68);
+  --scrollbar-thumb:  #1e293b;
+  --scrollbar-track:  #0f172a;
+  --code-bg:          #0f172a;
 }
 
 /* --------------------------------------------------------------------------
-   GLOBAL RESETS & BODY STYLES
+   GLOBAL RESETS & BODY
    -------------------------------------------------------------------------- */
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -126,44 +118,21 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Smooth transitions on elements that use theme variables */
-a,
-button,
-input,
-textarea,
-select {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+a, button, input, textarea, select {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* --------------------------------------------------------------------------
-   SCROLLBAR STYLING
+   SCROLLBAR
    -------------------------------------------------------------------------- */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-tertiary);
-}
+::-webkit-scrollbar        { width: 8px; height: 8px; }
+::-webkit-scrollbar-track  { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb  { background: var(--scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* --------------------------------------------------------------------------
    SELECTION
@@ -172,21 +141,19 @@ select {
   background: var(--accent-soft);
   color: var(--accent);
 }
+
 /* ==========================================================================
-   GLOBAL TAG / BADGE SYSTEM
-   A single source of truth for every technology badge / skill pill across
-   the entire portfolio.  Apply class="tech-tag" alongside any local scoped
-   class to guarantee contrast in both themes.
+   GLOBAL TECH-TAG / BADGE SYSTEM — Cyan palette
+   Apply class="tech-tag" alongside any local scoped class.
    ========================================================================== */
 
-/* ── Light mode (default) ─────────────────────────────────────────────────
-   Deep indigo text on a tinted indigo surface — WCAG AA compliant.          */
+/* ── Light mode ──────────────────────────────────────────────────────────── */
 .tech-tag {
   display: inline-flex;
   align-items: center;
-  background: rgba(79, 70, 229, 0.10);   /* indigo tint, never invisible    */
-  color: #1e1b4b;                         /* indigo-950 — very dark, bold    */
-  border: 1px solid rgba(79, 70, 229, 0.28);
+  background: rgba(8, 145, 178, 0.10);
+  color: #0a4f63;                         /* Dark teal — WCAG AA            */
+  border: 1px solid rgba(8, 145, 178, 0.28);
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.78rem;
@@ -198,26 +165,25 @@ select {
 }
 
 .tech-tag:hover {
-  background: rgba(79, 70, 229, 0.18);
-  border-color: rgba(79, 70, 229, 0.45);
-  color: #1e1b4b;
+  background: rgba(8, 145, 178, 0.18);
+  border-color: rgba(8, 145, 178, 0.45);
+  color: #083344;
 }
 
-/* ── Dark mode override ────────────────────────────────────────────────────
-   Bright indigo-200 text on a semi-transparent indigo surface.              */
+/* ── Dark mode ────────────────────────────────────────────────────────────── */
 [data-theme="dark"] .tech-tag {
-  background: rgba(129, 140, 248, 0.16);  /* indigo-400 tint                */
-  color: #e0e7ff;                          /* indigo-100 — bright on dark    */
-  border-color: rgba(129, 140, 248, 0.35);
+  background: rgba(0, 212, 255, 0.10);
+  color: #a5f3fc;                         /* Cyan-200 — bright on dark       */
+  border-color: rgba(0, 212, 255, 0.25);
 }
 
 [data-theme="dark"] .tech-tag:hover {
-  background: rgba(129, 140, 248, 0.28);
-  color: #f0f4ff;
-  border-color: rgba(129, 140, 248, 0.55);
+  background: rgba(0, 212, 255, 0.18);
+  color: #e0f9ff;
+  border-color: rgba(0, 212, 255, 0.50);
 }
 
-/* Larger variant used in Project Detail Modal */
+/* Larger variant — Project Detail Modal */
 .tech-tag-lg {
   padding: 0.5rem 1.1rem;
   font-size: 0.88rem;

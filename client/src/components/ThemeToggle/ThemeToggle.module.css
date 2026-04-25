@@ -25,11 +25,13 @@
 }
 
 .toggle:hover {
-  background: var(--bg-tertiary);
-  border-color: var(--accent);
-  color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-  transform: scale(1.05);
+  background: rgba(0, 212, 255, 0.08);
+  border-color: #00d4ff;
+  color: #00d4ff;
+  /* Vivid cyan ring + drop-shadow on the icon itself */
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.18);
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.55));
 }
 
 .toggle:active {
@@ -81,17 +83,17 @@
   transform: rotate(-90deg) scale(0.6);
 }
 
-/* ── Subtle idle animation on the visible icon ────────────── */
+/* ── Idle glow on the visible icon when toggle is hovered ─── */
 @keyframes gentle-pulse {
   0%,
   100% {
     filter: drop-shadow(0 0 0px transparent);
   }
   50% {
-    filter: drop-shadow(0 0 4px var(--accent-glow));
+    filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.70));
   }
 }
 
 .toggle:hover .visible {
-  animation: gentle-pulse 2s ease-in-out infinite;
+  animation: gentle-pulse 1.6s ease-in-out infinite;
 }

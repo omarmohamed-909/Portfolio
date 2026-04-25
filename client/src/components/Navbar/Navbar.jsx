@@ -35,7 +35,7 @@ const Navbar = () => {
         {/* Logo */}
         <div className={styles.logo}>
           <span className={styles.logoText}>
-            <a href={navItems[0].href}>My Portfolio</a>
+            <a href={navItems[0].href}>OMΛR</a>
           </span>
           <span className={styles.logoDot}>.</span>
         </div>
