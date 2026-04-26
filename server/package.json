@@ -5,9 +5,9 @@
   "type": "module",
   "packageManager": "npm@10.9.2",
   "scripts": {
-    "start-server": "node index.js",
-    "dev": "nodemon index.js"
-  },
+  "build": "cd server && npm install",
+  "start": "node index.js"
+},
   "keywords": [],
   "author": "Aziz Kammoun",
   "license": "ISC",
