@@ -3,17 +3,17 @@
 /* CSS Variables for consistent theming - inherited from DashboardHome */
 :root {
   /* Color Palette - Professional Dark Theme */
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #111827;
-  --bg-tertiary: #1f2937;
-  --bg-card: #1e293b;
-  --bg-hover: #334155;
-  --bg-active: #475569;
+  --bg-primary: #060b17;
+  --bg-secondary: #0b1120;
+  --bg-tertiary: #131c2d;
+  --bg-card: #0b1120;
+  --bg-hover: rgba(148, 163, 184, 0.08);
+  --bg-active: rgba(148, 163, 184, 0.18);
 
   /* Accent Colors */
-  --accent-primary: #3b82f6;
-  --accent-primary-hover: #2563eb;
-  --accent-secondary: #10b981;
+  --accent-primary: #00d4ff;
+  --accent-primary-hover: #61eaff;
+  --accent-secondary: #22d3ee;
   --accent-warning: #f59e0b;
   --accent-danger: #ef4444;
 
@@ -24,18 +24,15 @@
   --text-inverse: #1e293b;
 
   /* Border Colors */
-  --border-primary: #334155;
-  --border-secondary: #475569;
-  --border-accent: #3b82f6;
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.2);
+  --border-accent: #00d4ff;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 8px 24px rgba(2, 8, 20, 0.25);
+  --shadow-md: 0 14px 32px rgba(2, 8, 20, 0.34);
+  --shadow-lg: 0 20px 44px rgba(2, 8, 20, 0.42);
+  --shadow-xl: 0 28px 60px rgba(2, 8, 20, 0.55);
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -67,7 +64,7 @@
 .sectionHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: var(--spacing-xl);
   flex-wrap: wrap;
   gap: var(--spacing-md);
@@ -106,7 +103,7 @@
 }
 
 .messageAlert.success {
-  background-color: rgba(16, 185, 129, 0.1);
+  background-color: rgba(34, 211, 238, 0.1);
   border: 1px solid var(--accent-secondary);
   color: var(--accent-secondary);
 }
@@ -163,12 +160,13 @@
 
 /* Page Selector */
 .pageSelector {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-primary);
+  background: rgba(11, 17, 32, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
 }
 
 .pageSelector h3 {
@@ -192,8 +190,8 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md) var(--spacing-lg);
-  background-color: var(--bg-hover);
-  border: 1px solid var(--border-primary);
+  background-color: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
   cursor: pointer;
@@ -203,35 +201,32 @@
 }
 
 .pageOption:hover {
-  background-color: var(--bg-active);
-  border-color: var(--border-secondary);
+  background-color: rgba(148, 163, 184, 0.18);
+  border-color: rgba(255, 255, 255, 0.2);
   color: var(--text-primary);
-  transform: translateY(-1px);
 }
 
 .pageOption.active {
-  background: linear-gradient(
-    135deg,
-    var(--accent-primary),
-    var(--accent-primary-hover)
-  );
-  border-color: var(--accent-primary);
-  color: white;
-  box-shadow: var(--shadow-md);
+  background: rgba(0, 212, 255, 0.14);
+  border-color: rgba(0, 212, 255, 0.7);
+  color: #d8f8ff;
+  box-shadow: 0 10px 24px rgba(0, 212, 255, 0.16);
 }
 
 .pageOption.active:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--accent-primary);
+  box-shadow: 0 12px 28px rgba(0, 212, 255, 0.22);
 }
 
 /* Form Container */
 .formContainer {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-primary);
+  background: rgba(11, 17, 32, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
 }
 
 /* Form Styles */
@@ -246,14 +241,14 @@
   flex-direction: column;
   gap: var(--spacing-md);
   padding: var(--spacing-lg);
-  background-color: var(--bg-hover);
+  background-color: rgba(15, 23, 42, 0.78);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-primary);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: var(--transition-fast);
 }
 
 .formSection:hover {
-  border-color: var(--border-secondary);
+  border-color: rgba(255, 255, 255, 0.16);
   box-shadow: var(--shadow-sm);
 }
 
@@ -288,7 +283,7 @@
 .formGroup textarea,
 .formGroup select {
   background-color: var(--bg-secondary);
-  border: 1px solid var(--border-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
   padding: var(--spacing-md);
   color: var(--text-primary);
@@ -304,7 +299,8 @@
 .formGroup select:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.35),
+    0 0 18px rgba(0, 212, 255, 0.2);
   background-color: var(--bg-tertiary);
 }
 
@@ -341,12 +337,8 @@
 
 /* Button Styles */
 .btnPrimary {
-  background: linear-gradient(
-    135deg,
-    var(--accent-primary),
-    var(--accent-primary-hover)
-  );
-  color: white;
+  background: linear-gradient(135deg, var(--accent-primary), #00a7cb);
+  color: #041622;
   border: none;
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-md);
@@ -361,7 +353,7 @@
 
 .btnPrimary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 10px 26px rgba(0, 212, 255, 0.3);
 }
 
 .btnPrimary:disabled {
@@ -397,8 +389,9 @@
   }
 
   .sectionHeader {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
     gap: var(--spacing-md);
   }
 
@@ -427,10 +420,6 @@
 @media (max-width: 480px) {
   .seoSection {
     padding: var(--spacing-sm);
-  }
-
-  .sectionHeader h2 {
-    font-size: 1.5rem;
   }
 
   .pageSelector h3 {
@@ -489,12 +478,6 @@
   content: " (" attr(value) "/" attr(maxlength) ")";
   color: var(--text-muted);
   font-weight: normal;
-}
-
-/* Success state for valid inputs */
-.formGroup input:valid:not(:placeholder-shown),
-.formGroup textarea:valid:not(:placeholder-shown) {
-  border-color: var(--accent-secondary);
 }
 
 /* Form Grid Layout */

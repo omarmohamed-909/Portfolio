@@ -1699,7 +1699,7 @@ Available for iOS and Android platforms.`,
                         style={{
                           display: "block",
                           marginTop: "4px",
-                          color: "#10b981",
+                          color: "#22d3ee",
                         }}
                       >
                         Available positions: {positionSuggestions.join(", ")}
@@ -1889,7 +1889,7 @@ Available for iOS and Android platforms.`,
                         style={{
                           display: "block",
                           marginTop: "4px",
-                          color: "#10b981",
+                          color: "#22d3ee",
                         }}
                       >
                         Available featured positions:{" "}
@@ -1993,7 +1993,6 @@ Available for iOS and Android platforms.`,
       )}
 
       <div className={styles.sectionHeader}>
-        <h2>Projects</h2>
         <button
           className={styles.btnPrimary}
           onClick={() => openSlidePanel("addProject", null, "Add New Project")}

@@ -432,9 +432,6 @@ const DashboardAbout = () => {
   if (loading) {
     return (
       <div className={styles.aboutSection}>
-        <div className={styles.sectionHeader}>
-          <h2>About Section</h2>
-        </div>
         <div className={styles.loadingState}>
           <p>Loading about data...</p>
         </div>
@@ -648,7 +645,6 @@ const DashboardAbout = () => {
   return (
     <div className={styles.aboutSection}>
       <div className={styles.sectionHeader}>
-        <h2>About Section</h2>
         {error && <div className={styles.errorMessage}>{error}</div>}
         <button
           className={styles.btnPrimary}

@@ -239,10 +239,6 @@ const DashboardCV = () => {
 
   return (
     <div className={styles.cvSection}>
-      <div className={styles.sectionHeader}>
-        <h2>CV/Resume</h2>
-      </div>
-
       {/* Loading Indicator */}
       {loading && (
         <div className={styles.loadingContainer}>

@@ -405,9 +405,6 @@ const DashboardHome = () => {
   if (loading) {
     return (
       <div className={styles.homeSection}>
-        <div className={styles.sectionHeader}>
-          <h2>Home Section</h2>
-        </div>
         <div className={styles.loadingState}>
           <p>Loading home data...</p>
         </div>
@@ -634,7 +631,6 @@ const DashboardHome = () => {
   return (
     <div className={styles.homeSection}>
       <div className={styles.sectionHeader}>
-        <h2>Home Section</h2>
         {error && <div className={styles.errorMessage}>{error}</div>}
         <button
           className={styles.btnPrimary}

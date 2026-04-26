@@ -3,17 +3,17 @@
 /* CSS Variables for consistent theming */
 :root {
   /* Color Palette - Professional Dark Theme */
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #111827;
-  --bg-tertiary: #1f2937;
-  --bg-card: #1e293b;
-  --bg-hover: #334155;
-  --bg-active: #475569;
+  --bg-primary: #060b17;
+  --bg-secondary: #0b1120;
+  --bg-tertiary: #131c2d;
+  --bg-card: #0b1120;
+  --bg-hover: rgba(148, 163, 184, 0.12);
+  --bg-active: rgba(0, 212, 255, 0.14);
 
   /* Accent Colors */
-  --accent-primary: #3b82f6;
-  --accent-primary-hover: #2563eb;
-  --accent-secondary: #10b981;
+  --accent-primary: #00d4ff;
+  --accent-primary-hover: #61eaff;
+  --accent-secondary: #22d3ee;
   --accent-warning: #f59e0b;
   --accent-danger: #ef4444;
 
@@ -24,9 +24,9 @@
   --text-inverse: #1e293b;
 
   /* Border Colors */
-  --border-primary: #334155;
-  --border-secondary: #475569;
-  --border-accent: #3b82f6;
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.2);
+  --border-accent: #00d4ff;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -99,7 +99,7 @@ body {
 
 /* Top Bar */
 .topBar {
-  background-color: var(--bg-secondary);
+  background-color: rgba(11, 17, 32, 0.88);
   border-bottom: 1px solid var(--border-primary);
   padding: var(--spacing-lg) var(--spacing-xl);
   display: flex;
@@ -110,6 +110,7 @@ body {
   z-index: 100;
   backdrop-filter: blur(20px);
   height: 80px;
+  box-shadow: 0 8px 24px rgba(2, 8, 20, 0.35);
 }
 
 .topBarLeft {

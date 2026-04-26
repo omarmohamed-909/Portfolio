@@ -405,7 +405,6 @@ const DashboardSkills = () => {
   return (
     <div className={styles.skillsSection}>
       <div className={styles.sectionHeader}>
-        <h2>Skills</h2>
         <button
           className={styles.btnPrimary}
           onClick={() => openSlidePanel("addSkill", null, "Add New Skill")}

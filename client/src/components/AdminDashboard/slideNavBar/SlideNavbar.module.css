@@ -3,17 +3,17 @@
 /* CSS Variables for consistent theming */
 :root {
   /* Color Palette - Professional Dark Theme */
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #111827;
-  --bg-tertiary: #1f2937;
-  --bg-card: #1e293b;
-  --bg-hover: #334155;
-  --bg-active: #475569;
+  --bg-primary: #060b17;
+  --bg-secondary: #0b1120;
+  --bg-tertiary: #131c2d;
+  --bg-card: #0b1120;
+  --bg-hover: rgba(148, 163, 184, 0.12);
+  --bg-active: rgba(0, 212, 255, 0.14);
 
   /* Accent Colors */
-  --accent-primary: #3b82f6;
-  --accent-primary-hover: #2563eb;
-  --accent-secondary: #10b981;
+  --accent-primary: #00d4ff;
+  --accent-primary-hover: #61eaff;
+  --accent-secondary: #22d3ee;
   --accent-warning: #f59e0b;
   --accent-danger: #ef4444;
 
@@ -24,9 +24,9 @@
   --text-inverse: #1e293b;
 
   /* Border Colors */
-  --border-primary: #334155;
-  --border-secondary: #475569;
-  --border-accent: #3b82f6;
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.2);
+  --border-accent: #00d4ff;
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -51,7 +51,7 @@
 /* Sidebar */
 .sidebar {
   width: 280px;
-  background-color: var(--bg-secondary);
+  background-color: rgba(11, 17, 32, 0.94);
   border-right: 1px solid var(--border-primary);
   display: flex;
   flex-direction: column;
@@ -61,6 +61,7 @@
   z-index: 1000;
   top: 0;
   left: 0;
+  backdrop-filter: blur(14px);
 }
 
 .sidebar.collapsed {
@@ -153,7 +154,7 @@
   /* Critical for mobile interaction */
   pointer-events: auto;
   touch-action: manipulation;
-  -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+  -webkit-tap-highlight-color: rgba(0, 212, 255, 0.14);
   min-height: 44px; /* Ensure minimum touch target size */
   user-select: none;
   -webkit-user-select: none;
@@ -172,8 +173,8 @@
 }
 
 .navItem.active {
-  background-color: var(--bg-active);
-  color: var(--accent-primary);
+  background-color: rgba(0, 212, 255, 0.14);
+  color: #c8f7ff;
 }
 
 .navItem.active::before {

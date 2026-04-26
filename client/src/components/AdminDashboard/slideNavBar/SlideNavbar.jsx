@@ -64,7 +64,7 @@ const SlideNavbar = ({
 
   // Navigation sections
   const sections = [
-    { id: "seo", label: "SEO Section", icon: Search },
+    { id: "seo", label: "SEO", icon: Search },
     { id: "home", label: "Home", icon: Home },
     { id: "about", label: "About", icon: User },
     { id: "projects", label: "Projects", icon: Briefcase },
@@ -124,7 +124,7 @@ const SlideNavbar = ({
                 cursor: "pointer",
                 userSelect: "none",
                 WebkitUserSelect: "none",
-                WebkitTapHighlightColor: "rgba(59, 130, 246, 0.2)",
+                WebkitTapHighlightColor: "rgba(0, 212, 255, 0.25)",
                 touchAction: "manipulation",
                 position: "relative",
                 zIndex: 10,
@@ -159,7 +159,7 @@ const SlideNavbar = ({
             cursor: "pointer",
             userSelect: "none",
             WebkitUserSelect: "none",
-            WebkitTapHighlightColor: "rgba(59, 130, 246, 0.2)",
+            WebkitTapHighlightColor: "rgba(0, 212, 255, 0.25)",
             touchAction: "manipulation",
             position: "relative",
             zIndex: 10,
