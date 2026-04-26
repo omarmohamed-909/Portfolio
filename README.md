@@ -8,7 +8,7 @@ Here's a quick preview of my dynamic portfolio in action:
 
 | Main Portfolio Page                                          | Admin Dashboard                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------------- |
-| <img src="main.png" alt="Main Page Screenshot" width="400"/> | <img src="admin.png" alt="Admin Dashboard Screenshot" width="400"/> |
+| <img src="main.png" alt="Main Page Screenshot" width="400"/> | <img src="admin2.png" alt="Admin Dashboard Screenshot" width="400"/> |
 
 
 ## Table of Contents
