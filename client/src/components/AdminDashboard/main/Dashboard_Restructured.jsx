@@ -165,7 +165,7 @@ const Dashboard = () => {
   // Get section title
   const getSectionTitle = (sectionId) => {
     const sections = {
-      seo: "SEO Section",
+      seo: "SEO",
       home: "Home",
       about: "About",
       projects: "Projects",

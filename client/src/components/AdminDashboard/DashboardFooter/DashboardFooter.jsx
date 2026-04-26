@@ -658,10 +658,6 @@ const DashboardFooter = () => {
 
   return (
     <div className={styles.footerSection}>
-      <div className={styles.sectionHeader}>
-        <h2>Footer Section</h2>
-      </div>
-
       <div className={styles.grid}>
         {/* Contact Information Card */}
         <div className={styles.card}>

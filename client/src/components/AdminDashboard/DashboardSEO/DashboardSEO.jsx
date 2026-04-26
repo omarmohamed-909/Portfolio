@@ -507,9 +507,6 @@ const DashboardSEO = () => {
   if (loading) {
     return (
       <div className={styles.seoSection}>
-        <div className={styles.sectionHeader}>
-          <h2>SEO Section</h2>
-        </div>
         <div className={styles.loadingState}>
           <p>Loading SEO data...</p>
         </div>
@@ -933,7 +930,6 @@ const DashboardSEO = () => {
   return (
     <div className={styles.seoSection}>
       <div className={styles.sectionHeader}>
-        <h2>SEO Section</h2>
         <button
           className={`${styles.btnPrimary} ${styles.desktopSaveBtn}`}
           onClick={handleSave}
