@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "npm@10.9.2",
   "scripts": {
-    "build": "echo 'Backend only'",
+    "build": "cd server && npm install",
     "start": "node index.js"
   },
   "dependencies": {
