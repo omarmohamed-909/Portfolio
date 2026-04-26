@@ -26,7 +26,7 @@ export default defineConfig({
     port: process.env.PORT || 3000,
   },
   build: {
-    outDir: "dist/client",
+    outDir: "dist",
     sourcemap: false, // Disable sourcemap to avoid tailwind warnings
     target: "esnext",
     rollupOptions: {
