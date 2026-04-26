@@ -106,8 +106,8 @@ const Footer = () => {
       text: "contact@portfolio.com",
       href: "mailto:contact@portfolio.com",
     },
-    { icon: Phone, text: "+216 1234567", href: "tel:+21651234567" },
-    { icon: MapPin, text: "Tunisia, Tn", href: "#" },
+    { icon: Phone, text: "+201123456789", href: "tel:+201123456789" },
+    { icon: MapPin, text: "EGYPT, EG", href: "#" },
   ];
 
   // Get dynamic data or fallback to static
@@ -116,8 +116,8 @@ const Footer = () => {
     FooterDescription:
       "Crafting digital experiences with passion and precision. Let's build something amazing together.",
     OwnerEmail: "contact@portfolio.com",
-    OwnerPhone: "+216 1234567",
-    OwnerAddress: "Tunisia, Tn",
+    OwnerPhone: "+201123456789",
+    OwnerAddress: "EGYPT, EG",
   };
 
   const socialLinks =
