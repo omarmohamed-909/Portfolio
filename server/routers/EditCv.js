@@ -1,8 +1,6 @@
 import express from "express";
 import isAdminLogged from "../middlewares/isAdminLogged.js";
-import mongoose from "mongoose";
-import { upload } from "../controllers/storage.js";
-import { access, unlink } from "fs/promises";
+import { removeCloudinaryAsset, upload } from "../controllers/storage.js";
 import Cv from "../models/CvSchema.js";
 import CvFolder from "../middlewares/CvFolder.js";
 const Router = express.Router();
@@ -13,17 +11,14 @@ Router.post(
   upload.single("cv"),
   async (req, res) => {
     try {
-      if (!req.file?.filename) {
+      if (!req.file?.path) {
         return res.status(400).json({ message: "Pdf Required" });
       }
 
-      const cv = req.file?.filename;
+      const cv = req.file?.path;
       const IsExistCv = await Cv.findOne();
       if (IsExistCv) {
-        const path = process.cwd();
-        const DeleteCv = `${path}` + `/uploads/mycv/` + `${cv}`;
-        await access(DeleteCv);
-        await unlink(DeleteCv);
+        await removeCloudinaryAsset(cv);
         return res.status(400).json({
           message: "You Need To delete Old Cv Pdf And thean Add The new",
         });
@@ -47,11 +42,8 @@ Router.delete("/cv/delete/", isAdminLogged, async (req, res) => {
     if (!IsExistCv) {
       return res.status(404).json({ message: "Cv Not Found" });
     }
-    const CvPdt = IsExistCv.Cv;
-    const path = process.cwd();
-    const DeleteCv = `${path}` + `/uploads/mycv/` + `${CvPdt}`;
-    await access(DeleteCv);
-    await unlink(DeleteCv);
+    await removeCloudinaryAsset(IsExistCv.Cv);
+
     const deleteCv = await Cv.findByIdAndDelete(IsExistCv._id);
     if (!deleteCv) {
       return res.status(400).json({ message: "something Wrong" });

@@ -5,6 +5,17 @@ import { Upload, Download, Eye, FileText, X, Loader } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
+import { resolveAssetUrl } from "../../../lib/assetUrl.js";
+
+const getCvDisplayName = (cvValue) => {
+  if (!cvValue || typeof cvValue !== "string") {
+    return "cv.pdf";
+  }
+
+  const normalized = cvValue.split("?")[0];
+  const fileName = normalized.split("/").pop() || "cv.pdf";
+  return fileName;
+};
 
 const DashboardCV = () => {
   //Authentication check
@@ -64,14 +75,17 @@ const DashboardCV = () => {
 
       if (response.data.FindCv) {
         const cvData = response.data.FindCv;
-        const downloadUrl = `${Backend_Root_Url}/uploads/mycv/${cvData.Cv}`;
+        const downloadUrl = resolveAssetUrl(
+          cvData.Cv,
+          `${Backend_Root_Url}/uploads/mycv/`
+        );
 
         setCvData({
-          cvFile: { name: cvData.Cv, size: 0 }, // We don't have size info from API
+          cvFile: { name: getCvDisplayName(cvData.Cv), size: 0 }, // We don't have size info from API
           cvPreview: null,
           downloadUrl: downloadUrl,
           cvId: cvData._id,
-          cvFilename: cvData.Cv,
+          cvFilename: getCvDisplayName(cvData.Cv),
         });
       } else {
         // No CV found but response was successful

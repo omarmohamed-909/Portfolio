@@ -12,6 +12,7 @@ import DashboardFooter from "../DashboardFooter/DashboardFooter";
 import { Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
+import { resolveAssetUrl } from "../../../lib/assetUrl.js";
 import "../../../../src/App.css";
 
 import axios from "axios";
@@ -138,7 +139,10 @@ const Dashboard = () => {
           <div className={styles.userAvatar}>
             {userData?.HomeLogo ? (
               <img
-                src={`${Backend_Root_Url}/uploads/logo/${userData.HomeLogo}`}
+                src={resolveAssetUrl(
+                  userData.HomeLogo,
+                  `${Backend_Root_Url}/uploads/logo/`
+                )}
                 alt="User Avatar"
                 className={styles.avatarImage}
                 onError={(e) => {

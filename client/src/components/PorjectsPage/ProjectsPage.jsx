@@ -6,6 +6,7 @@ import styles from "./ProjectsPage.module.css";
 import { Eye, ExternalLink, ImageOff } from "lucide-react";
 import axios from "axios";
 import { Backend_Root_Url } from "../../config/AdminUrl.js";
+import { resolveAssetUrl } from "../../lib/assetUrl.js";
 import "../../App.css";
 
 const ProjectsPage = () => {
@@ -49,9 +50,8 @@ const ProjectsPage = () => {
           description: project.Description,
           shortDescription: project.ShortDescription,
           image:
-            project.Image === "Nothing"
-              ? null
-              : `${Backend_Root_Url}/uploads/projectsimg/${project.Image}`,
+            resolveAssetUrl(project.Image, `${Backend_Root_Url}/uploads/projectsimg/`) ||
+            null,
           technologies: project.Project_technologies || [],
           category: "Project",
           status: project.Porject_Status,

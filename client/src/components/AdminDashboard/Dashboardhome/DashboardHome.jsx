@@ -5,6 +5,7 @@ import { Plus, Edit3, Trash2, Upload, Save, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
+import { resolveAssetUrl } from "../../../lib/assetUrl.js";
 
 const DashboardHome = () => {
   //Authentication check
@@ -61,9 +62,9 @@ const DashboardHome = () => {
 
   // Safe data extraction with fallbacks
   const statsArray = MainHomeData?.Stats || [];
-  const HomeLogoImg = MainHomeData?.HomeLogo
-    ? `${Backend_Root_Url}/uploads/logo/${MainHomeData.HomeLogo}`
-    : null;
+  const HomeLogoImg =
+    resolveAssetUrl(MainHomeData?.HomeLogo, `${Backend_Root_Url}/uploads/logo/`) ||
+    null;
 
   const GetRoles = MainHomeData?.MainRoles
     ? Array.isArray(MainHomeData.MainRoles)

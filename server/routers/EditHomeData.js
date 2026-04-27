@@ -1,8 +1,7 @@
 import express from "express";
 import HomeData from "../models/HomeDataSchema.js";
-import { upload } from "../controllers/storage.js";
+import { removeCloudinaryAsset, upload } from "../controllers/storage.js";
 import HomeLogoFolder from "../middlewares/HomeLogo.js";
-import { access, unlink } from "fs/promises";
 import isAdminLogged from "../middlewares/isAdminLogged.js";
 import validateEditHomeData from "../middlewares/EditHomeDataValidation.js";
 import Stats from "../models/StatsSchema.js";
@@ -18,7 +17,7 @@ Router.put(
   upload.single("image"),
   async (req, res) => {
     try {
-      const image = req.file?.filename;
+      const image = req.file?.path;
       if (!image) {
         return res.status(400).json({ error: "Image file is required" });
       }
@@ -37,20 +36,14 @@ Router.put(
       // Only try to delete old logo if it exists and is valid
       if (
         DefaultHomeLogo.HomeLogo &&
-        DefaultHomeLogo.HomeLogo !== "undefined"
+        DefaultHomeLogo.HomeLogo !== "undefined" &&
+        DefaultHomeLogo.HomeLogo !== "Nothing"
       ) {
-        const PROJECT_ROOT = process.cwd();
-        const OldLogo = `${PROJECT_ROOT}/uploads/${req.query.folder}/${DefaultHomeLogo.HomeLogo}`;
-
         try {
-          await access(OldLogo); // This throws if file doesn't exist
-          await unlink(OldLogo); // Delete the file
+          await removeCloudinaryAsset(DefaultHomeLogo.HomeLogo);
         } catch (error) {
-          if (error.code === "ENOENT") {
-          } else {
-            console.error("Error deleting old logo:", error);
-            // Don't return error here, continue with update
-          }
+          console.error("Error deleting old logo from Cloudinary:", error);
+          // Don't return error here, continue with update
         }
       }
 

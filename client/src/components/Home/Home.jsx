@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import ProjectDetailModal from "../PorjectsPage/ProjectDetailModal";
 import "../../App.css";
 import { Backend_Root_Url } from "../../config/AdminUrl.js";
+import { resolveAssetUrl } from "../../lib/assetUrl.js";
 import {
   ArrowRight,
   Download,
@@ -61,14 +62,10 @@ const getProjectImageSrc = (imageName) => {
     return null;
   }
 
-  if (
-    typeof imageName === "string" &&
-    (imageName.startsWith("http://") || imageName.startsWith("https://"))
-  ) {
-    return imageName;
-  }
-
-  return `${Backend_Root_Url}/uploads/projectsimg/${imageName}`;
+  return (
+    resolveAssetUrl(imageName, `${Backend_Root_Url}/uploads/projectsimg/`) ||
+    null
+  );
 };
 
 const Home = () => {
@@ -227,9 +224,13 @@ const Home = () => {
     };
   }, []);
 
-  const GetRoles = MainHomeData?.MainRoles
-    ? Object.values(MainHomeData.MainRoles)
-    : [];
+  const GetRoles = useMemo(() => {
+    if (!MainHomeData?.MainRoles) {
+      return [];
+    }
+
+    return Object.values(MainHomeData.MainRoles);
+  }, [MainHomeData?.MainRoles]);
 
   useEffect(() => {
     if (!GetRoles || GetRoles.length === 0 || loading) return;
@@ -262,29 +263,32 @@ const Home = () => {
   const handleDownloadCV = async () => {
     if (cvData?.FindCv?.Cv) {
       setIsDownloading(true);
+      const cvUrl = resolveAssetUrl(
+        cvData.FindCv.Cv,
+        `${Backend_Root_Url}/uploads/mycv/`
+      );
+
+      if (!cvUrl) {
+        setIsDownloading(false);
+        return;
+      }
+
       try {
-        const cvUrl = `${Backend_Root_Url}/uploads/mycv/${cvData.FindCv.Cv}`;
+        const response = await fetch(cvUrl);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
 
         const link = document.createElement("a");
+        link.href = url;
         link.download = `${MainHomeData?.DisplayName || "CV"}.pdf`;
-
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        const response = await fetch(cvUrl);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        link.href = url;
-        link.download = `${MainHomeData?.DisplayName || "CV"}.pdf`;
-        link.click();
         window.URL.revokeObjectURL(url);
       } catch (error) {
         console.error("Error downloading CV:", error);
-        window.open(
-          `${Backend_Root_Url}/uploads/mycv/${cvData.FindCv.Cv}`,
-          "_blank"
-        );
+        window.open(cvUrl, "_blank");
       } finally {
         setIsDownloading(false);
       }
@@ -360,8 +364,10 @@ const Home = () => {
       slideImage: "default-icon.png",
     },
   ];
-  const SlidesIconsDir = `${Backend_Root_Url}/uploads/aboutimg/`;
-  const HomeLogo = `${Backend_Root_Url}/uploads/logo/` + MainHomeData?.HomeLogo;
+  const HomeLogo = resolveAssetUrl(
+    MainHomeData?.HomeLogo,
+    `${Backend_Root_Url}/uploads/logo/`
+  );
 
   return (
     <div className={styles.home} id="home">
@@ -494,7 +500,10 @@ const Home = () => {
 
               <div className={styles.services}>
                 {SlidesData.map((AboutUsSlide, index) => {
-                  const SlideIcon = SlidesIconsDir + AboutUsSlide.slideImage;
+                  const SlideIcon = resolveAssetUrl(
+                    AboutUsSlide.slideImage,
+                    `${Backend_Root_Url}/uploads/aboutimg/`
+                  );
                   return (
                     <div key={index} className={styles.serviceItem}>
                       <div className={styles.serviceIcon}>

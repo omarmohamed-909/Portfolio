@@ -3,9 +3,8 @@ const Router = express.Router();
 import Project from "../models/ProjectSchema.js";
 import validateProjectInput from "../middlewares/validateProjectInput.js";
 import isAdminLogged from "../middlewares/isAdminLogged.js";
-import { upload } from "../controllers/storage.js";
+import { removeCloudinaryAsset, upload } from "../controllers/storage.js";
 import PorjectsLogoFolderValidation from "../middlewares/ProjectsLogos.js";
-import { access, unlink } from "fs/promises";
 import mongoose from "mongoose";
 
 const ALLOWED_PROJECT_UPDATE_FIELDS = new Set([
@@ -33,7 +32,7 @@ Router.post(
         Title: req.body.Title,
         ShortDescription: req.body.ShortDescription,
         Description: req.body.Description,
-        Image: req.file?.filename,
+        Image: req.file?.path,
         ProjectLiveUrl: req.body.ProjectLiveUrl,
         Project_technologies: req.body.Project_technologies,
         Porject_Status: req.body.Porject_Status,
@@ -65,11 +64,7 @@ Router.delete("/projects/delete/:id", isAdminLogged, async (req, res) => {
 
     if (FindProject.Image != "Nothing") {
       try {
-        const path = process.cwd();
-        const DeleteImage =
-          `${path}` + `/uploads/projectsimg/` + `${FindProject.Image}`;
-        await access(DeleteImage);
-        await unlink(DeleteImage);
+        await removeCloudinaryAsset(FindProject.Image);
         console.log("Old Project image Removed");
       } catch (err) {
         console.log("I Cant Remove Old Project image");
@@ -93,7 +88,7 @@ Router.put(
   async (req, res) => {
     try {
       const id = req.params.id;
-      const image = req.file?.filename;
+      const image = req.file?.path;
 
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid ID format" });
@@ -167,11 +162,7 @@ Router.put(
       if (image) {
         NewData.Image = image;
         try {
-          const path = process.cwd();
-          const DeleteImage =
-            `${path}` + `/uploads/projectsimg/` + `${FindProject.Image}`;
-          await access(DeleteImage);
-          await unlink(DeleteImage);
+          await removeCloudinaryAsset(FindProject.Image);
           console.log("Old Project Icon Removed");
         } catch (err) {
           console.log("I Cant Remove Old Project Icon");
@@ -239,11 +230,7 @@ Router.put("/projects/image/remove/:id", isAdminLogged, async (req, res) => {
     }
 
     try {
-      const path = process.cwd();
-      const DeleteImage =
-        `${path}` + `/uploads/projectsimg/` + `${FindProject.Image}`;
-      await access(DeleteImage);
-      await unlink(DeleteImage);
+      await removeCloudinaryAsset(FindProject.Image);
       console.log("Old Project Icon Removed");
     } catch (err) {}
 

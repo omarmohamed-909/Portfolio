@@ -5,6 +5,7 @@ import { Plus, Edit3, Trash2, Upload, Save, X, Image } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
+import { resolveAssetUrl } from "../../../lib/assetUrl.js";
 
 const DashboardAbout = () => {
   //Authentication check
@@ -599,7 +600,10 @@ const DashboardAbout = () => {
                   ) : formData.slideImage && type === "editSlide" ? (
                     <div className={styles.imagePreview}>
                       <img
-                        src={`${Backend_Root_Url}/uploads/aboutimg/${formData.slideImage}`}
+                        src={resolveAssetUrl(
+                          formData.slideImage,
+                          `${Backend_Root_Url}/uploads/aboutimg/`
+                        )}
                         alt="Current slide"
                       />
                     </div>
@@ -698,7 +702,10 @@ const DashboardAbout = () => {
                   <div className={styles.slideImage}>
                     {slide.slideImage ? (
                       <img
-                        src={`${Backend_Root_Url}/uploads/aboutimg/${slide.slideImage}`}
+                        src={resolveAssetUrl(
+                          slide.slideImage,
+                          `${Backend_Root_Url}/uploads/aboutimg/`
+                        )}
                         alt={slide.slideTitle}
                       />
                     ) : (

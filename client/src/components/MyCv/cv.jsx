@@ -3,6 +3,7 @@ import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import { Backend_Root_Url } from "../../config/AdminUrl.js";
+import { resolveAssetUrl } from "../../lib/assetUrl.js";
 import {
   Download,
   FileText,
@@ -12,6 +13,18 @@ import {
 } from "lucide-react";
 import styles from "./cv.module.css";
 import "../../../src/App.css";
+
+const getCvDownloadName = (cvValue) => {
+  if (!cvValue || typeof cvValue !== "string") {
+    return "cv.pdf";
+  }
+
+  const normalized = cvValue.split("?")[0];
+  const lastSegment = normalized.split("/").pop() || "cv.pdf";
+  return lastSegment.toLowerCase().endsWith(".pdf")
+    ? lastSegment
+    : `${lastSegment}.pdf`;
+};
 
 const CV = () => {
   const [cvData, setCvData] = useState(null);
@@ -33,7 +46,10 @@ const CV = () => {
         const response = await axios.get(`${Backend_Root_Url}/api/show/cv/`);
         if (response.data && response.data.FindCv) {
           setCvData(response.data.FindCv);
-          const pdfPath = `${Backend_Root_Url}/uploads/mycv/${response.data.FindCv.Cv}`;
+          const pdfPath = resolveAssetUrl(
+            response.data.FindCv.Cv,
+            `${Backend_Root_Url}/uploads/mycv/`
+          );
           setPdfUrl(pdfPath);
         } else {
           setNoCvFound(true);
@@ -52,16 +68,19 @@ const CV = () => {
 
   const handleDownload = async () => {
     if (!cvData?.Cv) return;
+
+    const cvUrl = resolveAssetUrl(cvData.Cv, `${Backend_Root_Url}/uploads/mycv/`);
+    if (!cvUrl) return;
+
+    const downloadName = getCvDownloadName(cvData.Cv);
+
     try {
-      const res = await axios.get(
-        `${Backend_Root_Url}/uploads/mycv/${cvData.Cv}`,
-        { responseType: "blob" }
-      );
+      const res = await axios.get(cvUrl, { responseType: "blob" });
       const blob = new Blob([res.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = cvData.Cv;
+      a.download = downloadName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -69,8 +88,8 @@ const CV = () => {
     } catch (err) {
       console.error("Download failed, falling back to direct link", err);
       const link = document.createElement("a");
-      link.href = `${Backend_Root_Url}/uploads/mycv/${cvData.Cv}`;
-      link.download = cvData.Cv;
+      link.href = cvUrl;
+      link.download = downloadName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

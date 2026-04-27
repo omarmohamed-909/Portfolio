@@ -10,6 +10,7 @@ import { verifyJWTToken } from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
+import { resolveAssetUrl } from "../../../lib/assetUrl.js";
 
 import {
   Plus,
@@ -658,9 +659,8 @@ Available for iOS and Android platforms.`,
         shortDescription: project.ShortDescription,
         description: project.Description,
         imageUrl:
-          project.Image && project.Image !== "Nothing"
-            ? `${Backend_Root_Url}/uploads/projectsimg/${project.Image}`
-            : "",
+          resolveAssetUrl(project.Image, `${Backend_Root_Url}/uploads/projectsimg/`) ||
+          "",
         imageFile: null,
         technoligue: Array.isArray(project.Project_technologies)
           ? project.Project_technologies

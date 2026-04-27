@@ -4,23 +4,19 @@ import aboutUsShema from "../models/AboutUsSchema.js";
 import AboutUsSlides from "../models/AboutUsSlidesSchema.js";
 import isAdminLogged from "../middlewares/isAdminLogged.js";
 import validateAboutData from "../middlewares/EditAboutValidation.js";
-import { upload } from "../controllers/storage.js";
+import { removeCloudinaryAsset, upload } from "../controllers/storage.js";
 import SlidesLogoFolderValidation from "../middlewares/SlidesLogo.js";
 import mongoose from "mongoose";
-import { access, unlink } from "fs/promises";
 
-async function removeAboutSlideImage(filename) {
-  if (!filename) {
+async function removeAboutSlideImage(imageUrl) {
+  if (!imageUrl) {
     return;
   }
 
-  const filePath = `${process.cwd()}/uploads/aboutimg/${filename}`;
   try {
-    await unlink(filePath);
+    await removeCloudinaryAsset(imageUrl);
   } catch (error) {
-    if (error.code !== "ENOENT") {
-      console.error("Failed to remove uploaded slide image:", error);
-    }
+    console.error("Failed to remove uploaded slide image from Cloudinary:", error);
   }
 }
 
@@ -31,8 +27,8 @@ Router.post(
   upload.single("image"),
   async (req, res) => {
     try {
-      const slideImage = req.file?.filename;
-      if (!req.file?.filename) {
+      const slideImage = req.file?.path;
+      if (!slideImage) {
         return res.status(400).json({ message: "Image/Logo Required" });
       }
 
@@ -103,17 +99,7 @@ Router.delete(
         });
       }
 
-      try {
-        const findImg = await AboutUsSlides.findById(id);
-        const path = process.cwd();
-        const DeleteImage =
-          `${path}` + `/uploads/aboutimg/` + `${findImg.slideImage}`;
-        await access(DeleteImage);
-        await unlink(DeleteImage);
-        console.log("Old slideImage Removed");
-      } catch (err) {
-        console.log("I Cant Remove Old slide Image");
-      }
+      await removeAboutSlideImage(FindSlide.slideImage);
 
       FetchAboutSlides.AboutUsSlides.pull(FindSlide._id);
 
@@ -146,7 +132,7 @@ Router.put(
   async (req, res) => {
     try {
       const id = req.params.id;
-      const image = req.file?.filename;
+      const image = req.file?.path;
 
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid ID format" });
@@ -163,16 +149,7 @@ Router.put(
 
       if (image) {
         NewData.slideImage = image;
-        try {
-          const path = process.cwd();
-          const DeleteImage =
-            `${path}` + `/uploads/aboutimg/` + `${FindSlide.slideImage}`;
-          await access(DeleteImage);
-          await unlink(DeleteImage);
-          console.log("Old Slide Icon Removed");
-        } catch (err) {
-          console.log("I Cant Remove Old Slide Icon");
-        }
+        await removeAboutSlideImage(FindSlide.slideImage);
       }
 
       const UpdateSlide = await AboutUsSlides.findByIdAndUpdate(
