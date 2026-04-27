@@ -83,7 +83,7 @@ const SEOManager = () => {
         const pageData = await pageResponse.json();
 
         // Update document title
-        document.title = pageData.Title || "Portfolio - Aziz Kammoun";
+        document.title = pageData.Title || "Portfolio";
 
         // Helper function to update or create meta tags
         const updateMetaTag = (selector, attribute, value) => {
