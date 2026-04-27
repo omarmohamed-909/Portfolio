@@ -2,16 +2,20 @@ import express from "express";
 import { Resend } from "resend";
 import dotenv from "dotenv";
 import { readFile } from "fs/promises";
-import path from "path";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url"; // استدعاء مهم عشان المسار
 import HomeData from "../models/HomeDataSchema.js";
 import contactLimiter from "../middlewares/RateLimit.js";
 dotenv.config();
 
 const Router = express.Router();
 const resend = new Resend(process.env.RESEND_API || "missing-api-key");
-
 const AdminMail = process.env.ADMIN_MAIL;
 let cachedEmailTemplate = null;
+
+// تجهيز متغيرات المسار (الـ Fix بتاعك 🎯)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 function escapeHtml(value) {
   return String(value)
@@ -27,10 +31,12 @@ async function readEmailTemplate() {
     return cachedEmailTemplate;
   }
 
+  // استخدام المسار الدقيق
   const templatePath = path.join(
-    process.cwd(),
+    __dirname,
+    "..",
     "EmailTemplate",
-    "emailTemplate.html"
+    "emailTemplate.html",
   );
 
   cachedEmailTemplate = await readFile(templatePath, "utf-8");
@@ -71,7 +77,7 @@ Router.post("/contact", contactLimiter, async (req, res) => {
     }
 
     if (!req.body) {
-      return res.status(400).json({ error: "Invalide Request" });
+      return res.status(400).json({ error: "Invalid Request" });
     }
     const { fullname, address, subject, message } = req.body;
 
@@ -96,12 +102,16 @@ Router.post("/contact", contactLimiter, async (req, res) => {
       message,
     });
 
+    // الـ Fix المقترح للإيميل (مؤقتاً استخدم onboarding لحد ما تعمل Verify للدومين)
     const resendDomain =
       process.env.RESEND_MAIL_DOMAIN || "onboarding@resend.dev";
+    const senderEmail = resendDomain.includes("@")
+      ? resendDomain
+      : `noreply@${resendDomain}`;
 
     const { data, error } = await resend.emails.send({
-      from: `!! New Message From My Portfolio Website <${resendDomain}>`,
-      to: `${AdminMail}`,
+      from: `Portfolio Contact <${senderEmail}>`,
+      to: AdminMail,
       subject: subject,
       reply_to: address,
       html: htmlContent,
