@@ -59,22 +59,13 @@
   padding: var(--spacing-xl);
   max-width: 1200px;
   margin: 0 auto;
+  padding-bottom: 100px; /* space for sticky save on mobile */
 }
 
-.sectionHeader {
+.actionsRow {
   display: flex;
-  align-items: center;
   justify-content: flex-end;
-  margin-bottom: var(--spacing-xl);
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-}
-
-.sectionHeader h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
+  margin-bottom: var(--spacing-lg);
 }
 
 /* Error Message */
@@ -158,75 +149,105 @@
   font-size: 1.125rem;
 }
 
-/* Page Selector */
-.pageSelector {
-  background: rgba(11, 17, 32, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
-  margin-bottom: var(--spacing-xl);
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(12px);
-}
-
-.pageSelector h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-lg);
+/* Tab Bar — Desktop: underline style | Mobile: wrapped pill grid */
+.tabBar {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+  flex-wrap: nowrap;
+  gap: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 0;
+  /* hide scrollbar but keep functionality */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.pageOptions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
+.tabBar::-webkit-scrollbar {
+  display: none;
 }
 
-.pageOption {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  background-color: rgba(148, 163, 184, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  font-size: 0.9rem;
+.tab {
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
   font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-bottom: -1px; /* overlap the tabBar border-bottom */
 }
 
-.pageOption:hover {
-  background-color: rgba(148, 163, 184, 0.18);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
+.tab svg {
+  flex-shrink: 0;
 }
 
-.pageOption.active {
-  background: rgba(0, 212, 255, 0.14);
-  border-color: rgba(0, 212, 255, 0.7);
-  color: #d8f8ff;
-  box-shadow: 0 10px 24px rgba(0, 212, 255, 0.16);
+.tab:hover {
+  color: var(--text-secondary);
 }
 
-.pageOption.active:hover {
-  background: rgba(0, 212, 255, 0.2);
-  border-color: var(--accent-primary);
-  box-shadow: 0 12px 28px rgba(0, 212, 255, 0.22);
+.tabActive {
+  color: var(--accent-primary);
+  font-weight: 600;
+  border-bottom-color: var(--accent-primary);
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+}
+
+/* Mobile: switch to wrapped pill-grid layout */
+@media (max-width: 640px) {
+  .tabBar {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    border-bottom: none;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 0;
+  }
+
+  .tab {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 130px;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 0;
+    font-size: 0.8rem;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+  }
+
+  .tabActive {
+    background: rgba(0, 212, 255, 0.12);
+    border-color: rgba(0, 212, 255, 0.45);
+    color: var(--accent-primary);
+    border-bottom-color: rgba(0, 212, 255, 0.45);
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.12);
+    text-shadow: none;
+  }
 }
 
 /* Form Container */
 .formContainer {
-  background: rgba(11, 17, 32, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(11, 17, 32, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-md);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
 }
 
 /* Form Styles */
@@ -284,7 +305,7 @@
 .formGroup select {
   background-color: var(--bg-secondary);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--spacing-md);
   color: var(--text-primary);
   font-size: 0.9rem;
@@ -299,8 +320,8 @@
 .formGroup select:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.35),
-    0 0 18px rgba(0, 212, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.18),
+    0 0 20px rgba(0, 212, 255, 0.12);
   background-color: var(--bg-tertiary);
 }
 
@@ -386,22 +407,12 @@
 @media (max-width: 768px) {
   .seoSection {
     padding: var(--spacing-md);
+    padding-bottom: 100px; /* space for sticky save bar */
   }
 
-  .sectionHeader {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--spacing-md);
-  }
-
-  .pageOptions {
-    grid-template-columns: 1fr;
-  }
-
-  .pageOption {
-    justify-content: center;
-    text-align: center;
+  .actionsRow {
+    /* Hide desktop save row — mobile uses sticky bar */
+    display: none;
   }
 
   .formContainer {
@@ -420,10 +431,7 @@
 @media (max-width: 480px) {
   .seoSection {
     padding: var(--spacing-sm);
-  }
-
-  .pageSelector h3 {
-    font-size: 1.125rem;
+    padding-bottom: 100px;
   }
 
   .formSection h4 {
@@ -453,7 +461,7 @@
 }
 
 /* Focus indicators for accessibility */
-.pageOption:focus-visible {
+.tab:focus-visible {
   outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
@@ -511,28 +519,25 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(
-    to top,
-    var(--bg-secondary) 0%,
-    var(--bg-secondary) 70%,
-    transparent 100%
-  );
-  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
-  z-index: 100;
+  background: rgba(11, 17, 32, 0.92);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 12px 16px 20px;
+  z-index: 200;
   display: none;
-  border-top: 1px solid var(--border-primary);
-  backdrop-filter: blur(10px);
 }
 
 .stickySaveButton button {
   width: 100%;
   justify-content: center;
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: 14px var(--spacing-lg);
   font-size: 1rem;
   font-weight: 600;
+  border-radius: var(--radius-lg);
 }
 
-/* Show sticky button on mobile, hide desktop button */
+/* Show sticky button on mobile, hide desktop save button */
 @media (max-width: 768px) {
   .desktopSaveBtn {
     display: none;

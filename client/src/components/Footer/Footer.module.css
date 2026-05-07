@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FOOTER — Theme-aware styles using CSS variables
+   FOOTER — Theme-aware styles using CSS variables (Cyan Edition)
    ========================================================================== */
 
 .footer {
@@ -12,6 +12,12 @@
     background-color 0.3s ease,
     color 0.3s ease,
     border-color 0.3s ease;
+}
+
+/* Dark mode: slightly deepen footer so it feels grounded */
+[data-theme="dark"] .footer {
+  background: #0a1628;
+  border-top-color: rgba(0, 212, 255, 0.10);
 }
 
 .container {
@@ -44,6 +50,7 @@
 
 .logoText {
   color: var(--text-primary);
+  font-family: "Sora", "Inter", sans-serif;
 }
 
 .logoDot {
@@ -53,66 +60,75 @@
 
 .brandDescription {
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.7;
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
 }
 
+/* ── Social Icons ─────────────────────────────────────────────────────────── */
 .socialLinks {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
+/* Light mode: clean white pill with cyan icon */
 .socialLink {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 44px;
   height: 44px;
-  /* Light: white pill with indigo icon — clear and professional */
-  background: rgba(255, 255, 255, 0.90);
-  border: 1.5px solid rgba(99, 102, 241, 0.30);
+  background: rgba(8, 145, 178, 0.08);
+  border: 1.5px solid rgba(8, 145, 178, 0.25);
   border-radius: 12px;
-  color: #4f46e5;
+  color: #0891b2;
   text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.06);
 }
 
 .socialLink:hover {
-  background: #4f46e5;
-  border-color: #4f46e5;
+  background: #0891b2;
+  border-color: #0891b2;
   color: #ffffff;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.40);
+  transform: translateY(-4px) scale(1.08);
+  box-shadow:
+    0 8px 20px rgba(8, 145, 178, 0.40),
+    0 0 16px rgba(8, 145, 178, 0.20);
 }
 
-/* Dark mode: translucent slate base with bright indigo icon */
+/* Dark mode: translucent navy with vivid cyan icon + glow on hover */
 [data-theme="dark"] .socialLink {
-  background: rgba(30, 41, 59, 0.90);
-  border-color: rgba(129, 140, 248, 0.30);
-  color: #818cf8;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  background: rgba(0, 212, 255, 0.06);
+  border-color: rgba(0, 212, 255, 0.18);
+  color: #00d4ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.30);
 }
 
 [data-theme="dark"] .socialLink:hover {
-  background: #6366f1;
-  border-color: #6366f1;
+  background: rgba(0, 212, 255, 0.15);
+  border-color: #00d4ff;
   color: #ffffff;
-  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.40);
+  transform: translateY(-4px) scale(1.08);
+  box-shadow:
+    0 8px 24px rgba(0, 212, 255, 0.35),
+    0 0 20px rgba(0, 212, 255, 0.18);
 }
 
-/* Links Section */
+/* ── Links Section ────────────────────────────────────────────────────────── */
 .linksSection {
   min-width: 150px;
 }
 
 .sectionTitle {
   color: var(--text-primary);
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   margin-bottom: 1.5rem;
   position: relative;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .sectionTitle::after {
@@ -120,10 +136,10 @@
   position: absolute;
   bottom: -8px;
   left: 0;
-  width: 30px;
+  width: 28px;
   height: 2px;
   background: var(--gradient-accent);
-  border-radius: 1px;
+  border-radius: 2px;
 }
 
 .linksList {
@@ -140,33 +156,48 @@
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
+  /* Only transition color + padding — avoids any color ambiguity */
+  transition: color 0.25s ease, padding-left 0.25s ease;
   position: relative;
   padding-left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
 }
 
+/* Cyan accent on hover — identical in BOTH light and dark modes */
 .footerLink:hover {
-  color: var(--text-primary);
-  padding-left: 8px;
+  color: var(--accent);
+  padding-left: 10px;
+}
+
+/* Explicit overrides to guarantee cyan in light + dark — no var() ambiguity */
+[data-theme="dark"] .footerLink:hover {
+  color: #00d4ff;
+}
+
+:root:not([data-theme="dark"]) .footerLink:hover {
+  color: #0891b2;
 }
 
 .footerLink::before {
   content: "";
   position: absolute;
-  left: -8px;
+  left: 0;
   top: 50%;
   transform: translateY(-50%);
   width: 0;
   height: 2px;
   background: var(--gradient-accent);
-  transition: width 0.3s ease;
+  border-radius: 1px;
+  transition: width 0.25s ease;
 }
 
 .footerLink:hover::before {
-  width: 4px;
+  width: 6px;
 }
 
-/* Contact Section */
+/* ── Contact Section ─────────────────────────────────────────────────────── */
 .contactSection {
   min-width: 200px;
 }
@@ -184,18 +215,29 @@
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
+  /* Scope transition to only color + transform */
+  transition: color 0.25s ease, transform 0.25s ease;
   padding: 0.5rem 0;
 }
 
+/* Cyan on hover — both modes */
 .contactItem:hover {
-  color: var(--text-primary);
+  color: var(--accent);
   transform: translateX(4px);
 }
 
+[data-theme="dark"] .contactItem:hover {
+  color: #00d4ff;
+}
+
+:root:not([data-theme="dark"]) .contactItem:hover {
+  color: #0891b2;
+}
+
+/* Light mode icon wrapper */
 .contactItem svg {
-  color: #4f46e5;
-  background: rgba(99, 102, 241, 0.1);
+  color: #0891b2;
+  background: rgba(8, 145, 178, 0.10);
   padding: 0.35rem;
   border-radius: 8px;
   width: 32px;
@@ -205,25 +247,26 @@
   transition: all 0.3s ease;
 }
 
+/* Dark mode icon wrapper */
 [data-theme="dark"] .contactItem svg {
-  color: #818cf8;
-  background: rgba(129, 140, 248, 0.15);
+  color: #00d4ff;
+  background: rgba(0, 212, 255, 0.10);
 }
 
 .contactItem:hover svg {
-  background: #4f46e5;
+  background: #0891b2;
   color: #ffffff;
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 14px rgba(8, 145, 178, 0.35);
 }
 
 [data-theme="dark"] .contactItem:hover svg {
-  background: #6366f1;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(129, 140, 248, 0.3);
+  background: rgba(0, 212, 255, 0.22);
+  color: #00d4ff;
+  box-shadow: 0 4px 14px rgba(0, 212, 255, 0.30);
 }
 
-/* Newsletter Section */
+/* ── Newsletter / CTA Section ────────────────────────────────────────────── */
 .newsletterSection {
   min-width: 250px;
 }
@@ -231,7 +274,7 @@
 .newsletterDescription {
   color: var(--text-secondary);
   font-size: 0.9rem;
-  line-height: 1.5;
+  line-height: 1.6;
   margin-bottom: 1.5rem;
 }
 
@@ -280,13 +323,17 @@
   box-shadow: 0 8px 25px var(--accent-glow);
 }
 
-/* Footer Bottom */
+/* ── Footer Bottom ───────────────────────────────────────────────────────── */
 .footerBottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
+}
+
+[data-theme="dark"] .footerBottom {
+  border-top-color: rgba(0, 212, 255, 0.08);
 }
 
 .copyright p,
@@ -307,6 +354,33 @@
   gap: 0.5rem;
 }
 
+/* Developer name — permanently cyan + bold, pops in both modes */
+.madeWith a {
+  text-decoration: none;
+  font-weight: 700;
+  display: inline-block;
+  transition: color 0.2s ease, transform 0.2s ease;
+  /* Light mode: visible dark-teal cyan */
+  color: #0891b2;
+}
+
+[data-theme="dark"] .madeWith a {
+  /* Dark mode: vivid bright cyan */
+  color: #00d4ff;
+}
+
+.madeWith a:hover {
+  text-decoration: underline;
+  transform: scale(1.07);
+  /* Keep cyan on hover — don't drift to accent-hover */
+  color: #0e7490;
+}
+
+[data-theme="dark"] .madeWith a:hover {
+  color: #33deff;
+  text-decoration: underline;
+}
+
 .heartIcon {
   color: #ef4444;
   animation: heartbeat 2s ease-in-out infinite;
@@ -320,11 +394,11 @@
   }
   25%,
   75% {
-    transform: scale(1.1);
+    transform: scale(1.2);
   }
 }
 
-/* Responsive Design */
+/* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .footerContent {
     grid-template-columns: 1fr 1fr;
@@ -361,7 +435,7 @@
     max-width: none;
   }
 
-  /* Center section titles and their underlines */
+  /* Center section titles underlines */
   .sectionTitle {
     text-align: center;
     display: flex;
@@ -370,8 +444,10 @@
   }
 
   .sectionTitle::after {
-    left: 50%;
-    transform: translateX(-50%);
+    display: block;
+    left: auto;
+    transform: none;
+    margin-top: 8px;
   }
 
   /* Center social links */
@@ -399,7 +475,16 @@
 
   .footerLink:hover {
     padding-left: 0;
-    transform: translateY(-2px);
+    color: var(--accent);
+  }
+
+  /* Mobile: guarantee cyan in both modes (no slide-in padding needed) */
+  [data-theme="dark"] .footerLink:hover {
+    color: #00d4ff;
+  }
+
+  :root:not([data-theme="dark"]) .footerLink:hover {
+    color: #0891b2;
   }
 
   .footerLink::before {
@@ -447,13 +532,13 @@
   }
 
   .socialLinks {
-    gap: 0.75rem;
+    gap: 0.65rem;
     justify-content: center;
   }
 
   .socialLink {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
   }
 
   .footerContent > * {

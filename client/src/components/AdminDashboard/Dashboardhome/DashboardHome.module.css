@@ -62,7 +62,7 @@
 .sectionHeader {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-bottom: var(--spacing-xl);
   flex-wrap: wrap;
   gap: var(--spacing-md);
@@ -111,19 +111,19 @@
 /* Grid Layout */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--spacing-xl);
 }
 
 /* Card Styles */
 .card {
-  background-color: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(11, 17, 32, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   transition: var(--transition-fast);
   box-shadow: var(--shadow-md);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
 }
 
 .card:hover {
@@ -471,7 +471,7 @@
 .formGroup textarea {
   background-color: var(--bg-secondary);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--spacing-md);
   color: var(--text-primary);
   font-size: 0.9rem;
@@ -482,8 +482,8 @@
 .formGroup textarea:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.35),
-    0 0 18px rgba(0, 212, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.18),
+    0 0 20px rgba(0, 212, 255, 0.12);
 }
 
 .formGroup textarea {
@@ -595,8 +595,11 @@
   justify-content: flex-end;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
+  .homeSection {
+    padding: var(--spacing-md);
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }
@@ -628,7 +631,7 @@
 
 @media (max-width: 480px) {
   .homeSection {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
   }
 
   .card {

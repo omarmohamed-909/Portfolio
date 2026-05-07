@@ -465,6 +465,10 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .skillsSection {
+    padding: var(--spacing-md);
+  }
+
   .skillsGrid {
     grid-template-columns: 1fr;
   }
@@ -488,6 +492,12 @@
   .skillActions {
     opacity: 1;
     align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .skillsSection {
+    padding: var(--spacing-sm);
   }
 }
 

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styles from "./DashboardSEO.module.css";
 import { verifyJWTToken } from "../utils/authUtils";
 import { Save, X, Globe, Search, Share2, Twitter } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
 
@@ -929,7 +928,7 @@ const DashboardSEO = () => {
 
   return (
     <div className={styles.seoSection}>
-      <div className={styles.sectionHeader}>
+      <div className={styles.actionsRow}>
         <button
           className={`${styles.btnPrimary} ${styles.desktopSaveBtn}`}
           onClick={handleSave}
@@ -955,25 +954,22 @@ const DashboardSEO = () => {
         </div>
       )}
 
-      <div className={styles.pageSelector}>
-        <h3>Select Page to Edit</h3>
-        <div className={styles.pageOptions}>
-          {pageOptions.map((option) => {
-            const Icon = option.icon;
-            return (
-              <button
-                key={option.value}
-                className={`${styles.pageOption} ${
-                  selectedPage === option.value ? styles.active : ""
-                }`}
-                onClick={() => setSelectedPage(option.value)}
-              >
-                <Icon size={18} />
-                <span>{option.label}</span>
-              </button>
-            );
-          })}
-        </div>
+      <div className={styles.tabBar}>
+        {pageOptions.map((option) => {
+          const Icon = option.icon;
+          const isActive = selectedPage === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              className={`${styles.tab} ${isActive ? styles.tabActive : ""}`}
+              onClick={() => setSelectedPage(option.value)}
+            >
+              <Icon size={16} />
+              <span>{option.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       <div className={styles.formContainer}>

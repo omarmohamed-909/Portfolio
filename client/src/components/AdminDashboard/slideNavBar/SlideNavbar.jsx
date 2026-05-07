@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styles from "./SlideNavbar.module.css";
 import { useNavigate } from "react-router-dom";
 import { verifyJWTToken } from "../utils/authUtils";
+import { Backend_Root_Url } from "../../../config/AdminUrl.js";
+import { resolveAssetUrl } from "../../../lib/assetUrl.js";
 
 import {
   Home,
@@ -14,6 +16,7 @@ import {
   Menu,
   X,
   Search,
+  LayoutDashboard,
 } from "lucide-react";
 
 const SlideNavbar = ({
@@ -24,6 +27,8 @@ const SlideNavbar = ({
   mobileMenuOpen,
   setMobileMenuOpen,
   onLogout,
+  userData,
+  generateInitials,
 }) => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -81,7 +86,7 @@ const SlideNavbar = ({
     >
       <div className={styles.sidebarHeader}>
         <div className={styles.logo}>
-          <Zap size={24} />
+          <LayoutDashboard size={22} />
           {!sidebarCollapsed && <span>Portfolio Admin</span>}
         </div>
         <button
@@ -102,7 +107,8 @@ const SlideNavbar = ({
         {sections.map((section) => {
           const Icon = section.icon;
           return (
-            <div
+            <button
+              type="button"
               key={section.id}
               className={`${styles.navItem} ${
                 activeSection === section.id ? styles.active : ""
@@ -110,14 +116,6 @@ const SlideNavbar = ({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                handleUniversalClick(section.id);
-              }}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                handleUniversalClick(section.id);
-              }}
-              onTouchStart={(e) => {
-                e.preventDefault();
                 handleUniversalClick(section.id);
               }}
               style={{
@@ -130,43 +128,74 @@ const SlideNavbar = ({
                 zIndex: 10,
               }}
             >
-              <Icon size={20} />
-              {(!sidebarCollapsed || mobileMenuOpen) && (
-                <span>{section.label}</span>
-              )}
-            </div>
+              <div className={styles.pill}>
+                <Icon size={20} />
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <span>{section.label}</span>
+                )}
+              </div>
+            </button>
           );
         })}
       </nav>
 
-      <div className={styles.sidebarFooter}>
-        <div
-          className={styles.logoutBtn}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onLogout();
-          }}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            onLogout();
-          }}
-          onTouchStart={(e) => {
-            e.preventDefault();
-            onLogout();
-          }}
-          style={{
-            cursor: "pointer",
-            userSelect: "none",
-            WebkitUserSelect: "none",
-            WebkitTapHighlightColor: "rgba(0, 212, 255, 0.25)",
-            touchAction: "manipulation",
-            position: "relative",
-            zIndex: 10,
-          }}
-        >
-          <LogOut size={20} />
-          {(!sidebarCollapsed || mobileMenuOpen) && <span>Logout</span>}
+      <div className={styles.sidebarBottom}>
+        <div className={styles.userProfile}>
+          <div className={styles.userAvatar}>
+            {userData?.HomeLogo ? (
+              <img
+                src={resolveAssetUrl(
+                  userData.HomeLogo,
+                  `${Backend_Root_Url}/uploads/logo/`
+                )}
+                alt="User Avatar"
+                className={styles.avatarImage}
+                onError={(e) => {
+                  e.target.style.display = "none";
+                  if (e.target.nextElementSibling) {
+                    e.target.nextElementSibling.style.display = "flex";
+                  }
+                }}
+              />
+            ) : null}
+            <div
+              className={styles.avatarInitials}
+              style={{ display: userData?.HomeLogo ? "none" : "flex" }}
+            >
+              {generateInitials
+                ? generateInitials(userData?.DisplayName)
+                : "UN"}
+            </div>
+          </div>
+          {(!sidebarCollapsed || mobileMenuOpen) && (
+            <span className={styles.userName}>
+              {userData?.DisplayName || "Unknown User"}
+            </span>
+          )}
+        </div>
+
+        <div className={styles.sidebarFooter}>
+          <button
+            type="button"
+            className={styles.logoutBtn}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onLogout();
+            }}
+            style={{
+              cursor: "pointer",
+              userSelect: "none",
+              WebkitUserSelect: "none",
+              WebkitTapHighlightColor: "rgba(0, 212, 255, 0.25)",
+              touchAction: "manipulation",
+              position: "relative",
+              zIndex: 10,
+            }}
+          >
+            <LogOut size={20} />
+            {(!sidebarCollapsed || mobileMenuOpen) && <span>Logout</span>}
+          </button>
         </div>
       </div>
     </div>
