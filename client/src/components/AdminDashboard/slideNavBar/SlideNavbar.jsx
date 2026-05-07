@@ -107,7 +107,8 @@ const SlideNavbar = ({
         {sections.map((section) => {
           const Icon = section.icon;
           return (
-            <div
+            <button
+              type="button"
               key={section.id}
               className={`${styles.navItem} ${
                 activeSection === section.id ? styles.active : ""
@@ -115,14 +116,6 @@ const SlideNavbar = ({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                handleUniversalClick(section.id);
-              }}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                handleUniversalClick(section.id);
-              }}
-              onTouchStart={(e) => {
-                e.preventDefault();
                 handleUniversalClick(section.id);
               }}
               style={{
@@ -141,7 +134,7 @@ const SlideNavbar = ({
                   <span>{section.label}</span>
                 )}
               </div>
-            </div>
+            </button>
           );
         })}
       </nav>
@@ -159,8 +152,8 @@ const SlideNavbar = ({
                 className={styles.avatarImage}
                 onError={(e) => {
                   e.target.style.display = "none";
-                  if (e.target.nextSibling) {
-                    e.target.nextSibling.style.display = "flex";
+                  if (e.target.nextElementSibling) {
+                    e.target.nextElementSibling.style.display = "flex";
                   }
                 }}
               />
@@ -182,19 +175,12 @@ const SlideNavbar = ({
         </div>
 
         <div className={styles.sidebarFooter}>
-          <div
+          <button
+            type="button"
             className={styles.logoutBtn}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              onLogout();
-            }}
-            onMouseDown={(e) => {
-              e.preventDefault();
-              onLogout();
-            }}
-            onTouchStart={(e) => {
-              e.preventDefault();
               onLogout();
             }}
             style={{
@@ -209,7 +195,7 @@ const SlideNavbar = ({
           >
             <LogOut size={20} />
             {(!sidebarCollapsed || mobileMenuOpen) && <span>Logout</span>}
-          </div>
+          </button>
         </div>
       </div>
     </div>
