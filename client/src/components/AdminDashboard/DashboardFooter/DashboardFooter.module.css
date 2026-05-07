@@ -76,7 +76,7 @@
 /* Grid Layout */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--spacing-xl);
 }
 
@@ -525,6 +525,10 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .footerSection {
+    padding: var(--spacing-md);
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }

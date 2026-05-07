@@ -50,7 +50,7 @@
 
 /* Sidebar */
 .sidebar {
-  width: 280px;
+  width: 260px;
   background-color: rgba(11, 17, 32, 0.94);
   border-right: 1px solid var(--border-primary);
   display: flex;
@@ -80,10 +80,11 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  font-size: 1.25rem;
+  gap: 10px;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
+  letter-spacing: -0.01em;
   transition: var(--transition-normal);
   flex: 1;
   white-space: nowrap;
@@ -91,6 +92,7 @@
 
 .logo svg {
   color: var(--accent-primary);
+  filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.45));
   transition: var(--transition-normal);
   flex-shrink: 0;
 }
@@ -129,19 +131,25 @@
 }
 
 .sidebarNav {
-  flex: 1;
+  flex: 1 1 auto;
   padding: var(--spacing-lg) 0;
   overflow-y: auto;
+  min-height: 0;
   /* Ensure nav items are interactive */
   pointer-events: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.sidebarNav::-webkit-scrollbar {
+  display: none;
 }
 
 .navItem {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: 4px 0;
   background: none;
   border: none;
   color: var(--text-secondary);
@@ -155,48 +163,145 @@
   pointer-events: auto;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(0, 212, 255, 0.14);
-  min-height: 44px; /* Ensure minimum touch target size */
   user-select: none;
   -webkit-user-select: none;
 }
 
-.navItem:hover,
-.navItem:focus {
+.pill {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin: 0 12px;
+  width: calc(100% - 24px);
+  border-radius: 12px;
+  transition: var(--transition-fast);
+  min-height: 44px;
+}
+
+.navItem:hover .pill,
+.navItem:focus .pill {
   background-color: var(--bg-hover);
   color: var(--text-primary);
   outline: none;
 }
 
-.navItem:active {
+.navItem:active .pill {
   background-color: var(--bg-active);
   transform: scale(0.98);
 }
 
-.navItem.active {
-  background-color: rgba(0, 212, 255, 0.14);
+.navItem.active .pill {
+  background-color: rgba(0, 212, 255, 0.15);
   color: #c8f7ff;
+  box-shadow: 0 0 18px rgba(0, 212, 255, 0.18);
 }
 
-.navItem.active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background-color: var(--accent-primary);
-  pointer-events: none;
-}
-
-.collapsed .navItem span {
+.collapsed .pill span {
   opacity: 0;
   width: 0;
   overflow: hidden;
 }
 
+.collapsed .pill {
+  justify-content: center;
+  padding: var(--spacing-md);
+  gap: 0;
+}
+
+.collapsed .navItem {
+  justify-content: center;
+}
+
+.collapsed .sidebarHeader {
+  justify-content: center;
+}
+
+.collapsed .logo {
+  display: none;
+}
+
+.sidebarBottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+  padding-top: var(--spacing-sm);
+  padding-bottom: var(--spacing-lg);
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-md);
+  padding: 12px 16px;
+  margin: var(--spacing-sm) 10px var(--spacing-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.userAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.35);
+  background: rgba(0, 212, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatarInitials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(34, 211, 238, 0.85));
+  color: #041622;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.userName {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.collapsed .userName {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+.collapsed .userProfile {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+
 .sidebarFooter {
-  padding: var(--spacing-lg);
-  border-top: 1px solid var(--border-primary);
+  padding: 0 10px;
+  flex-shrink: 0;
 }
 
 .logoutBtn {
@@ -263,6 +368,10 @@
 
   /* Increase touch targets on mobile */
   .navItem {
+    padding: 6px 0;
+  }
+
+  .pill {
     min-height: 48px;
     padding: var(--spacing-lg) var(--spacing-lg);
   }

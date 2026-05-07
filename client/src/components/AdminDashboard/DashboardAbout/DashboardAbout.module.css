@@ -76,7 +76,7 @@
 /* Grid Layout */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--spacing-xl);
 }
 
@@ -521,26 +521,82 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .slidePanel {
-    width: 100%;
-  }
-
-  .slideItem {
-    flex-direction: column;
-  }
-
-  .slideImage {
-    width: 100%;
-    height: 120px;
+  .aboutSection {
+    /* No large top offset needed — pageHeader above already handles that */
+    padding: var(--spacing-md);
   }
 
   .sectionHeader {
     flex-direction: column;
-    gap: var(--spacing-md);
     align-items: stretch;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .sectionHeader .btnPrimary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .grid {
+    /* Force single column — don't rely on auto-fit with minmax */
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .card {
+    padding: var(--spacing-lg);
+    /* Prevent horizontal overflow */
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .cardHeader {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .cardHeader .btnSecondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .slidePanel {
+    width: 100%;
+    /* On mobile the panel sits below the hamburger */
+    top: 0;
+  }
+
+  .slideItem {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .slideImage {
+    width: 100%;
+    height: 140px;
+  }
+
+  .slideActions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .tagList {
+    gap: var(--spacing-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .aboutSection {
+    padding: var(--spacing-sm);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .aboutInfo h4 {
+    font-size: 1.25rem;
   }
 }

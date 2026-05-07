@@ -10,17 +10,22 @@ import DashboardSkills from "../DashboardSkills/DashboardSkills";
 import DashboardCV from "../DashboardCV/DashboardCV";
 import DashboardFooter from "../DashboardFooter/DashboardFooter";
 import { Menu } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
-import { resolveAssetUrl } from "../../../lib/assetUrl.js";
 import "../../../../src/App.css";
 
 import axios from "axios";
 
+const PageHeader = ({ title, children }) => (
+  <div className={styles.pageHeader}>
+    <h1>{title}</h1>
+    {children ? (
+      <div className={styles.pageHeaderActions}>{children}</div>
+    ) : null}
+  </div>
+);
+
 const Dashboard = () => {
   // Authentication state
-  const navigate = useNavigate();
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -122,50 +127,6 @@ const Dashboard = () => {
     return null; // Will redirect via useEffect
   }
 
-  // Render top bar
-  const renderTopBar = () => (
-    <div className={styles.topBar}>
-      <div className={styles.topBarLeft}>
-        <button
-          className={`${styles.mobileMenuBtn} ${styles.mobileOnly}`}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          <Menu size={20} />
-        </button>
-        <h1 className={styles.pageTitle}>{getSectionTitle(activeSection)}</h1>
-      </div>
-      <div className={styles.topBarRight}>
-        <div className={styles.userProfile}>
-          <div className={styles.userAvatar}>
-            {userData?.HomeLogo ? (
-              <img
-                src={resolveAssetUrl(
-                  userData.HomeLogo,
-                  `${Backend_Root_Url}/uploads/logo/`
-                )}
-                alt="User Avatar"
-                className={styles.avatarImage}
-                onError={(e) => {
-                  e.target.style.display = "none";
-                  e.target.nextSibling.style.display = "flex";
-                }}
-              />
-            ) : null}
-            <div
-              className={styles.avatarInitials}
-              style={{ display: userData?.HomeLogo ? "none" : "flex" }}
-            >
-              {generateInitials(userData?.DisplayName)}
-            </div>
-          </div>
-          <span className={styles.userName}>
-            {userData?.DisplayName || "Unknown User"}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-
   // Get section title
   const getSectionTitle = (sectionId) => {
     const sections = {
@@ -182,24 +143,41 @@ const Dashboard = () => {
 
   // Render active section content
   const renderActiveSection = () => {
+    let sectionContent = null;
+
     switch (activeSection) {
       case "seo":
-        return <DashboardSEO />;
+        sectionContent = <DashboardSEO />;
+        break;
       case "home":
-        return <DashboardHome />;
+        sectionContent = <DashboardHome />;
+        break;
       case "about":
-        return <DashboardAbout />;
+        sectionContent = <DashboardAbout />;
+        break;
       case "projects":
-        return <DashboardProjects />;
+        sectionContent = <DashboardProjects />;
+        break;
       case "skills":
-        return <DashboardSkills />;
+        sectionContent = <DashboardSkills />;
+        break;
       case "cv":
-        return <DashboardCV />;
+        sectionContent = <DashboardCV />;
+        break;
       case "footer":
-        return <DashboardFooter />;
+        sectionContent = <DashboardFooter />;
+        break;
       default:
-        return <DashboardHome />;
+        sectionContent = <DashboardHome />;
+        break;
     }
+
+    return (
+      <>
+        <PageHeader title={getSectionTitle(activeSection)} />
+        {sectionContent}
+      </>
+    );
   };
 
   return (
@@ -212,6 +190,8 @@ const Dashboard = () => {
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
         onLogout={handleLogout}
+        userData={userData}
+        generateInitials={generateInitials}
       />
 
       <div
@@ -219,7 +199,13 @@ const Dashboard = () => {
           sidebarCollapsed ? styles.collapsed : ""
         }`}
       >
-        {renderTopBar()}
+        <button
+          className={`${styles.mobileMenuTrigger} ${styles.mobileOnly}`}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle sidebar"
+        >
+          <Menu size={20} />
+        </button>
         <div className={styles.content}>{renderActiveSection()}</div>
       </div>
     </div>

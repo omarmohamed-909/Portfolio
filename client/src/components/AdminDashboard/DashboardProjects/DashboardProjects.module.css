@@ -1001,6 +1001,10 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .projectsSection {
+    padding: var(--spacing-md);
+  }
+
   .projectsGrid {
     grid-template-columns: 1fr;
   }
@@ -1023,6 +1027,12 @@
   .featuredLabel {
     flex-direction: row-reverse;
     justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .projectsSection {
+    padding: var(--spacing-sm);
   }
 }
 

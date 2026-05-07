@@ -301,6 +301,10 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .cvSection {
+    padding: var(--spacing-md);
+  }
+
   .cvContainer {
     grid-template-columns: 1fr;
   }
@@ -331,6 +335,12 @@
     flex-direction: column;
     gap: var(--spacing-md);
     align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .cvSection {
+    padding: var(--spacing-sm);
   }
 }
 

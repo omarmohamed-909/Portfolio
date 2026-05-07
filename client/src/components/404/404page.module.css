@@ -1,6 +1,11 @@
+/* ==========================================================================
+   404 NOT FOUND PAGE — Synced with Portfolio Dark Theme (Cyan Edition)
+   ========================================================================== */
+
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0f1419 100%);
+  /* Mirror the portfolio hero gradient */
+  background: linear-gradient(135deg, #070d1a 0%, #0f172a 55%, #070d1a 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,10 +13,23 @@
   overflow: hidden;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     sans-serif;
-  color: #ffffff;
+  color: #e2e8f0;
 }
 
-/* Background Animation */
+/* ── Subtle grid overlay for depth ─────────────────────────────────────── */
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Background floating blobs ──────────────────────────────────────────── */
 .backgroundAnimation {
   position: absolute;
   top: 0;
@@ -24,84 +42,84 @@
 
 .floatingElement {
   position: absolute;
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(
-    45deg,
-    rgba(59, 130, 246, 0.08),
-    rgba(147, 197, 253, 0.04)
-  );
   border-radius: 50%;
   will-change: transform;
-  animation: float 8s ease-in-out infinite;
+  animation: float 10s ease-in-out infinite;
   animation-delay: var(--delay);
 }
 
 .floatingElement:nth-child(1) {
-  top: 15%;
-  left: 10%;
+  top: 10%;
+  left: 8%;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
 }
 
 .floatingElement:nth-child(2) {
-  top: 25%;
-  right: 15%;
-  width: 100px;
-  height: 100px;
+  top: 30%;
+  right: 10%;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(0, 180, 220, 0.06) 0%, transparent 70%);
 }
 
 .floatingElement:nth-child(3) {
-  bottom: 25%;
-  left: 20%;
-  width: 60px;
-  height: 60px;
+  bottom: 15%;
+  left: 18%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.05) 0%, transparent 70%);
 }
 
 @keyframes float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-    opacity: 0.2;
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.7;
   }
   50% {
-    transform: translate3d(0, -15px, 0) rotate(180deg);
-    opacity: 0.4;
+    transform: translate3d(0, -20px, 0) scale(1.04);
+    opacity: 1;
   }
 }
 
-/* Main Content */
+/* ── Main Content ─────────────────────────────────────────────────────────── */
 .content {
   position: relative;
   z-index: 10;
   text-align: center;
-  max-width: 800px;
+  max-width: 820px;
   padding: 2rem;
 }
 
-/* Error Code with 404 Animation */
+/* ── 404 Error Code ────────────────────────────────────────────────────────── */
 .errorCode {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
+  gap: 1.5rem;
   margin-bottom: 3rem;
   perspective: 1000px;
 }
 
 .digit {
-  font-size: 8rem;
+  font-size: 9rem;
   font-weight: 900;
-  background: linear-gradient(135deg, #3b82f6, #93c5fd);
+  font-family: "Sora", "Inter", sans-serif;
+  /* Cyan gradient matching the portfolio accent */
+  background: linear-gradient(135deg, #00d4ff 0%, #0099bb 60%, #00d4ff 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  filter: drop-shadow(0 0 28px rgba(0, 212, 255, 0.45));
   animation: pulse 3s ease-in-out infinite;
   transition: transform 0.3s ease;
   will-change: transform;
+  line-height: 1;
 }
 
 .digit:hover {
-  transform: scale(1.05) rotateY(10deg);
+  transform: scale(1.06) rotateY(8deg);
 }
 
 .zero {
@@ -113,75 +131,68 @@
   display: inline-block;
 }
 
-/* 0 Animation - Orbital Motion */
+/* ── Orbital Ring around the "0" ─────────────────────────────────────────── */
 .orbit {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 120px;
-  height: 120px;
-  border: 2px solid rgba(59, 130, 246, 0.25);
+  width: 130px;
+  height: 130px;
+  border: 2px solid rgba(0, 212, 255, 0.25);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   animation: rotate 6s linear infinite;
   will-change: transform;
 }
 
+/* Dashed second ring for extra depth */
+.orbit::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 212, 255, 0.12);
+}
+
 .planet {
   position: absolute;
-  top: -6px;
+  top: -7px;
   left: 50%;
-  width: 12px;
-  height: 12px;
-  background: linear-gradient(45deg, #3b82f6, #93c5fd);
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, #00d4ff, #0099bb);
   border-radius: 50%;
   transform: translateX(-50%);
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+  box-shadow:
+    0 0 10px rgba(0, 212, 255, 0.8),
+    0 0 24px rgba(0, 212, 255, 0.4);
 }
 
 @keyframes rotate {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 @keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.85; }
 }
 
-/* Glitch Effect for 404 digits */
+/* ── Glitch Effect ───────────────────────────────────────────────────────── */
 .glitch {
-  animation: glitch 0.2s ease-in-out;
+  animation: glitch 0.18s ease-in-out;
 }
 
 @keyframes glitch {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  25% {
-    transform: translate3d(-1px, 1px, 0);
-  }
-  50% {
-    transform: translate3d(-1px, -1px, 0);
-  }
-  75% {
-    transform: translate3d(1px, 1px, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
+  0%   { transform: translate3d(0, 0, 0) skewX(0deg); }
+  20%  { transform: translate3d(-2px, 1px, 0) skewX(-3deg); }
+  40%  { transform: translate3d(2px, -1px, 0) skewX(3deg); }
+  60%  { transform: translate3d(-1px, 1px, 0) skewX(0deg); }
+  80%  { transform: translate3d(1px, -1px, 0) skewX(-1deg); }
+  100% { transform: translate3d(0, 0, 0) skewX(0deg); }
 }
 
-/* Message Container - Faster Animation */
+/* ── Message Container ───────────────────────────────────────────────────── */
 .messageContainer {
   margin-bottom: 3rem;
   animation: fadeInUp 0.6s ease-out 0.1s both;
@@ -190,8 +201,10 @@
 .title {
   font-size: 3rem;
   font-weight: 700;
+  font-family: "Sora", "Inter", sans-serif;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #ffffff, #e2e8f0);
+  /* Crisp white matching portfolio headings */
+  background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -199,47 +212,56 @@
 }
 
 .subtitle {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   color: #94a3b8;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   animation: slideInFromRight 0.6s ease-out 0.3s both;
+  line-height: 1.6;
 }
 
 .description {
-  font-size: 1rem;
-  color: #64748b;
+  font-size: 0.95rem;
+  color: #475569;
   animation: fadeIn 0.6s ease-out 0.4s both;
 }
 
-/* Action Container - Faster Animation */
+/* ── Action Container ────────────────────────────────────────────────────── */
 .actionContainer {
   animation: fadeInUp 0.6s ease-out 0.5s both;
 }
 
+/* Primary CTA button — pill with cyan glow */
 .homeButton {
   position: relative;
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(135deg, #00d4ff, #0099bb);
   border: none;
-  padding: 1rem 2.5rem;
+  padding: 1rem 2.75rem;
   border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: white;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  color: #070d1a;
   cursor: pointer;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+  letter-spacing: 0.02em;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow:
+    0 8px 28px rgba(0, 212, 255, 0.30),
+    0 0 0 1px rgba(0, 212, 255, 0.20);
   will-change: transform;
 }
 
 .homeButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 14px 40px rgba(0, 212, 255, 0.45),
+    0 0 0 2px rgba(0, 212, 255, 0.35),
+    0 0 60px rgba(0, 212, 255, 0.15);
 }
 
 .homeButton:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .buttonText {
@@ -247,6 +269,7 @@
   z-index: 2;
 }
 
+/* Sheen sweep on hover */
 .buttonGlow {
   position: absolute;
   top: 0;
@@ -256,71 +279,62 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.28),
     transparent
   );
-  transition: left 0.4s ease;
+  transition: left 0.45s ease;
 }
 
 .homeButton:hover .buttonGlow {
-  left: 100%;
+  left: 110%;
 }
 
+/* ── Suggestions ─────────────────────────────────────────────────────────── */
 .suggestions {
-  color: #94a3b8;
-  font-size: 0.9rem;
+  color: #64748b;
+  font-size: 0.88rem;
 }
 
 .suggestions p {
   margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #475569;
 }
 
 .linkContainer {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
 }
 
+/* Pill nav links with cyan border */
 .link {
-  color: #3b82f6;
+  color: #00d4ff;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 0.5rem 1.25rem;
+  border: 1px solid rgba(0, 212, 255, 0.25);
   border-radius: 25px;
-  transition: all 0.2s ease;
+  background: rgba(0, 212, 255, 0.04);
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
 }
 
 .link:hover {
-  background: rgba(59, 130, 246, 0.08);
-  border-color: #3b82f6;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  background: rgba(0, 212, 255, 0.12);
+  border-color: #00d4ff;
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 16px rgba(0, 212, 255, 0.20),
+    0 0 0 1px rgba(0, 212, 255, 0.20);
 }
 
-.link::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(59, 130, 246, 0.08),
-    transparent
-  );
-  transition: left 0.4s ease;
-}
-
-.link:hover::before {
-  left: 100%;
-}
-
-/* Particle System */
+/* ── Particle System ─────────────────────────────────────────────────────── */
 .particles {
   position: absolute;
   top: 0;
@@ -335,31 +349,31 @@
   position: absolute;
   width: 3px;
   height: 3px;
-  background: #3b82f6;
+  background: #00d4ff;
   border-radius: 50%;
   animation: particleFloat var(--duration) ease-in-out infinite;
   animation-delay: var(--delay);
   opacity: 0;
   will-change: transform, opacity;
+  box-shadow: 0 0 6px rgba(0, 212, 255, 0.7);
 }
 
 @keyframes particleFloat {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 0;
     transform: translate3d(0, 0, 0) scale(0);
   }
   50% {
-    opacity: 0.8;
-    transform: translate3d(0, -80px, 0) scale(1);
+    opacity: 0.9;
+    transform: translate3d(0, -90px, 0) scale(1);
   }
 }
 
-/* Faster Animations */
+/* ── Keyframe animations ──────────────────────────────────────────────────── */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translate3d(0, 20px, 0);
+    transform: translate3d(0, 24px, 0);
   }
   to {
     opacity: 1;
@@ -390,33 +404,30 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-/* Responsive Design */
+/* ── Responsive Design ────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .errorCode {
-    gap: 1rem;
+    gap: 0.75rem;
     margin-bottom: 2rem;
   }
 
   .digit {
-    font-size: 5rem;
+    font-size: 5.5rem;
   }
 
   .orbit {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
   }
 
   .planet {
     width: 10px;
     height: 10px;
+    top: -5px;
   }
 
   .title {
@@ -424,24 +435,24 @@
   }
 
   .subtitle {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
 
   .linkContainer {
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .content {
-    padding: 1rem;
+    padding: 1.25rem;
   }
 
-  /* Reduce animations on mobile for better performance */
   .floatingElement {
-    animation-duration: 10s;
+    animation-duration: 12s;
+    opacity: 0.5;
   }
 
   .particles {
-    display: none; /* Hide particles on mobile */
+    display: none;
   }
 }
 
@@ -450,13 +461,18 @@
     font-size: 4rem;
   }
 
+  .orbit {
+    width: 70px;
+    height: 70px;
+  }
+
   .title {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   .homeButton {
-    padding: 0.8rem 2rem;
-    font-size: 1rem;
+    padding: 0.85rem 2rem;
+    font-size: 0.95rem;
   }
 
   .linkContainer {
