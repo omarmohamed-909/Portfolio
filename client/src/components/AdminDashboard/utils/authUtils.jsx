@@ -13,23 +13,18 @@ export async function verifyJWTToken() {
     });
 
     if (response.data.access === true) {
-      console.log("✅ Authentication successful");
-      return true;
+      return { isAuthenticated: true, role: response.data.role || null };
     } else {
-      console.log("❌ Access denied");
-      return false;
+      return { isAuthenticated: false, role: null };
     }
   } catch (err) {
     if (err.response?.status === 401) {
-      console.log("🔐 Unauthorized - redirecting to login");
       clearAllAuthCookies();
-      return false;
+      return { isAuthenticated: false, role: null };
     } else if (err.response?.status === 403) {
-      console.log("🚫 Forbidden - access denied");
-      return false;
+      return { isAuthenticated: false, role: null };
     } else {
-      console.log("🌐 Network error during authentication");
-      return false;
+      return { isAuthenticated: false, role: null };
     }
   }
 }
@@ -53,8 +48,6 @@ function clearAllAuthCookies() {
 
 export async function logout() {
   try {
-    console.log("🚪 Logging out...");
-
     const response = await axios.post(
       `${Backend_Root_Url}/auth/logout`,
       {},
@@ -68,18 +61,15 @@ export async function logout() {
     );
 
     if (response.status === 200) {
-      console.log("✅ Logout successful");
       clearAllAuthCookies();
       window.location.href = "/";
       return true;
     } else {
-      console.log("❌ Logout failed");
       clearAllAuthCookies();
       window.location.href = "/";
       return false;
     }
   } catch (err) {
-    console.log("❌ Logout error");
     clearAllAuthCookies();
     window.location.href = "/";
     return false;

@@ -1,0 +1,706 @@
+.aboutPage {
+  min-height: 100vh;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.spinnerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(0, 212, 255, 0.1);
+  border-top-color: #00d4ff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.contentLayer {
+  position: relative;
+  z-index: 1;
+}
+
+.main {
+  padding: 6rem 0 3rem;
+}
+
+.container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ── Scroll Reveal ───────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.headerDecor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.12);
+  color: #00d4ff;
+  flex-shrink: 0;
+  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.headerDecor:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.04);
+}
+
+.headerTitle {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.headerSubtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin: 0.35rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.headerSep {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #00d4ff;
+  opacity: 0.4;
+}
+
+/* ── Card ─────────────────────────────────────────────────── */
+.card {
+  border: 1px solid rgba(0, 212, 255, 0.08);
+  border-radius: 12px;
+  padding: 2rem 2.25rem;
+  margin-bottom: 1.25rem;
+  background: transparent;
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover {
+  border-color: rgba(0, 212, 255, 0.14);
+}
+
+.cardLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #00d4ff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.cardDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #00d4ff;
+  flex-shrink: 0;
+}
+
+/* ── Academic ─────────────────────────────────────────────── */
+.academicBody {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.academicIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 212, 255, 0.12);
+  color: #00d4ff;
+  flex-shrink: 0;
+  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover .academicIcon {
+  border-color: rgba(0, 212, 255, 0.25);
+  background: rgba(0, 212, 255, 0.04);
+}
+
+.academicTitle {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.35rem;
+}
+
+.academicMeta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0 0 0.7rem;
+}
+
+.academicDesc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin: 0;
+  max-width: 65ch;
+}
+
+/* ── Engineering Identity Grid ────────────────────────────── */
+.identityGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.identityCard {
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 10px;
+  padding: 1.35rem 1.5rem;
+  background: transparent;
+  transition: border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.identityCard:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+  background: rgba(0, 212, 255, 0.02);
+}
+
+.identityCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+
+.identityIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 212, 255, 0.1);
+  color: #00d4ff;
+  flex-shrink: 0;
+  transition: border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.identityCard:hover .identityIcon {
+  border-color: rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.08);
+}
+
+.identityTitle {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.1rem;
+}
+
+.identitySubtitle {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.identityList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.identityItem {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.identityDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #00d4ff;
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+/* ── Philosophy ───────────────────────────────────────────── */
+.philosophyCard {
+  display: flex;
+  gap: 0;
+  border: 1px solid rgba(0, 212, 255, 0.08);
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.philosophyCard:hover {
+  border-color: rgba(0, 212, 255, 0.14);
+}
+
+.philosophyAccent {
+  width: 4px;
+  flex-shrink: 0;
+  background: #00d4ff;
+  opacity: 0.3;
+}
+
+.philosophyContent {
+  padding: 2rem 2.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.philosophyQuote {
+  font-family: "Sora", "Inter", serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.8;
+  margin: 0 0 1rem;
+  font-style: italic;
+}
+
+.philosophyMeta {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.philosophyMetaIcon {
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* ── Light mode ───────────────────────────────────────────── */
+[data-theme="light"] .card {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .card:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+[data-theme="light"] .identityCard {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .identityCard:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+  background: rgba(0, 212, 255, 0.03);
+}
+
+[data-theme="light"] .philosophyCard {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .philosophyCard:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+[data-theme="light"] .headerDecor {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .headerDecor:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+/* ── About Description ────────────────────────────────────── */
+.aboutDesc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin: 0 0 1.25rem;
+  max-width: 70ch;
+}
+
+/* ── Skills Tags ──────────────────────────────────────────── */
+.skillsTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skillTag {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  border-radius: 6px;
+  background: rgba(0, 212, 255, 0.04);
+  transition: border-color 0.25s, background 0.25s;
+}
+
+.skillTag:hover {
+  border-color: rgba(0, 212, 255, 0.35);
+  background: rgba(0, 212, 255, 0.08);
+}
+
+/* ── Slides Section ───────────────────────────────────────── */
+.slidesSection {
+  border: 1px solid rgba(0, 212, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem 1rem;
+  margin-bottom: 1.25rem;
+  background: transparent;
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slidesSection:hover {
+  border-color: rgba(0, 212, 255, 0.14);
+}
+
+.sliderContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.slidesViewport {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 10px;
+  max-height: 140px;
+}
+
+.slidesTrack {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slideCard {
+  min-width: 100%;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 10px;
+  background: transparent;
+  box-sizing: border-box;
+  transition: border-color 0.35s;
+  max-height: 140px;
+  overflow: hidden;
+}
+
+.slideCard:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+.slideContent {
+  max-width: 100%;
+}
+
+.slideTitle {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.6rem;
+}
+
+.slideDescription {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.slideBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 212, 255, 0.12);
+  background: transparent;
+  color: #00d4ff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.slideBtn:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.06);
+}
+
+.slideDots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.slideDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.slideDot:hover {
+  border-color: rgba(0, 212, 255, 0.5);
+}
+
+.slideDotActive {
+  background: #00d4ff;
+  border-color: #00d4ff;
+}
+
+[data-theme="light"] .slidesSection {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .slidesSection:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+[data-theme="light"] .slideCard {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .slideCard:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+[data-theme="light"] .skillTag {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 212, 255, 0.03);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .main {
+    padding: 5rem 0 2rem;
+  }
+
+  .headerInner {
+    gap: 0.75rem;
+  }
+
+  .headerDecor {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .headerTitle {
+    font-size: 2rem;
+  }
+
+  .headerSubtitle {
+    font-size: 0.9rem;
+  }
+
+  .identityGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .philosophyContent {
+    padding: 1.5rem;
+  }
+
+  .academicTitle {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 4.5rem 0 1.5rem;
+  }
+}
+
+/* ── Experience Timeline ──────────────────────────── */
+.timelineSection {
+  margin-top: 3rem;
+}
+
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timelineItem {
+  position: relative;
+  display: flex;
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.timelineItem:last-child {
+  padding-bottom: 0;
+}
+
+.timelineDot {
+  position: relative;
+  z-index: 2;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #00d4ff;
+  border: 3px solid rgba(0, 212, 255, 0.2);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.timelineLine {
+  position: absolute;
+  left: 6px;
+  top: 18px;
+  bottom: 0;
+  width: 2px;
+  background: rgba(0, 212, 255, 0.15);
+  z-index: 1;
+}
+
+.timelineCard {
+  flex: 1;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(0, 212, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  transition: border-color 0.2s;
+}
+
+.timelineCard:hover {
+  border-color: rgba(0, 212, 255, 0.25);
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 2px;
+}
+
+.timelineCompany {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.timelineDate {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.timelineRole {
+  font-size: 0.88rem;
+  color: #00d4ff;
+  margin: 0 0 8px;
+  font-weight: 500;
+}
+
+.timelineDesc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+
+.timelineTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.timelineTechTag {
+  font-size: 0.72rem;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: rgba(0, 212, 255, 0.08);
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.12);
+}
+
+@media (max-width: 600px) {
+  .timelineItem { gap: 1rem; }
+  .timelineHeader { flex-direction: column; gap: 2px; }
+  .timelineCard { padding: 1rem; }
+}

@@ -1,12 +1,12 @@
 import express from "express";
-import isAdminLogged from "../middlewares/isAdminLogged.js";
+import { isAdminOnly, isAdminOrViewer } from "../middlewares/isAdminOnly.js";
 import { removeCloudinaryAsset, upload } from "../controllers/storage.js";
 import Cv from "../models/CvSchema.js";
 import CvFolder from "../middlewares/CvFolder.js";
 const Router = express.Router();
 Router.post(
   "/cv/add/",
-  isAdminLogged,
+  isAdminOnly,
   CvFolder,
   upload.single("cv"),
   async (req, res) => {
@@ -36,7 +36,7 @@ Router.post(
     }
   }
 );
-Router.delete("/cv/delete/", isAdminLogged, async (req, res) => {
+Router.delete("/cv/delete/", isAdminOnly, async (req, res) => {
   try {
     const IsExistCv = await Cv.findOne();
     if (!IsExistCv) {

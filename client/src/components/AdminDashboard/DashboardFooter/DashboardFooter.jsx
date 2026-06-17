@@ -34,6 +34,7 @@ import {
   Zap,
   Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
 
 // URL validation utility
 const isValidUrl = (url) => {
@@ -88,12 +89,12 @@ const getUrlValidationMessage = (url) => {
   return "Valid URL";
 };
 
-const DashboardFooter = () => {
+const DashboardFooter = ({ userRole }) => {
   //Authentication check
   useEffect(() => {
     const checkAuth = async () => {
-      const isValid = await verifyJWTToken();
-      if (isValid === false) {
+      const { isAuthenticated } = await verifyJWTToken();
+      if (!isAuthenticated) {
         window.location.href = "/denied";
         return;
       }
@@ -289,7 +290,7 @@ const DashboardFooter = () => {
         }));
       } catch (error) {
         console.error("Error deleting social link:", error);
-        alert("Error deleting social link. Please try again.");
+        toast.error("Error deleting social link. Please try again.");
       } finally {
         setSaving(false);
       }
@@ -322,11 +323,11 @@ const DashboardFooter = () => {
     // Validate URL before saving for social links
     if (type === "addSocialLink" || type === "editSocialLink") {
       if (!formData.SocialIcon) {
-        alert("Please select a platform.");
+        toast.error("Please select a platform.");
         return;
       }
       if (!formData.SocialLink) {
-        alert("Please enter a URL.");
+        toast.error("Please enter a URL.");
         return;
       }
       const isValid = isValidUrl(formData.SocialLink);
@@ -337,7 +338,7 @@ const DashboardFooter = () => {
           isValid: false,
           message: message,
         });
-        alert(`Invalid URL: ${message}`);
+        toast.error(`Invalid URL: ${message}`);
         return;
       }
 
@@ -346,7 +347,7 @@ const DashboardFooter = () => {
           isValid: false,
           message: message,
         });
-        alert(`Invalid URL: ${message}`);
+        toast.error(`Invalid URL: ${message}`);
         return;
       }
     }
@@ -403,7 +404,7 @@ const DashboardFooter = () => {
       }
     } catch (error) {
       console.error("Error saving data:", error);
-      alert("Error saving data. Please try again.");
+      toast.error("Error saving data. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -443,6 +444,7 @@ const DashboardFooter = () => {
             >
               Cancel
             </button>
+            {userRole === "admin" && (
             <button
               className={styles.btnDanger}
               onClick={confirmDelete}
@@ -454,6 +456,7 @@ const DashboardFooter = () => {
                 "Delete"
               )}
             </button>
+            )}
           </div>
         </div>
       </div>
@@ -628,6 +631,7 @@ const DashboardFooter = () => {
           >
             Cancel
           </button>
+          {userRole === "admin" && (
           <button
             className={styles.btnPrimary}
             onClick={handleSave}
@@ -640,6 +644,7 @@ const DashboardFooter = () => {
             )}
             {saving ? "Saving..." : "Save Changes"}
           </button>
+          )}
         </div>
       </div>
     );
@@ -663,6 +668,7 @@ const DashboardFooter = () => {
         <div className={styles.card}>
           <div className={styles.cardHeader}>
             <h3>Contact Information</h3>
+            {userRole === "admin" && (
             <button
               className={styles.btnSecondary}
               onClick={() =>
@@ -676,6 +682,7 @@ const DashboardFooter = () => {
               <Edit3 size={16} />
               Edit
             </button>
+            )}
           </div>
 
           {/* Footer Title and Description Display - MOVED TO TOP */}
@@ -714,6 +721,7 @@ const DashboardFooter = () => {
         <div className={styles.card}>
           <div className={styles.cardHeader}>
             <h3>Social Links</h3>
+            {userRole === "admin" && (
             <button
               className={styles.btnSecondary}
               onClick={() =>
@@ -723,6 +731,7 @@ const DashboardFooter = () => {
               <Plus size={16} />
               Add Link
             </button>
+            )}
           </div>
           <div className={styles.socialLinks}>
             {footerData.socialLinks.length === 0 ? (
@@ -742,6 +751,7 @@ const DashboardFooter = () => {
                       </div>
                     </div>
                     <div className={styles.socialLinkActions}>
+                      {userRole === "admin" && (
                       <button
                         className={styles.iconBtn}
                         onClick={() =>
@@ -754,6 +764,8 @@ const DashboardFooter = () => {
                       >
                         <Edit3 size={14} />
                       </button>
+                      )}
+                      {userRole === "admin" && (
                       <button
                         className={styles.iconBtn}
                         onClick={() =>
@@ -766,6 +778,7 @@ const DashboardFooter = () => {
                       >
                         <Trash2 size={14} />
                       </button>
+                      )}
                     </div>
                   </div>
                 );

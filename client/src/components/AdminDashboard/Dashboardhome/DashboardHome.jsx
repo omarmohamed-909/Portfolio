@@ -1,25 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./DashboardHome.module.css";
-import { verifyJWTToken } from "../utils/authUtils";
-import { Plus, Edit3, Trash2, Upload, Save, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Edit3, Upload, Save, X } from "lucide-react";
 import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
 import { resolveAssetUrl } from "../../../lib/assetUrl.js";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
-const DashboardHome = () => {
-  //Authentication check
-  useEffect(() => {
-    const checkAuth = async () => {
-      const isValid = await verifyJWTToken();
-      if (isValid === false) {
-        window.location.href = "/denied";
-        return;
-      }
-    };
-    checkAuth();
-  }, []);
-
+const DashboardHome = ({ userRole }) => {
   const [MainHomeData, setMainHomeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,11 +21,9 @@ const DashboardHome = () => {
           `${Backend_Root_Url}/api/home/main/data`
         );
         setMainHomeData(response.data);
-        console.log("Home data fetched successfully:", response.data);
       } catch (error) {
         console.error("Error fetching home data:", error);
         setError("Failed to fetch home data. Please check your connection.");
-        // Set fallback data when API is down
         setMainHomeData({
           DisplayName: "Your Name",
           MainRoles: [
@@ -48,9 +34,6 @@ const DashboardHome = () => {
           description:
             "Passionate about creating digital solutions that make a difference",
           HomeLogo: "default.png",
-          Clients_Counting: 0,
-          Rateing: 0,
-          Stats: [],
         });
       } finally {
         setLoading(false);
@@ -60,8 +43,6 @@ const DashboardHome = () => {
     fetchHomeData();
   }, []);
 
-  // Safe data extraction with fallbacks
-  const statsArray = MainHomeData?.Stats || [];
   const HomeLogoImg =
     resolveAssetUrl(MainHomeData?.HomeLogo, `${Backend_Root_Url}/uploads/logo/`) ||
     null;
@@ -72,7 +53,6 @@ const DashboardHome = () => {
       : Object.values(MainHomeData.MainRoles)
     : [];
 
-  // Slide panel state
   const [slidePanel, setSlidePanel] = useState({
     isOpen: false,
     type: "",
@@ -80,32 +60,15 @@ const DashboardHome = () => {
     title: "",
   });
 
-  // Delete confirmation state
-  const [deleteConfirmation, setDeleteConfirmation] = useState({
-    isOpen: false,
-    type: "",
-    id: null,
-    itemName: "",
-  });
-
-  // Form states for slide panel
   const [formData, setFormData] = useState({});
   const [dragActive, setDragActive] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // File input refs
   const fileInputRef = useRef(null);
 
-  // Slide panel functions
   const openSlidePanel = (type, data = null, title = "") => {
-    setSlidePanel({
-      isOpen: true,
-      type,
-      data,
-      title,
-    });
+    setSlidePanel({ isOpen: true, type, data, title });
 
-    // Initialize form data properly
     if (data) {
       if (type === "editHome") {
         setFormData({
@@ -116,86 +79,31 @@ const DashboardHome = () => {
             ? Object.values(data.MainRoles).join(", ")
             : "",
           description: data.description || "",
-          Clients_Counting: data.Clients_Counting || 0,
-          Rateing: data.Rateing || 0,
+          TechStack: data.TechStack || "",
+          FocusArea: data.FocusArea || "",
+          AvailabilityStatus: data.AvailabilityStatus || "",
+          CalendlyUrl: data.CalendlyUrl || "",
           HomeLogo: data.HomeLogo || "",
-        });
-      } else if (type === "editStat") {
-        setFormData({
-          StatsNumber: data.StatsNumber || "",
-          StatsLabel: data.StatsLabel || "",
+          ArchitectureSectionTitle: data.ArchitectureSectionTitle || "",
+          ProjectsSectionTitle: data.ProjectsSectionTitle || "",
+          PresenceHeadingPrefix: data.PresenceHeadingPrefix || "",
+          PresenceHeadingHighlight: data.PresenceHeadingHighlight || "",
+          PresenceDescription: data.PresenceDescription || "",
         });
       } else {
         setFormData(data);
       }
     } else {
-      if (type === "addStat") {
-        setFormData({
-          StatsNumber: "",
-          StatsLabel: "",
-        });
-      } else {
-        setFormData({});
-      }
+      setFormData({});
     }
   };
 
   const closeSlidePanel = () => {
-    setSlidePanel({
-      isOpen: false,
-      type: "",
-      data: null,
-      title: "",
-    });
+    setSlidePanel({ isOpen: false, type: "", data: null, title: "" });
     setFormData({});
     setSaving(false);
   };
 
-  // Delete confirmation functions
-  const openDeleteConfirmation = (type, id, itemName) => {
-    setDeleteConfirmation({
-      isOpen: true,
-      type,
-      id,
-      itemName,
-    });
-  };
-
-  const closeDeleteConfirmation = () => {
-    setDeleteConfirmation({
-      isOpen: false,
-      type: "",
-      id: null,
-      itemName: "",
-    });
-  };
-
-  const confirmDelete = async () => {
-    const { type, id } = deleteConfirmation;
-
-    if (type === "stat") {
-      try {
-        await axios.delete(`${Backend_Root_Url}/api/home/delete/stat/${id}`, {
-          withCredentials: true,
-        });
-
-        // Update local state
-        setMainHomeData((prev) => ({
-          ...prev,
-          Stats: prev.Stats.filter((s) => s._id !== id),
-        }));
-
-        console.log("Stat deleted successfully");
-      } catch (error) {
-        console.error("Error deleting stat:", error);
-        alert("Failed to delete stat. Please try again.");
-      }
-    }
-
-    closeDeleteConfirmation();
-  };
-
-  // File upload handlers
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -210,7 +118,6 @@ const DashboardHome = () => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFileUpload(e.dataTransfer.files[0]);
     }
@@ -218,10 +125,9 @@ const DashboardHome = () => {
 
   const handleFileUpload = (file) => {
     if (!file.type.startsWith("image/")) {
-      alert("Please upload only image files");
+      toast.error("Please upload only image files");
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (e) => {
       setFormData((prev) => ({
@@ -233,213 +139,77 @@ const DashboardHome = () => {
     reader.readAsDataURL(file);
   };
 
-  // API operations
   const updateHomeLogo = async (file) => {
-    try {
-      const formDataObj = new FormData();
-      formDataObj.append("image", file);
-
-      const response = await axios.put(
-        `${Backend_Root_Url}/api/home/update/logo?folder=logo`,
-        formDataObj,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      return response.data.filename;
-    } catch (error) {
-      console.error("Error updating logo:", error);
-      throw error;
-    }
+    const formDataObj = new FormData();
+    formDataObj.append("image", file);
+    const response = await axios.put(
+      `${Backend_Root_Url}/api/home/update/logo?folder=logo`,
+      formDataObj,
+      { withCredentials: true, headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data.filename;
   };
 
   const updateHomeData = async (data) => {
-    try {
-      const response = await axios.put(
-        `${Backend_Root_Url}/api/home/edit/homedata`,
-        data,
-        {
-          withCredentials: true,
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error updating home data:", error);
-      throw error;
-    }
+    const response = await axios.put(
+      `${Backend_Root_Url}/api/home/edit/homedata`,
+      data,
+      { withCredentials: true }
+    );
+    return response.data;
   };
 
-  const addStat = async (statData) => {
-    try {
-      const response = await axios.post(
-        `${Backend_Root_Url}/api/home/add/stat`,
-        statData,
-        {
-          withCredentials: true,
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error adding stat:", error);
-      throw error;
-    }
-  };
-
-  const updateStat = async (id, statData) => {
-    try {
-      const response = await axios.put(
-        `${Backend_Root_Url}/api/home/update/stat/${id}`,
-        statData,
-        {
-          withCredentials: true,
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error updating stat:", error);
-      throw error;
-    }
-  };
-
-  // CRUD operations
   const handleSave = async () => {
     const { type, data } = slidePanel;
     setSaving(true);
 
     try {
       switch (type) {
-        case "editHome":
-          // Handle logo upload if there's a new image
+        case "editHome": {
           let logoFilename = formData.HomeLogo;
           if (formData.imageFile) {
             logoFilename = await updateHomeLogo(formData.imageFile);
           }
-
-          // Prepare data for API
           const homeDataToUpdate = {
             DisplayName: formData.DisplayName,
             MainRoles: formData.MainRoles
-              ? formData.MainRoles.split(",")
-                  .map((role) => role.trim())
-                  .filter((role) => role)
+              ? formData.MainRoles.split(",").map((role) => role.trim()).filter((role) => role)
               : [],
             description: formData.description,
-            Clients_Counting: parseInt(formData.Clients_Counting) || 0,
-            Rateing: parseFloat(formData.Rateing) || 0,
+            TechStack: formData.TechStack || "",
+            FocusArea: formData.FocusArea || "",
+            AvailabilityStatus: formData.AvailabilityStatus || "",
+            CalendlyUrl: formData.CalendlyUrl || "",
+            ArchitectureSectionTitle: formData.ArchitectureSectionTitle || "",
+            ProjectsSectionTitle: formData.ProjectsSectionTitle || "",
+            PresenceHeadingPrefix: formData.PresenceHeadingPrefix || "",
+            PresenceHeadingHighlight: formData.PresenceHeadingHighlight || "",
+            PresenceDescription: formData.PresenceDescription || "",
           };
-
           await updateHomeData(homeDataToUpdate);
-
-          // Update local state
-          setMainHomeData((prev) => ({
-            ...prev,
-            ...homeDataToUpdate,
-            HomeLogo: logoFilename,
-          }));
-
-          console.log("Home data updated successfully");
-          break;
-
-        case "addStat":
-          // Validate required fields for addStat
-          if (!formData.StatsNumber || !formData.StatsLabel) {
-            alert("Stat Number and Stat Label are required.");
-            setSaving(false);
-            return;
-          }
-          const newStatData = {
-            StatsNumber: formData.StatsNumber,
-            StatsLabel: formData.StatsLabel,
-          };
-
-          await addStat(newStatData);
-
-          // Refresh data from server to get the new stat with ID
-          const response = await axios.get(
-            `${Backend_Root_Url}/api/home/main/data`
-          );
-          setMainHomeData(response.data);
-
-          console.log("Stat added successfully");
-          break;
-
-        case "editStat":
-          // Validate required fields for editStat
-          if (!formData.StatsNumber || !formData.StatsLabel) {
-            alert("Stat Number and Stat Label are required.");
-            setSaving(false);
-            return;
-          }
-          const updatedStatData = {
-            StatsNumber: formData.StatsNumber,
-            StatsLabel: formData.StatsLabel,
-          };
-
-          await updateStat(data._id, updatedStatData);
-
-          // Update local state
-          setMainHomeData((prev) => ({
-            ...prev,
-            Stats: prev.Stats.map((s) =>
-              s._id === data._id ? { ...s, ...updatedStatData } : s
-            ),
-          }));
-
-          console.log("Stat updated successfully");
-          break;
+          setMainHomeData((prev) => ({ ...prev, ...homeDataToUpdate, HomeLogo: logoFilename }));
+          toast.success("Home data saved successfully");
+        }
       }
-
       closeSlidePanel();
     } catch (error) {
       console.error("Error saving data:", error);
-      alert("Failed to save data. Please try again.");
+      toast.error("Failed to save data. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className={styles.homeSection}>
         <div className={styles.loadingState}>
+          <div className={styles.spinner} />
           <p>Loading home data...</p>
         </div>
       </div>
     );
   }
-
-  // Render functions
-  const renderDeleteConfirmation = () => {
-    if (!deleteConfirmation.isOpen) return null;
-
-    return (
-      <div className={styles.overlay}>
-        <div className={styles.modal}>
-          <h3>Confirm Delete</h3>
-          <p>
-            Are you sure you want to delete "{deleteConfirmation.itemName}"?
-            This action cannot be undone.
-          </p>
-          <div className={styles.modalActions}>
-            <button
-              className={styles.btnSecondary}
-              onClick={closeDeleteConfirmation}
-            >
-              Cancel
-            </button>
-            <button className={styles.btnDanger} onClick={confirmDelete}>
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   const renderSlidePanel = () => {
     if (!slidePanel.isOpen) return null;
@@ -447,7 +217,13 @@ const DashboardHome = () => {
     const { type, title } = slidePanel;
 
     return (
-      <div className={styles.slidePanel}>
+      <motion.div
+        className={styles.slidePanel}
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+      >
         <div className={styles.slidePanelHeader}>
           <h3>{title}</h3>
           <button className={styles.closeBtn} onClick={closeSlidePanel}>
@@ -464,10 +240,7 @@ const DashboardHome = () => {
                   type="text"
                   value={formData.DisplayName || ""}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      DisplayName: e.target.value,
-                    }))
+                    setFormData((prev) => ({ ...prev, DisplayName: e.target.value }))
                   }
                   placeholder="Enter your display name"
                 />
@@ -479,10 +252,7 @@ const DashboardHome = () => {
                   type="text"
                   value={formData.MainRoles || ""}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      MainRoles: e.target.value,
-                    }))
+                    setFormData((prev) => ({ ...prev, MainRoles: e.target.value }))
                   }
                   placeholder="e.g., Full Stack Developer, UI/UX Designer"
                 />
@@ -493,10 +263,7 @@ const DashboardHome = () => {
                 <textarea
                   value={formData.description || ""}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }))
+                    setFormData((prev) => ({ ...prev, description: e.target.value }))
                   }
                   placeholder="Brief description about yourself"
                   rows={3}
@@ -504,45 +271,58 @@ const DashboardHome = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Clients Count</label>
+                <label>Tech Stack</label>
                 <input
-                  type="number"
-                  value={formData.Clients_Counting || ""}
+                  type="text"
+                  value={formData.TechStack || ""}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      Clients_Counting: e.target.value,
-                    }))
+                    setFormData((prev) => ({ ...prev, TechStack: e.target.value }))
                   }
-                  placeholder="Number of clients"
-                  min="0"
+                  placeholder="e.g., MERN · Next.js · TypeScript"
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>Rating</label>
+                <label>Focus Area</label>
                 <input
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  max="5"
-                  value={formData.Rateing || ""}
+                  type="text"
+                  value={formData.FocusArea || ""}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      Rateing: e.target.value,
-                    }))
+                    setFormData((prev) => ({ ...prev, FocusArea: e.target.value }))
                   }
-                  placeholder="Rating (0-5)"
+                  placeholder="e.g., Systems Design · Clean Architecture"
                 />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Availability Status</label>
+                <input
+                  type="text"
+                  value={formData.AvailabilityStatus || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, AvailabilityStatus: e.target.value }))
+                  }
+                  placeholder="e.g., Available for hire"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Calendly URL</label>
+                <input
+                  type="url"
+                  value={formData.CalendlyUrl || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, CalendlyUrl: e.target.value }))
+                  }
+                  placeholder="https://calendly.com/yourusername"
+                />
+                <small>Link for scheduling meetings on the Contact page</small>
               </div>
 
               <div className={styles.formGroup}>
                 <label>Profile Image</label>
                 <div
-                  className={`${styles.uploadArea} ${
-                    dragActive ? styles.dragActive : ""
-                  }`}
+                  className={`${styles.uploadArea} ${dragActive ? styles.dragActive : ""}`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
@@ -551,18 +331,18 @@ const DashboardHome = () => {
                 >
                   {formData.HomeLogoImg ? (
                     <div className={styles.imagePreview}>
-                      <img src={formData.HomeLogoImg} alt="Profile preview" />
+                      <img src={formData.HomeLogoImg} alt="Profile preview" loading="lazy" decoding="async" />
                     </div>
                   ) : HomeLogoImg ? (
                     <div className={styles.imagePreview}>
-                      <img src={HomeLogoImg} alt="Current profile" />
+                      <img src={HomeLogoImg} alt="Current profile" loading="lazy" decoding="async" />
                     </div>
-                  ) : (
+                  ) : userRole === "admin" ? (
                     <div className={styles.uploadPlaceholder}>
                       <Upload size={24} />
                       <p>Click or drag image here</p>
                     </div>
-                  )}
+                  ) : null}
                 </div>
                 <input
                   ref={fileInputRef}
@@ -572,50 +352,72 @@ const DashboardHome = () => {
                   style={{ display: "none" }}
                 />
               </div>
-            </div>
-          )}
 
-          {(type === "addStat" || type === "editStat") && (
-            <div className={styles.form}>
+              {/* ── Section Titles ── */}
+              <h4 className={styles.formSectionHeading}>Section Titles</h4>
+
               <div className={styles.formGroup}>
-                <label>Stat Number</label>
+                <label>Architecture Section Title</label>
                 <input
                   type="text"
-                  value={formData.StatsNumber || ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      StatsNumber: e.target.value,
-                    }))
-                  }
-                  placeholder="e.g., 50+, 4.9"
-                  required // Added required attribute
+                  value={formData.ArchitectureSectionTitle || ""}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, ArchitectureSectionTitle: e.target.value }))}
+                  placeholder="e.g., Core Architecture"
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>Stat Label</label>
+                <label>Projects Section Title</label>
                 <input
                   type="text"
-                  value={formData.StatsLabel || ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      StatsLabel: e.target.value,
-                    }))
-                  }
-                  placeholder="e.g., Happy Clients, Rating"
-                  required
+                  value={formData.ProjectsSectionTitle || ""}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, ProjectsSectionTitle: e.target.value }))}
+                  placeholder="e.g., Featured Engineering Work"
+                />
+              </div>
+
+              {/* ── Global Presence ── */}
+              <h4 className={styles.formSectionHeading}>Global Presence</h4>
+
+              <div className={styles.formGroup}>
+                <label>Presence Heading Prefix</label>
+                <input
+                  type="text"
+                  value={formData.PresenceHeadingPrefix || ""}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, PresenceHeadingPrefix: e.target.value }))}
+                  placeholder="e.g., Working"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Presence Heading Highlight</label>
+                <input
+                  type="text"
+                  value={formData.PresenceHeadingHighlight || ""}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, PresenceHeadingHighlight: e.target.value }))}
+                  placeholder="e.g., Worldwide."
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Presence Description</label>
+                <textarea
+                  value={formData.PresenceDescription || ""}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, PresenceDescription: e.target.value }))}
+                  placeholder="Describe your global presence..."
+                  rows={3}
                 />
               </div>
             </div>
           )}
+
         </div>
 
         <div className={styles.slidePanelFooter}>
           <button className={styles.btnSecondary} onClick={closeSlidePanel}>
             Cancel
           </button>
+          {userRole === "admin" && (
           <button
             className={styles.btnPrimary}
             onClick={handleSave}
@@ -624,127 +426,147 @@ const DashboardHome = () => {
             <Save size={16} />
             {saving ? "Saving..." : "Save Changes"}
           </button>
+          )}
         </div>
-      </div>
+      </motion.div>
     );
   };
 
   return (
     <div className={styles.homeSection}>
-      <div className={styles.sectionHeader}>
-        {error && <div className={styles.errorMessage}>{error}</div>}
-        <button
-          className={styles.btnPrimary}
-          onClick={() =>
-            openSlidePanel("editHome", MainHomeData, "Edit Home Section")
-          }
-        >
-          <Edit3 size={16} />
-          Edit Home
-        </button>
+
+      {/* ── Page Header ── */}
+      <div className={styles.pageHeader}>
+        <div>
+          <h2 className={styles.pageTitle}>Home Page</h2>
+          <p className={styles.pageSubtitle}>Preview and manage all home section content</p>
+        </div>
+        <div className={styles.headerActions}>
+          {error && <span className={styles.errorBadge}>{error}</span>}
+          {userRole === "admin" && (
+          <motion.button
+            className={styles.btnPrimary}
+            onClick={() => openSlidePanel("editHome", MainHomeData, "Edit Home Section")}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Edit3 size={15} />
+            Edit Home
+          </motion.button>
+          )}
+        </div>
       </div>
 
-      <div className={styles.grid}>
+      {/* ── Content Grid ── */}
+      <div className={styles.contentGrid}>
+
         {/* Profile Card */}
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <h3>Profile Information</h3>
+        <motion.div
+          className={styles.previewCard}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className={styles.previewCardLabel}>
+            <span className={styles.labelDot} />
+            Profile
           </div>
-          <div className={styles.profileInfo}>
-            <div className={styles.profileImage}>
+          <div className={styles.profileRow}>
+            <div className={styles.profileAvatar}>
               {HomeLogoImg ? (
-                <img src={HomeLogoImg} alt="Profile" />
+                <img src={HomeLogoImg} alt="Profile" loading="lazy" decoding="async" />
               ) : (
                 <div className={styles.profilePlaceholder}>
                   {MainHomeData?.DisplayName?.charAt(0) || "?"}
                 </div>
               )}
             </div>
-            <div className={styles.profileDetails}>
-              <h4>{MainHomeData?.DisplayName || "Your Name"}</h4>
+            <div>
+              <h3 className={styles.previewTitle}>{MainHomeData?.DisplayName || "—"}</h3>
               <div className={styles.rolesList}>
-                {GetRoles.map((role, index) => (
-                  <span key={index} className={styles.roleTag}>
-                    {role}
-                  </span>
+                {GetRoles.map((role, i) => (
+                  <span key={i} className={styles.roleTag}>{role}</span>
                 ))}
-              </div>
-              <p>{MainHomeData?.description || "Description Here"}</p>
-              <div className={styles.additionalInfo}>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Clients:</span>
-                  <span className={styles.infoValue}>
-                    {MainHomeData?.Clients_Counting || 0}
-                  </span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Rating:</span>
-                  <span className={styles.infoValue}>
-                    {MainHomeData?.Rateing || 0}/5
-                  </span>
-                </div>
               </div>
             </div>
           </div>
-        </div>
+          <p className={styles.previewDesc}>{MainHomeData?.description || "No description yet."}</p>
+        </motion.div>
 
-        {/* Stats Card */}
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <h3>Statistics</h3>
-            <button
-              className={styles.btnSecondary}
-              onClick={() =>
-                openSlidePanel("addStat", null, "Add New Statistic")
-              }
-            >
-              <Plus size={16} />
-              Add Stat
-            </button>
+        {/* Identity Card */}
+        <motion.div
+          className={styles.previewCard}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+        >
+          <div className={styles.previewCardLabel}>
+            <span className={styles.labelDot} />
+            Identity
           </div>
-          <div className={styles.statsList}>
-            {statsArray.length > 0 ? (
-              statsArray.map((stat) => (
-                <div key={stat._id} className={styles.statItem}>
-                  <div className={styles.statInfo}>
-                    <div className={styles.statNumber}>{stat.StatsNumber}</div>
-                    <div className={styles.statLabel}>{stat.StatsLabel}</div>
-                  </div>
-                  <div className={styles.statActions}>
-                    <button
-                      className={styles.iconBtn}
-                      onClick={() =>
-                        openSlidePanel("editStat", stat, "Edit Statistic")
-                      }
-                    >
-                      <Edit3 size={14} />
-                    </button>
-                    <button
-                      className={styles.iconBtn}
-                      onClick={() =>
-                        openDeleteConfirmation(
-                          "stat",
-                          stat._id,
-                          stat.StatsLabel
-                        )
-                      }
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className={styles.emptyState}>
-                <p>No statistics available. Add some stats to get started.</p>
-              </div>
-            )}
+          <div className={styles.identityRows}>
+            <div className={styles.identityRow}>
+              <span className={styles.identityKey}>Stack</span>
+              <span className={styles.identityVal}>{MainHomeData?.TechStack || "—"}</span>
+            </div>
+            <div className={styles.identityRow}>
+              <span className={styles.identityKey}>Focus</span>
+              <span className={styles.identityVal}>{MainHomeData?.FocusArea || "—"}</span>
+            </div>
+            <div className={styles.identityRow}>
+              <span className={styles.identityKey}>Status</span>
+              <span className={styles.identityVal}>{MainHomeData?.AvailabilityStatus || "—"}</span>
+            </div>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Section Titles Card */}
+        <motion.div
+          className={styles.previewCard}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          <div className={styles.previewCardLabel}>
+            <span className={styles.labelDot} />
+            Section Titles
+          </div>
+          <div className={styles.identityRows}>
+            <div className={styles.identityRow}>
+              <span className={styles.identityKey}>Architecture</span>
+              <span className={styles.identityVal}>{MainHomeData?.ArchitectureSectionTitle || "—"}</span>
+            </div>
+            <div className={styles.identityRow}>
+              <span className={styles.identityKey}>Projects</span>
+              <span className={styles.identityVal}>{MainHomeData?.ProjectsSectionTitle || "—"}</span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Global Presence Card */}
+        <motion.div
+          className={styles.previewCard}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.15 }}
+        >
+          <div className={styles.previewCardLabel}>
+            <span className={styles.labelDot} />
+            Global Presence
+          </div>
+          <p className={styles.presenceHeading}>
+            <span className={styles.presencePrefix}>{MainHomeData?.PresenceHeadingPrefix || "—"}</span>
+            {" "}
+            <span className={styles.presenceHighlight}>{MainHomeData?.PresenceHeadingHighlight || ""}</span>
+          </p>
+          <p className={styles.previewDesc}>{MainHomeData?.PresenceDescription || "No description yet."}</p>
+        </motion.div>
+
       </div>
 
-      {renderSlidePanel()}
-      {renderDeleteConfirmation()}
+      <AnimatePresence>
+        {slidePanel.isOpen && renderSlidePanel()}
+      </AnimatePresence>
     </div>
   );
 };

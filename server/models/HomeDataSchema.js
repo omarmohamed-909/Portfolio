@@ -12,13 +12,36 @@ const homeDataSchema = mongoose.Schema({
   description: {
     type: String,
   },
-  Clients_Counting: {
-    type: Number,
-    default: 0,
+  TechStack: {
+    type: String,
   },
-  Rateing: {
-    type: Number,
-    default: 0,
+  FocusArea: {
+    type: String,
+  },
+  AvailabilityStatus: {
+    type: String,
+  },
+  CalendlyUrl: {
+    type: String,
+  },
+  ArchitectureSectionTitle: {
+    type: String,
+  },
+  ProjectsSectionTitle: {
+    type: String,
+  },
+  PresenceHeadingPrefix: {
+    type: String,
+  },
+  PresenceHeadingHighlight: {
+    type: String,
+  },
+  PresenceDescription: {
+    type: String,
+  },
+  AboutUs: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AboutUs",
   },
   Stats: [
     {
@@ -26,11 +49,6 @@ const homeDataSchema = mongoose.Schema({
       ref: "Stats",
     },
   ],
-
-  AboutUs: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "AboutUs",
-  },
 });
 const HomeData = mongoose.model("HomePageData", homeDataSchema);
 export default HomeData;

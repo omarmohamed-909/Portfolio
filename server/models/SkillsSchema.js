@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const SkillsShmea = new mongoose.Schema({
+const SkillsSchema = new mongoose.Schema({
   Category: {
     type: String,
     required: true,
@@ -14,6 +14,9 @@ const SkillsShmea = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  Detail: {
+    type: String,
+  },
 });
-const Skills = mongoose.model("Skills", SkillsShmea);
+const Skills = mongoose.model("Skills", SkillsSchema);
 export default Skills;

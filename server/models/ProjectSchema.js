@@ -30,11 +30,17 @@ const ProjectSchema = new mongoose.Schema(
       required: false,
       default: "",
     },
+    GithubUrl: {
+      type: String,
+      trim: true,
+      required: false,
+      default: "",
+    },
     Project_technologies: {
       type: [String],
       default: [],
     },
-    Porject_Status: {
+    Project_Status: {
       type: String,
       enum: [
         "completed",

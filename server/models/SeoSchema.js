@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-const SeoShema = new mongoose.Schema(
+const SeoSchema = new mongoose.Schema(
   {
     Page: {
       type: String,
-      enum: ["home", "projects", "skills", "cv", "contact"],
+      enum: ["home", "projects", "skills", "cv", "contact", "about"],
       required: true,
       trim: true,
       minlength: 1,
@@ -11,8 +11,8 @@ const SeoShema = new mongoose.Schema(
     },
     Title: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
     },
     Description: {
       type: String,
@@ -53,5 +53,5 @@ const SeoShema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-const Seo = mongoose.model("Seo", SeoShema);
+const Seo = mongoose.model("Seo", SeoSchema);
 export default Seo;

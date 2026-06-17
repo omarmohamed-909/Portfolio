@@ -2,9 +2,23 @@
    CONTACT PAGE — Cyan focus states, rewarding Send button, clean forms
    ========================================================================== */
 
+.pageWrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--text-primary);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.contentLayer {
+  position: relative;
+  z-index: 1;
+}
+
 .pageContainer {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: transparent;
   color: var(--text-primary);
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -35,6 +49,14 @@
 .loadingContainer p {
   color: var(--text-secondary);
   font-size: 1.05rem;
+}
+
+.loadingContainer .spinner {
+  width: 36px;
+  height: 36px;
+  border-width: 3px;
+  border-color: rgba(0, 212, 255, 0.15);
+  border-top-color: #00d4ff;
 }
 
 /* ── Header ───────────────────────────────────────────────── */
@@ -113,9 +135,7 @@
 }
 
 [data-theme="dark"] .formContainer {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(15, 23, 42, 0.85);
   border-color: rgba(0, 212, 255, 0.08);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.30);
 }
@@ -370,9 +390,7 @@
 }
 
 [data-theme="dark"] .infoContainer {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(15, 23, 42, 0.85);
   border-color: rgba(0, 212, 255, 0.08);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.30);
 }
@@ -523,6 +541,73 @@
 .socialLink svg { position: relative; z-index: 1; }
 
 /* ── Response Time ────────────────────────────────────────── */
+.scheduleCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem;
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px solid rgba(0, 212, 255, 0.18);
+  border-radius: 16px;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+[data-theme="light"] .scheduleCard {
+  background: rgba(8, 145, 178, 0.06);
+  border-color: rgba(8, 145, 178, 0.18);
+}
+
+.scheduleCard:hover {
+  border-color: rgba(0, 212, 255, 0.50);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 212, 255, 0.18);
+}
+
+.scheduleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 212, 255, 0.14);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.scheduleIcon svg { color: #00d4ff; }
+[data-theme="light"] .scheduleIcon svg { color: #0891b2; }
+
+.scheduleInfo { flex: 1; }
+
+.scheduleInfo h4 {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: #00d4ff;
+  margin: 0 0 0.2rem 0;
+}
+
+[data-theme="light"] .scheduleInfo h4 { color: #0891b2; }
+
+.scheduleInfo p {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.scheduleArrow {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  transition: transform 0.25s ease;
+}
+
+.scheduleCard:hover .scheduleArrow {
+  transform: translateX(4px);
+  color: #00d4ff;
+}
+
 .responseTime {
   display: flex;
   align-items: center;

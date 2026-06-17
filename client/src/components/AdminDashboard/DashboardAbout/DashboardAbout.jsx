@@ -1,18 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./DashboardAbout.module.css";
 import { verifyJWTToken } from "../utils/authUtils";
-import { Plus, Edit3, Trash2, Upload, Save, X, Image } from "lucide-react";
+import { Edit3, Save, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
-import { resolveAssetUrl } from "../../../lib/assetUrl.js";
+import { toast } from "sonner";
 
-const DashboardAbout = () => {
+const DashboardAbout = ({ userRole }) => {
   //Authentication check
   useEffect(() => {
     const checkAuth = async () => {
-      const isValid = await verifyJWTToken();
-      if (isValid === false) {
+      const { isAuthenticated } = await verifyJWTToken();
+      if (!isAuthenticated) {
         window.location.href = "/denied";
         return;
       }
@@ -44,10 +44,24 @@ const DashboardAbout = () => {
           title: data.AboutUs?.AboutUsTitle || "About Me",
           description: data.AboutUs?.AboutUsDescription || "Description here",
           skills: data.AboutUs?.AboutSkills || [],
-          slides: data.AboutUsSlides?.AboutUsSlides || [],
+          slides: data.AboutUs?.AboutUsSlides || [],
+          academicTitle: data.AboutUs?.AcademicTitle || "",
+          academicMeta: data.AboutUs?.AcademicMeta || "",
+          academicDescription: data.AboutUs?.AcademicDescription || "",
+          identityCard1Title: data.AboutUs?.IdentityCard1Title || "",
+          identityCard1Subtitle: data.AboutUs?.IdentityCard1Subtitle || "",
+          identityCard1Items: data.AboutUs?.IdentityCard1Items || [],
+          identityCard2Title: data.AboutUs?.IdentityCard2Title || "",
+          identityCard2Subtitle: data.AboutUs?.IdentityCard2Subtitle || "",
+          identityCard2Items: data.AboutUs?.IdentityCard2Items || [],
+          identityCard3Title: data.AboutUs?.IdentityCard3Title || "",
+          identityCard3Subtitle: data.AboutUs?.IdentityCard3Subtitle || "",
+          identityCard3Items: data.AboutUs?.IdentityCard3Items || [],
+          philosophyQuote: data.AboutUs?.PhilosophyQuote || "",
+          philosophyMeta: data.AboutUs?.PhilosophyMeta || "",
         });
 
-        console.log("About data fetched successfully:", data);
+
       } catch (error) {
         console.error("Error fetching about data:", error);
         setError("Failed to fetch about data. Please check your connection.");
@@ -66,6 +80,20 @@ const DashboardAbout = () => {
             "PostgreSQL",
           ],
           slides: [],
+          academicTitle: "",
+          academicMeta: "",
+          academicDescription: "",
+          identityCard1Title: "",
+          identityCard1Subtitle: "",
+          identityCard1Items: [],
+          identityCard2Title: "",
+          identityCard2Subtitle: "",
+          identityCard2Items: [],
+          identityCard3Title: "",
+          identityCard3Subtitle: "",
+          identityCard3Items: [],
+          philosophyQuote: "",
+          philosophyMeta: "",
         });
       } finally {
         setLoading(false);
@@ -91,13 +119,8 @@ const DashboardAbout = () => {
     itemName: "",
   });
 
-  // Form states for slide panel
   const [formData, setFormData] = useState({});
-  const [dragActive, setDragActive] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  // File input refs
-  const fileInputRef = useRef(null);
 
   // Slide panel functions
   const openSlidePanel = (type, data = null, title = "") => {
@@ -115,12 +138,25 @@ const DashboardAbout = () => {
           AboutUsTitle: data.title || "",
           AboutUsDescription: data.description || "",
           AboutSkills: Array.isArray(data.skills) ? data.skills.join(", ") : "",
+          AcademicTitle: data.academicTitle || "",
+          AcademicMeta: data.academicMeta || "",
+          AcademicDescription: data.academicDescription || "",
+          IdentityCard1Title: data.identityCard1Title || "",
+          IdentityCard1Subtitle: data.identityCard1Subtitle || "",
+          IdentityCard1Items: Array.isArray(data.identityCard1Items) ? data.identityCard1Items.join(", ") : "",
+          IdentityCard2Title: data.identityCard2Title || "",
+          IdentityCard2Subtitle: data.identityCard2Subtitle || "",
+          IdentityCard2Items: Array.isArray(data.identityCard2Items) ? data.identityCard2Items.join(", ") : "",
+          IdentityCard3Title: data.identityCard3Title || "",
+          IdentityCard3Subtitle: data.identityCard3Subtitle || "",
+          IdentityCard3Items: Array.isArray(data.identityCard3Items) ? data.identityCard3Items.join(", ") : "",
+          PhilosophyQuote: data.philosophyQuote || "",
+          PhilosophyMeta: data.philosophyMeta || "",
         });
       } else if (type === "editSlide") {
         setFormData({
           slideTitle: data.slideTitle || "",
           slideDescription: data.slideDescription || "",
-          slideImage: data.slideImage || "",
         });
       } else {
         setFormData(data);
@@ -130,7 +166,6 @@ const DashboardAbout = () => {
         setFormData({
           slideTitle: "",
           slideDescription: "",
-          slideImage: "",
         });
       } else {
         setFormData({});
@@ -186,52 +221,14 @@ const DashboardAbout = () => {
           slides: prev.slides.filter((s) => s._id !== id),
         }));
 
-        console.log("Slide deleted successfully");
+
       } catch (error) {
         console.error("Error deleting slide:", error);
-        alert("Failed to delete slide. Please try again.");
+        toast.error("Failed to delete slide. Please try again.");
       }
     }
 
     closeDeleteConfirmation();
-  };
-
-  // File upload handlers
-  const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileUpload(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleFileUpload = (file) => {
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload only image files");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setFormData((prev) => ({
-        ...prev,
-        imageUrl: e.target.result,
-        imageFile: file,
-      }));
-    };
-    reader.readAsDataURL(file);
   };
 
   // API operations
@@ -253,23 +250,13 @@ const DashboardAbout = () => {
 
   const addSlide = async (slideData) => {
     try {
-      const formDataObj = new FormData();
-      formDataObj.append("slideTitle", slideData.slideTitle);
-      formDataObj.append("slideDescription", slideData.slideDescription);
-      formDataObj.append("image", slideData.imageFile);
-
       const response = await axios.post(
         `${Backend_Root_Url}/api/aboutslide/add/slide`,
-        formDataObj,
         {
-          params: {
-            folder: "aboutimg",
-          },
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          withCredentials: true,
-        }
+          slideTitle: slideData.slideTitle,
+          slideDescription: slideData.slideDescription,
+        },
+        { withCredentials: true }
       );
       return response.data;
     } catch (error) {
@@ -280,25 +267,13 @@ const DashboardAbout = () => {
 
   const updateSlide = async (id, slideData) => {
     try {
-      const formDataObj = new FormData();
-      if (slideData.slideTitle)
-        formDataObj.append("slideTitle", slideData.slideTitle);
-      if (slideData.slideDescription)
-        formDataObj.append("slideDescription", slideData.slideDescription);
-      if (slideData.imageFile) formDataObj.append("image", slideData.imageFile);
-
       const response = await axios.put(
         `${Backend_Root_Url}/api/aboutslide/edit/slide/${id}`,
-        formDataObj,
         {
-          params: {
-            folder: "aboutimg",
-          },
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          withCredentials: true,
-        }
+          slideTitle: slideData.slideTitle,
+          slideDescription: slideData.slideDescription,
+        },
+        { withCredentials: true }
       );
       return response.data;
     } catch (error) {
@@ -323,6 +298,32 @@ const DashboardAbout = () => {
                   .map((skill) => skill.trim())
                   .filter((skill) => skill)
               : [],
+            AcademicTitle: formData.AcademicTitle,
+            AcademicMeta: formData.AcademicMeta,
+            AcademicDescription: formData.AcademicDescription,
+            IdentityCard1Title: formData.IdentityCard1Title,
+            IdentityCard1Subtitle: formData.IdentityCard1Subtitle,
+            IdentityCard1Items: formData.IdentityCard1Items
+              ? formData.IdentityCard1Items.split(",")
+                  .map((item) => item.trim())
+                  .filter((item) => item)
+              : [],
+            IdentityCard2Title: formData.IdentityCard2Title,
+            IdentityCard2Subtitle: formData.IdentityCard2Subtitle,
+            IdentityCard2Items: formData.IdentityCard2Items
+              ? formData.IdentityCard2Items.split(",")
+                  .map((item) => item.trim())
+                  .filter((item) => item)
+              : [],
+            IdentityCard3Title: formData.IdentityCard3Title,
+            IdentityCard3Subtitle: formData.IdentityCard3Subtitle,
+            IdentityCard3Items: formData.IdentityCard3Items
+              ? formData.IdentityCard3Items.split(",")
+                  .map((item) => item.trim())
+                  .filter((item) => item)
+              : [],
+            PhilosophyQuote: formData.PhilosophyQuote,
+            PhilosophyMeta: formData.PhilosophyMeta,
           };
 
           await updateAboutData(aboutDataToUpdate);
@@ -333,19 +334,28 @@ const DashboardAbout = () => {
             title: aboutDataToUpdate.AboutUsTitle,
             description: aboutDataToUpdate.AboutUsDescription,
             skills: aboutDataToUpdate.AboutSkills,
+            academicTitle: aboutDataToUpdate.AcademicTitle,
+            academicMeta: aboutDataToUpdate.AcademicMeta,
+            academicDescription: aboutDataToUpdate.AcademicDescription,
+            identityCard1Title: aboutDataToUpdate.IdentityCard1Title,
+            identityCard1Subtitle: aboutDataToUpdate.IdentityCard1Subtitle,
+            identityCard1Items: aboutDataToUpdate.IdentityCard1Items,
+            identityCard2Title: aboutDataToUpdate.IdentityCard2Title,
+            identityCard2Subtitle: aboutDataToUpdate.IdentityCard2Subtitle,
+            identityCard2Items: aboutDataToUpdate.IdentityCard2Items,
+            identityCard3Title: aboutDataToUpdate.IdentityCard3Title,
+            identityCard3Subtitle: aboutDataToUpdate.IdentityCard3Subtitle,
+            identityCard3Items: aboutDataToUpdate.IdentityCard3Items,
+            philosophyQuote: aboutDataToUpdate.PhilosophyQuote,
+            philosophyMeta: aboutDataToUpdate.PhilosophyMeta,
           }));
 
-          console.log("About data updated successfully");
+          toast.success("About data saved successfully");
           break;
 
         case "addSlide":
-          // Validate required fields for addSlide
-          if (
-            !formData.slideTitle ||
-            !formData.slideDescription ||
-            !formData.imageFile
-          ) {
-            alert("Slide Title, Slide Description, and Image are required.");
+          if (!formData.slideTitle || !formData.slideDescription) {
+            toast.error("Slide Title and Slide Description are required.");
             setSaving(false);
             return;
           }
@@ -353,25 +363,23 @@ const DashboardAbout = () => {
           const newSlideData = {
             slideTitle: formData.slideTitle,
             slideDescription: formData.slideDescription,
-            imageFile: formData.imageFile,
           };
 
           await addSlide(newSlideData);
 
-          // Refresh data from server to get the new slide with ID
+          // Refresh data from server to get the new slide with its MongoDB _id
           const response = await axios.get(
             `${Backend_Root_Url}/api/home/main/data`,
-            {
-              withCredentials: true,
-            }
+            { withCredentials: true }
           );
           const updatedData = response.data;
+          // AboutUs is the populated object returned by ShowHomeData
           setAboutData((prev) => ({
             ...prev,
-            slides: updatedData.AboutUsSlides?.AboutUsSlides || [],
+            slides: updatedData.AboutUs?.AboutUsSlides || [],
           }));
 
-          console.log("Slide added successfully");
+          toast.success("Slide added successfully");
           break;
 
         case "editSlide":
@@ -380,50 +388,30 @@ const DashboardAbout = () => {
             slideDescription: formData.slideDescription,
           };
 
-          if (formData.imageFile) {
-            updatedSlideData.imageFile = formData.imageFile;
-          }
+          await updateSlide(data._id, updatedSlideData);
 
-          const updateResponse = await updateSlide(data._id, updatedSlideData);
+          setAboutData((prev) => ({
+            ...prev,
+            slides: prev.slides.map((s) =>
+              s._id === data._id
+                ? {
+                    ...s,
+                    slideTitle: updatedSlideData.slideTitle || s.slideTitle,
+                    slideDescription:
+                      updatedSlideData.slideDescription || s.slideDescription,
+                  }
+                : s
+            ),
+          }));
 
-          // If image was uploaded, refresh the entire data from server to ensure we get the latest image
-          if (formData.imageFile) {
-            const refreshResponse = await axios.get(
-              `${Backend_Root_Url}/api/home/main/data`,
-              {
-                withCredentials: true,
-              }
-            );
-            const refreshedData = refreshResponse.data;
-            setAboutData((prev) => ({
-              ...prev,
-              slides: refreshedData.AboutUsSlides?.AboutUsSlides || [],
-            }));
-          } else {
-            // If no image was uploaded, just update the text fields
-            setAboutData((prev) => ({
-              ...prev,
-              slides: prev.slides.map((s) =>
-                s._id === data._id
-                  ? {
-                      ...s,
-                      slideTitle: updatedSlideData.slideTitle || s.slideTitle,
-                      slideDescription:
-                        updatedSlideData.slideDescription || s.slideDescription,
-                    }
-                  : s
-              ),
-            }));
-          }
-
-          console.log("Slide updated successfully");
+          toast.success("Slide updated successfully");
           break;
       }
 
       closeSlidePanel();
     } catch (error) {
       console.error("Error saving data:", error);
-      alert("Failed to save data. Please try again.");
+      toast.error("Failed to save data. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -459,9 +447,11 @@ const DashboardAbout = () => {
             >
               Cancel
             </button>
+            {userRole === "admin" && (
             <button className={styles.btnDanger} onClick={confirmDelete}>
               Delete
             </button>
+            )}
           </div>
         </div>
       </div>
@@ -529,6 +519,226 @@ const DashboardAbout = () => {
                   placeholder="e.g., React, Node.js, JavaScript"
                 />
               </div>
+
+              <h4 style={{ margin: "1rem 0 0.5rem", color: "var(--accent-primary)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Academic</h4>
+
+              <div className={styles.formGroup}>
+                <label>Academic Title</label>
+                <input
+                  type="text"
+                  value={formData.AcademicTitle || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      AcademicTitle: e.target.value,
+                    }))
+                  }
+                  placeholder="B.Sc. Computer Science &amp; AI"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Academic Meta</label>
+                <input
+                  type="text"
+                  value={formData.AcademicMeta || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      AcademicMeta: e.target.value,
+                    }))
+                  }
+                  placeholder="University · Senior Year (2026)"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Academic Description</label>
+                <textarea
+                  value={formData.AcademicDescription || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      AcademicDescription: e.target.value,
+                    }))
+                  }
+                  placeholder="Specialising in algorithm design..."
+                  rows={3}
+                />
+              </div>
+
+              <h4 style={{ margin: "2rem 0 0.5rem", color: "var(--accent-primary)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", borderTop: "1px solid var(--border-color, rgba(255,255,255,0.08))", paddingTop: "1.5rem" }}>Engineering Identity — Card 1</h4>
+
+              <div className={styles.formGroup}>
+                <label>Card 1 Title</label>
+                <input
+                  type="text"
+                  value={formData.IdentityCard1Title || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      IdentityCard1Title: e.target.value,
+                    }))
+                  }
+                  placeholder="Competitive Programming"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Card 1 Subtitle</label>
+                <input
+                  type="text"
+                  value={formData.IdentityCard1Subtitle || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      IdentityCard1Subtitle: e.target.value,
+                    }))
+                  }
+                  placeholder="Core CS &amp; Algorithms"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Card 1 Items (comma separated)</label>
+                <input
+                  type="text"
+                  value={formData.IdentityCard1Items || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      IdentityCard1Items: e.target.value,
+                    }))
+                  }
+                  placeholder="Problem Solving (C++), Data Structures &amp; Algorithms"
+                />
+              </div>
+
+              <h4 style={{ margin: "1.25rem 0 0.5rem", color: "var(--accent-primary)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Engineering Identity — Card 2</h4>
+
+              <div className={styles.formGroup}>
+                <label>Card 2 Title</label>
+                <input
+                  type="text"
+                  value={formData.IdentityCard2Title || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      IdentityCard2Title: e.target.value,
+                    }))
+                  }
+                  placeholder="Computer Vision &amp; Data"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Card 2 Subtitle</label>
+                <input
+                  type="text"
+                  value={formData.IdentityCard2Subtitle || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      IdentityCard2Subtitle: e.target.value,
+                    }))
+                  }
+                  placeholder="Image Processing &amp; Analysis"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Card 2 Items (comma separated)</label>
+                <input
+                  type="text"
+                  value={formData.IdentityCard2Items || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      IdentityCard2Items: e.target.value,
+                    }))
+                  }
+                  placeholder="OpenCV &amp; Python, Image Processing Pipelines"
+                />
+              </div>
+
+              <h4 style={{ margin: "1.25rem 0 0.5rem", color: "var(--accent-primary)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Engineering Identity — Card 3</h4>
+
+              <div className={styles.formGroup}>
+                <label>Card 3 Title</label>
+                <input
+                  type="text"
+                  value={formData.IdentityCard3Title || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      IdentityCard3Title: e.target.value,
+                    }))
+                  }
+                  placeholder="3D &amp; Media Pipelines"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Card 3 Subtitle</label>
+                <input
+                  type="text"
+                  value={formData.IdentityCard3Subtitle || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      IdentityCard3Subtitle: e.target.value,
+                    }))
+                  }
+                  placeholder="Blender · Modeling · Rendering"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Card 3 Items (comma separated)</label>
+                <input
+                  type="text"
+                  value={formData.IdentityCard3Items || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      IdentityCard3Items: e.target.value,
+                    }))
+                  }
+                  placeholder="3D Modeling &amp; Sculpting, Rendering &amp; Compositing"
+                />
+              </div>
+
+              <h4 style={{ margin: "1.25rem 0 0.5rem", color: "var(--accent-primary)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Philosophy</h4>
+
+              <div className={styles.formGroup}>
+                <label>Philosophy Quote</label>
+                <textarea
+                  value={formData.PhilosophyQuote || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      PhilosophyQuote: e.target.value,
+                    }))
+                  }
+                  placeholder="I architect and build complete systems..."
+                  rows={3}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Philosophy Meta</label>
+                <input
+                  type="text"
+                  value={formData.PhilosophyMeta || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      PhilosophyMeta: e.target.value,
+                    }))
+                  }
+                  placeholder="Full-stack development from schema to deployment"
+                />
+              </div>
             </div>
           )}
 
@@ -576,55 +786,7 @@ const DashboardAbout = () => {
                 />
               </div>
 
-              <div className={styles.formGroup}>
-                <label>
-                  Image/Logo{" "}
-                  {type === "addSlide" && (
-                    <span className={styles.required}>*Required</span>
-                  )}
-                </label>
-                <div
-                  className={`${styles.uploadArea} ${
-                    dragActive ? styles.dragActive : ""
-                  }`}
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  {formData.imageUrl ? (
-                    <div className={styles.imagePreview}>
-                      <img src={formData.imageUrl} alt="Slide preview" />
-                    </div>
-                  ) : formData.slideImage && type === "editSlide" ? (
-                    <div className={styles.imagePreview}>
-                      <img
-                        src={resolveAssetUrl(
-                          formData.slideImage,
-                          `${Backend_Root_Url}/uploads/aboutimg/`
-                        )}
-                        alt="Current slide"
-                      />
-                    </div>
-                  ) : (
-                    <div className={styles.uploadPlaceholder}>
-                      <Upload size={24} />
-                      <p>Click or drag image here</p>
-                      {type === "addSlide" && (
-                        <small>Image is required for slides</small>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileUpload(e.target.files[0])}
-                  style={{ display: "none" }}
-                />
-              </div>
+
             </div>
           )}
         </div>
@@ -633,6 +795,7 @@ const DashboardAbout = () => {
           <button className={styles.btnSecondary} onClick={closeSlidePanel}>
             Cancel
           </button>
+          {userRole === "admin" && (
           <button
             className={styles.btnPrimary}
             onClick={handleSave}
@@ -641,6 +804,7 @@ const DashboardAbout = () => {
             <Save size={16} />
             {saving ? "Saving..." : "Save Changes"}
           </button>
+          )}
         </div>
       </div>
     );
@@ -648,107 +812,97 @@ const DashboardAbout = () => {
 
   return (
     <div className={styles.aboutSection}>
-      <div className={styles.sectionHeader}>
-        {error && <div className={styles.errorMessage}>{error}</div>}
-        <button
-          className={styles.btnPrimary}
-          onClick={() =>
-            openSlidePanel("editAbout", aboutData, "Edit About Section")
-          }
-        >
-          <Edit3 size={16} />
-          Edit About
-        </button>
+
+      {/* ── Page Header ── */}
+      <div className={styles.pageHeader}>
+        <div>
+          <h2 className={styles.pageTitle}>About Page</h2>
+          <p className={styles.pageSubtitle}>Preview and manage all about section content</p>
+        </div>
+        <div className={styles.headerActions}>
+          {error && <span className={styles.errorBadge}>{error}</span>}
+          {userRole === "admin" && (
+          <button
+            className={styles.btnPrimary}
+            onClick={() => openSlidePanel("editAbout", aboutData, "Edit About Section")}
+          >
+            <Edit3 size={15} />
+            Edit About
+          </button>
+          )}
+        </div>
       </div>
 
-      <div className={styles.grid}>
-        {/* About Info Card */}
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <h3>About Information</h3>
+      {/* ── Content Grid ── */}
+      <div className={styles.contentGrid}>
+
+        {/* About Info */}
+        <div className={styles.previewCard}>
+          <div className={styles.previewCardLabel}>
+            <span className={styles.labelDot} />
+            About
           </div>
-          <div className={styles.aboutInfo}>
-            <h4>{aboutData?.title || "About Me"}</h4>
-            <p>{aboutData?.description || "Description here"}</p>
-            <div className={styles.skillsList}>
-              <h5>Skills:</h5>
-              <div className={styles.tagList}>
-                {(aboutData?.skills || []).map((skill, index) => (
-                  <span key={index} className={styles.tag}>
-                    {skill}
-                  </span>
-                ))}
-              </div>
+          <h3 className={styles.previewTitle}>{aboutData?.title || "—"}</h3>
+          <p className={styles.previewDesc}>{aboutData?.description || "No description yet."}</p>
+          {(aboutData?.skills || []).length > 0 && (
+            <div className={styles.tagList}>
+              {aboutData.skills.map((skill, i) => (
+                <span key={i} className={styles.tag}>{skill}</span>
+              ))}
             </div>
+          )}
+        </div>
+
+        {/* Academic */}
+        <div className={styles.previewCard}>
+          <div className={styles.previewCardLabel}>
+            <span className={styles.labelDot} />
+            Academic
+          </div>
+          <h3 className={styles.previewTitle}>{aboutData?.academicTitle || "—"}</h3>
+          <p className={styles.previewMeta}>{aboutData?.academicMeta || "—"}</p>
+          <p className={styles.previewDesc}>{aboutData?.academicDescription || "No description yet."}</p>
+        </div>
+
+        {/* Engineering Identity */}
+        <div className={`${styles.previewCard} ${styles.identityCard}`}>
+          <div className={styles.previewCardLabel}>
+            <span className={styles.labelDot} />
+            Engineering Identity
+          </div>
+          <div className={styles.identityGrid}>
+            {[
+              { title: aboutData?.identityCard1Title, subtitle: aboutData?.identityCard1Subtitle, items: aboutData?.identityCard1Items },
+              { title: aboutData?.identityCard2Title, subtitle: aboutData?.identityCard2Subtitle, items: aboutData?.identityCard2Items },
+              { title: aboutData?.identityCard3Title, subtitle: aboutData?.identityCard3Subtitle, items: aboutData?.identityCard3Items },
+            ].map((card, i) => (
+              <div key={i} className={styles.identityCol}>
+                <p className={styles.identityColTitle}>{card.title || `Card ${i + 1}`}</p>
+                <p className={styles.identityColSub}>{card.subtitle || "—"}</p>
+                {(card.items || []).length > 0 && (
+                  <ul className={styles.identityList}>
+                    {card.items.map((item, j) => (
+                      <li key={j}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Slides Card */}
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <h3>About Slides</h3>
-            <button
-              className={styles.btnSecondary}
-              onClick={() => openSlidePanel("addSlide", null, "Add New Slide")}
-            >
-              <Plus size={16} />
-              Add Slide
-            </button>
+        {/* Philosophy */}
+        <div className={styles.previewCard}>
+          <div className={styles.previewCardLabel}>
+            <span className={styles.labelDot} />
+            Philosophy
           </div>
-          <div className={styles.slidesList}>
-            {(aboutData?.slides || []).length > 0 ? (
-              aboutData.slides.map((slide) => (
-                <div key={slide._id} className={styles.slideItem}>
-                  <div className={styles.slideImage}>
-                    {slide.slideImage ? (
-                      <img
-                        src={resolveAssetUrl(
-                          slide.slideImage,
-                          `${Backend_Root_Url}/uploads/aboutimg/`
-                        )}
-                        alt={slide.slideTitle}
-                      />
-                    ) : (
-                      <div className={styles.imagePlaceholder}>
-                        <Image size={20} />
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.slideContent}>
-                    <h4>{slide.slideTitle}</h4>
-                    <p>{slide.slideDescription}</p>
-                  </div>
-                  <div className={styles.slideActions}>
-                    <button
-                      className={styles.iconBtn}
-                      onClick={() =>
-                        openSlidePanel("editSlide", slide, "Edit Slide")
-                      }
-                    >
-                      <Edit3 size={14} />
-                    </button>
-                    <button
-                      className={styles.iconBtn}
-                      onClick={() =>
-                        openDeleteConfirmation(
-                          "slide",
-                          slide._id,
-                          slide.slideTitle
-                        )
-                      }
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className={styles.emptyState}>
-                <p>No slides available. Add some slides to get started.</p>
-              </div>
-            )}
-          </div>
+          <blockquote className={styles.philosophyQuote}>
+            {aboutData?.philosophyQuote || "No quote yet."}
+          </blockquote>
+          <p className={styles.previewMeta}>{aboutData?.philosophyMeta || "—"}</p>
         </div>
+
       </div>
 
       {renderSlidePanel()}

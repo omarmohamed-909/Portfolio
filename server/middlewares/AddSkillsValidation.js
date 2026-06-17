@@ -7,6 +7,7 @@ function validateAddSkill(req, res, next) {
     Category: Joi.string().min(1).required(),
     SkillName: Joi.string().min(1).required(),
     Skill_Level: Joi.number().required(),
+    Detail: Joi.string().allow('').optional(),
   });
 
   const { error } = schema.validate(req.body);

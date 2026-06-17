@@ -1,12 +1,12 @@
 import express from "express";
 import Skills from "../models/SkillsSchema.js";
-import isAdminLogged from "../middlewares/isAdminLogged.js";
+import { isAdminOnly, isAdminOrViewer } from "../middlewares/isAdminOnly.js";
 import validateAddSkill from "../middlewares/AddSkillsValidation.js";
 import mongoose from "mongoose";
 const Router = express.Router();
 Router.post(
   "/skills/add/skill",
-  isAdminLogged,
+  isAdminOnly,
   validateAddSkill,
   async (req, res) => {
     try {
@@ -14,6 +14,7 @@ Router.post(
         Category: req.body.Category,
         SkillName: req.body.SkillName,
         Skill_Level: req.body.Skill_Level,
+        Detail: req.body.Detail || "",
       });
       await NewSkill.save();
       res.status(201).json({ message: "Skill Added Successfully" });
@@ -25,7 +26,7 @@ Router.post(
   }
 );
 
-Router.put("/skills/edit/skill/:id", isAdminLogged, async (req, res) => {
+Router.put("/skills/edit/skill/:id", isAdminOnly, async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -58,7 +59,7 @@ Router.put("/skills/edit/skill/:id", isAdminLogged, async (req, res) => {
       .json({ message: "Internal Server Error", error: err.message });
   }
 });
-Router.delete("/skills/delete/skill/:id", isAdminLogged, async (req, res) => {
+Router.delete("/skills/delete/skill/:id", isAdminOnly, async (req, res) => {
   try {
     const id = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -83,10 +84,7 @@ Router.delete("/skills/delete/skill/:id", isAdminLogged, async (req, res) => {
 Router.get("/show/skills", async (req, res) => {
   try {
     const SkillsData = await Skills.find();
-    if (!SkillsData) {
-      return res.status(404).json("There Is No Skills Added");
-    }
-    return res.status(200).json({ SkillsData });
+    return res.status(200).json(SkillsData);
   } catch (err) {
     return res
       .status(500)

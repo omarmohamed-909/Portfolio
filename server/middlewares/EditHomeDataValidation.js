@@ -7,8 +7,15 @@ function validateEditHomeData(req, res, next) {
     DisplayName: Joi.string().optional(),
     MainRoles: Joi.array().items(Joi.string()).optional(),
     description: Joi.string().optional(),
-    Clients_Counting: Joi.number().optional(),
-    Rateing: Joi.number().optional(),
+    TechStack: Joi.string().optional().allow(''),
+    FocusArea: Joi.string().optional().allow(''),
+    AvailabilityStatus: Joi.string().optional().allow(''),
+    CalendlyUrl: Joi.string().optional().allow(''),
+    ArchitectureSectionTitle: Joi.string().optional().allow(''),
+    ProjectsSectionTitle: Joi.string().optional().allow(''),
+    PresenceHeadingPrefix: Joi.string().optional().allow(''),
+    PresenceHeadingHighlight: Joi.string().optional().allow(''),
+    PresenceDescription: Joi.string().optional().allow(''),
   });
 
   const { error } = schema.validate(req.body);

@@ -13,7 +13,7 @@ function LoginValidateInput(req, res, next) {
 
   const { error } = loginSchema.validate(req.body);
   if (error) {
-    return res.status(403).json({ message: "Access Denied" });
+    return res.status(400).json({ message: "Username (4-20 chars) and password (6-50 chars) are required" });
   }
 
   next();

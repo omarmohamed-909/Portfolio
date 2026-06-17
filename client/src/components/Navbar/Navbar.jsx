@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import styles from "./Navbar.module.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,10 +24,12 @@ const Navbar = () => {
 
   const navItems = [
     { name: "Home", href: "/" },
-    { name: "Projects", href: "projects" },
-    { name: "Skills", href: "skills" },
-    { name: "Full Cv", href: "cv" },
-    { name: "Contact", href: "contact" },
+    { name: "Projects", href: "/projects" },
+    { name: "Skills", href: "/skills" },
+    { name: "Blog", href: "/blog" },
+    { name: "About", href: "/about" },
+    { name: "Full Cv", href: "/cv" },
+    { name: "Contact", href: "/contact" },
   ];
 
   return (
@@ -35,7 +38,7 @@ const Navbar = () => {
         {/* Logo */}
         <div className={styles.logo}>
           <span className={styles.logoText}>
-            <a href={navItems[0].href}>OMΛR</a>
+            <Link to={navItems[0].href}>OMΛR</Link>
           </span>
           <span className={styles.logoDot}>.</span>
         </div>
@@ -43,18 +46,18 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className={styles.desktopNav}>
           {navItems.map((item, index) => (
-            <a key={index} href={item.href} className={styles.navLink}>
+            <Link key={index} to={item.href} className={`${styles.navLink} ${location.pathname === item.href ? styles.active : ""}`}>
               {item.name}
-            </a>
+            </Link>
           ))}
         </div>
 
         {/* CTA Button + Theme Toggle */}
         <div className={styles.ctaContainer}>
           <ThemeToggle />
-          <a href="contact" className={styles.ctaButton}>
+          <Link to="/contact" className={styles.ctaButton}>
             Let's Talk
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -78,22 +81,22 @@ const Navbar = () => {
       >
         <div className={styles.mobileNavContent}>
           {navItems.map((item, index) => (
-            <a
+            <Link
               key={index}
-              href={item.href}
-              className={styles.mobileNavLink}
+              to={item.href}
+              className={`${styles.mobileNavLink} ${location.pathname === item.href ? styles.active : ""}`}
               onClick={() => setIsMenuOpen(false)}
             >
               {item.name}
-            </a>
+            </Link>
           ))}
-          <a
-            href="contact"
+          <Link
+            to="/contact"
             className={styles.mobileCtaButton}
             onClick={() => setIsMenuOpen(false)}
           >
             Let's Talk
-          </a>
+          </Link>
         </div>
       </div>
     </nav>

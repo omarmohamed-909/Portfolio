@@ -1,0 +1,813 @@
+/* ── Modal Overlay ─────────────────────────────────────────── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal Container ───────────────────────────────────────── */
+.modalContainer {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  max-width: 950px;
+  width: 100%;
+  max-height: 92vh;
+  min-height: 50vh;
+  overflow: hidden;
+  position: relative;
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Close Button ──────────────────────────────────────────── */
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0;
+}
+
+.closeButton:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.closeButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Modal Content (scrollable) ────────────────────────────── */
+.modalContent {
+  flex-grow: 1;
+  overflow-y: auto;
+  color: var(--text-primary);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalContent::-webkit-scrollbar { width: 6px; }
+
+.modalContent::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 3px;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+/* ── Hero Image ────────────────────────────────────────────── */
+.projectImageContainer {
+  width: 100%;
+  height: 320px;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.projectImageContainer::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to top, var(--bg-secondary), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.projectImageContainer.imageError {
+  background: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.projectImageContainer.imageError::after {
+  content: "Image not available";
+  color: var(--text-tertiary);
+  font-size: 1rem;
+  font-weight: 500;
+  background: none;
+  height: auto;
+  position: static;
+}
+
+.projectImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.projectImage:hover {
+  transform: scale(1.03);
+}
+
+/* ── Featured Badge (premium) ──────────────────────────────── */
+.featuredBadge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  color: #ffa500;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.featuredBadge svg {
+  width: 10px;
+  height: 10px;
+}
+
+.featuredBadgeNoImage {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  color: #ffa500;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.featuredBadgeNoImage svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* ── No-Image Header ───────────────────────────────────────── */
+.projectHeaderNoImage {
+  padding: 2rem 2rem 1rem;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  position: relative;
+}
+
+.projectIconPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border-radius: 20px;
+  border: 2px solid rgba(59, 130, 246, 0.2);
+}
+
+.projectIconPlaceholder svg {
+  width: 48px;
+  height: 48px;
+}
+
+/* ── Details Section ───────────────────────────────────────── */
+  .projectDetails {
+    padding: 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex-grow: 1;
+    min-height: 0;
+  }
+
+.projectHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex-shrink: 0;
+}
+
+.titleStatusRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.titleStatusLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+  max-width: 600px;
+}
+
+.projectTitle {
+  font-size: 2.75rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-primary, #e2e8f0);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.shortDescription {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Status Badge ──────────────────────────────────────────── */
+.statusBadge {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  align-self: flex-start;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.statusBadge:hover {
+  transform: translateY(-1px);
+}
+
+.statusCompleted {
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.statusInProgress {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.statusPlanning {
+  background: rgba(168, 85, 247, 0.12);
+  color: #9333ea;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.statusPlanned {
+  background: rgba(99, 102, 241, 0.10);
+  color: #4f46e5;
+  border: 1px solid rgba(99, 102, 241, 0.20);
+}
+
+.statusOnHold {
+  background: rgba(251, 113, 133, 0.12);
+  color: #f43f5e;
+  border: 1px solid rgba(251, 113, 133, 0.25);
+}
+
+.statusCanceled {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  position: relative;
+}
+
+.statusCanceled::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: currentColor;
+  transform: translateY(-50%);
+}
+
+.statusPrototype {
+  background: rgba(129, 140, 248, 0.10);
+  color: #6366f1;
+  border: 1px solid rgba(129, 140, 248, 0.20);
+}
+
+.statusLaunched {
+  background: rgba(192, 31, 192, 0.12);
+  color: #c01fc0;
+  border: 1px solid rgba(192, 31, 192, 0.25);
+}
+
+.statusMetrics {
+  background: rgba(96, 165, 250, 0.12);
+  color: #3b82f6;
+  border: 1px solid rgba(96, 165, 250, 0.25);
+}
+
+.statusAwarded {
+  background: rgba(255, 154, 0, 0.12);
+  color: #ca5801;
+  border: 1px solid rgba(255, 154, 0, 0.25);
+}
+
+.statusPassed {
+  background: rgba(144, 238, 144, 0.15);
+  color: #15803d;
+  border: 1px solid rgba(144, 238, 144, 0.35);
+}
+
+.statusAchievement {
+  background: rgba(218, 165, 32, 0.14);
+  color: #a16207;
+  border: 1px solid rgba(218, 165, 32, 0.35);
+  font-weight: 700;
+}
+
+.statusArchived {
+  background: rgba(156, 163, 175, 0.12);
+  color: #6b7280;
+  border: 1px solid rgba(156, 163, 175, 0.25);
+}
+
+.statusDefault {
+  background: rgba(148, 163, 184, 0.10);
+  color: #64748b;
+  border: 1px solid rgba(148, 163, 184, 0.20);
+}
+
+/* ── Live Demo Button ──────────────────────────────────────── */
+.liveLinkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(0, 212, 255, 0.08);
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.30);
+  flex-shrink: 0;
+}
+
+.liveLinkButton:hover {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: #00d4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 212, 255, 0.20);
+}
+
+.liveLinkButton:active {
+  transform: translateY(0);
+}
+
+.liveLinkButton svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+/* ── Description ───────────────────────────────────────────── */
+.descriptionSection {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.projectDescription {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 400;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.projectDescription strong {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.projectDescription em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.projectDescription h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 1.25rem 0 0.5rem;
+  line-height: 1.3;
+}
+
+.projectDescription h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 1rem 0 0.4rem;
+  line-height: 1.3;
+}
+
+.projectDescription h2:first-child,
+.projectDescription h3:first-child {
+  margin-top: 0;
+}
+
+.projectDescription ul {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+  list-style: none;
+}
+
+.projectDescription li {
+  margin-bottom: 0.3rem;
+  color: var(--text-secondary);
+  position: relative;
+}
+
+.projectDescription li::before {
+  content: "–";
+  color: #00d4ff;
+  position: absolute;
+  left: -1rem;
+}
+
+/* ── Technologies Tags ─────────────────────────────────────── */
+.tagsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #e2e8f0);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.techTag {
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.techTag:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+.techTag svg {
+  flex-shrink: 0;
+}
+
+/* ── Project Links ─────────────────────────────────────────── */
+.projectLinksSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.projectLinks {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.projectLink {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.projectLink:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-glow);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .modalContainer {
+    max-width: 96%;
+    border-radius: 14px;
+  }
+
+  .projectImageContainer {
+    height: 240px;
+  }
+
+  .projectHeaderNoImage {
+    min-height: 100px;
+    padding: 1.5rem;
+  }
+
+  .projectIconPlaceholder {
+    width: 64px;
+    height: 64px;
+  }
+
+  .projectIconPlaceholder svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .projectDetails {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .titleStatusRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .titleStatusLeft {
+    max-width: none;
+  }
+
+  .projectTitle {
+    font-size: 2.2rem;
+  }
+
+  .shortDescription {
+    font-size: 1rem;
+  }
+
+  .projectDescription {
+    font-size: 1rem;
+  }
+
+  .statusBadge,
+  .liveLinkButton {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .tagsContainer {
+    gap: 0.6rem;
+  }
+
+  .techTag {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .projectLinks {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalContainer {
+    max-width: 98%;
+    border-radius: 12px;
+  }
+
+  .projectImageContainer {
+    height: 180px;
+  }
+
+  .projectHeaderNoImage {
+    min-height: 80px;
+    padding: 1rem;
+  }
+
+  .projectIconPlaceholder {
+    width: 56px;
+    height: 56px;
+  }
+
+  .projectIconPlaceholder svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .projectDetails {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .titleStatusRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .projectTitle {
+    font-size: 1.8rem;
+  }
+
+  .shortDescription {
+    font-size: 0.95rem;
+  }
+
+  .projectDescription {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .descriptionSection {
+    padding: 1rem;
+  }
+
+  .statusBadge,
+  .liveLinkButton {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .sectionTitle {
+    font-size: 0.95rem;
+  }
+
+  .tagsContainer {
+    gap: 0.5rem;
+  }
+
+  .techTag {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .projectLink {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* ── Light Mode Overrides ──────────────────────────────────── */
+[data-theme="light"] .closeButton {
+  background: rgba(0, 0, 0, 0.15);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .closeButton:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="light"] .liveLinkButton {
+  background: rgba(8, 145, 178, 0.10);
+  color: #155e75;
+  border-color: rgba(8, 145, 178, 0.35);
+}
+
+[data-theme="light"] .liveLinkButton:hover {
+  background: rgba(8, 145, 178, 0.18);
+  border-color: #155e75;
+  box-shadow: 0 4px 14px rgba(8, 145, 178, 0.25);
+}
+
+[data-theme="light"] .projectIconPlaceholder {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent-glow);
+}
+
+[data-theme="light"] .projectHeaderNoImage {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="light"] .projectImageContainer.imageError {
+  background: var(--bg-tertiary);
+}
+
+/* ── Accessibility ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .modalOverlay,
+  .modalContainer {
+    animation: none;
+  }
+
+  .closeButton:hover,
+  .liveLinkButton:hover,
+  .techTag:hover,
+  .statusBadge:hover,
+  .projectImage:hover,
+  .projectLink:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .modalContainer {
+    border: 2px solid var(--text-primary);
+  }
+
+  .statusBadge,
+  .techTag,
+  .liveLinkButton,
+  .projectLink {
+    border-width: 2px;
+  }
+
+  .projectDescription {
+    color: var(--text-primary);
+  }
+
+  .projectDescription strong,
+  .projectDescription h2,
+  .projectDescription h3 {
+    color: var(--text-primary);
+  }
+}

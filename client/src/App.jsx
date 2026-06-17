@@ -6,16 +6,20 @@ const adminUrl = "/" + Frontend_Admin_Url;
 const adminDashboard_Url = adminUrl + "/dashboard";
 
 const HomePage = lazy(() => import("./components/Home/Home.jsx"));
-const ProjectsPage = lazy(() => import("./components/PorjectsPage/ProjectsPage.jsx"));
+const ProjectsPage = lazy(() => import("./components/ProjectsPage/ProjectsPage.jsx"));
 const SkillsPage = lazy(() => import("./components/SkillsPage/SkillsPage.jsx"));
 const CvPage = lazy(() => import("./components/MyCv/cv.jsx"));
+const AboutPage = lazy(() => import("./components/AboutPage/AboutPage.jsx"));
 const ContactPage = lazy(() => import("./components/contact/Contact.jsx"));
+const BlogPage = lazy(() => import("./components/BlogPage/BlogPage.jsx"));
+const BlogDetail = lazy(() => import("./components/BlogPage/BlogDetail.jsx"));
 const AuthPage = lazy(() => import("./components/auth/auth.jsx"));
 const DashboardPage = lazy(() =>
   import("./components/AdminDashboard/main/Dashboard_Restructured.jsx")
 );
 const DeniedPage = lazy(() => import("./components/AccesDenied/DeniedPage.jsx"));
 const NotFoundPage = lazy(() => import("./components/404/404page.jsx"));
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.jsx";
 
 const RouteFallback = (
   <div className="loading-overlay">
@@ -28,6 +32,8 @@ const RouteFallback = (
   </div>
 );
 // SEO Manager Component - Only runs on main pages
+let staticSeoCache_ = null;
+
 const SEOManager = () => {
   const location = useLocation();
 
@@ -35,11 +41,10 @@ const SEOManager = () => {
     const currentPath = location.pathname;
 
     // Define main pages that should use dynamic SEO
-    const mainPages = ["/", "/projects", "/skills", "/cv", "/contact"];
+    const mainPages = ["/", "/projects", "/skills", "/cv", "/about", "/contact", "/blog"];
 
-    // Only apply SEO updates on main pages
-    if (!mainPages.includes(currentPath)) {
-      console.log(`Skipping SEO update for non-main page: ${currentPath}`);
+    // Only apply SEO updates on main pages (also catch /blog/:slug)
+    if (!mainPages.includes(currentPath) && !currentPath.startsWith("/blog/")) {
       return;
     }
 
@@ -61,25 +66,44 @@ const SEOManager = () => {
           case "/cv":
             seoEndpoint = "cv";
             break;
+          case "/about":
+            seoEndpoint = "about";
+            break;
           case "/contact":
             seoEndpoint = "contact";
             break;
+          case "/blog":
+            seoEndpoint = "blog";
+            break;
           default:
-            seoEndpoint = "home";
+            // /blog/:slug — use blog endpoint; title will be overridden if slug data is available
+            if (currentPath.startsWith("/blog/")) {
+              seoEndpoint = "blog";
+            } else {
+              seoEndpoint = "home";
+            }
         }
 
-        // Fetch both static and page-specific SEO data
-        const [staticResponse, pageResponse] = await Promise.all([
-          fetch(`${Backend_Root_Url}/api/seo/static`),
-          fetch(`${Backend_Root_Url}/api/seo/${seoEndpoint}`),
-        ]);
+        // Cache static SEO data to avoid redundant requests
+        const cachedStatic = staticSeoCache_;
+        let staticData;
+        if (cachedStatic) {
+          staticData = cachedStatic;
+        } else {
+          const staticResponse = await fetch(`${Backend_Root_Url}/api/seo/static`);
+          if (!staticResponse.ok) {
+            console.error("Failed to fetch static SEO data");
+            return;
+          }
+          staticData = await staticResponse.json();
+          staticSeoCache_ = staticData;
+        }
 
-        if (!staticResponse.ok || !pageResponse.ok) {
-          console.error("Failed to fetch SEO data");
+        const pageResponse = await fetch(`${Backend_Root_Url}/api/seo/${seoEndpoint}`);
+        if (!pageResponse.ok) {
+          console.error("Failed to fetch page SEO data");
           return;
         }
-
-        const staticData = await staticResponse.json();
         const pageData = await pageResponse.json();
 
         // Update document title
@@ -271,7 +295,8 @@ function App() {
   return (
     <BrowserRouter basename="">
       <SEOManager />
-      <Routes>
+      <ErrorBoundary>
+        <Routes>
         <Route
           path="/"
           element={<LazyRoute Component={HomePage} />}
@@ -287,6 +312,18 @@ function App() {
         <Route
           path="/cv"
           element={<LazyRoute Component={CvPage} />}
+        />
+        <Route
+          path="/about"
+          element={<LazyRoute Component={AboutPage} />}
+        />
+        <Route
+          path="/blog"
+          element={<LazyRoute Component={BlogPage} />}
+        />
+        <Route
+          path="/blog/:slug"
+          element={<LazyRoute Component={BlogDetail} />}
         />
         <Route
           path="/contact"
@@ -309,6 +346,7 @@ function App() {
           element={<LazyRoute Component={NotFoundPage} />}
         />
       </Routes>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }

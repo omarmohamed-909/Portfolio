@@ -104,6 +104,16 @@
   width: 100%;
 }
 
+.navLink.active {
+  color: #00d4ff;
+}
+
+.navLink.active::after {
+  width: 100%;
+  background: #00d4ff;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.7);
+}
+
 /* ── CTA Container ───────────────────────────────────────── */
 .ctaContainer {
   display: flex;
@@ -207,6 +217,12 @@
   background: var(--accent-soft);
   padding-left: 1.5rem;
   border-bottom-color: transparent;
+}
+
+.mobileNavLink.active {
+  color: #00d4ff;
+  background: rgba(0, 212, 255, 0.08);
+  border-bottom-color: rgba(0, 212, 255, 0.2);
 }
 
 .mobileCtaButton {

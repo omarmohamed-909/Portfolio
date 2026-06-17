@@ -1,66 +1,3 @@
-/* Main Dashboard Component Styles */
-
-/* CSS Variables for consistent theming */
-:root {
-  /* Color Palette - Professional Dark Theme */
-  --bg-primary: #060b17;
-  --bg-secondary: #0b1120;
-  --bg-tertiary: #131c2d;
-  --bg-card: #0b1120;
-  --bg-hover: rgba(148, 163, 184, 0.12);
-  --bg-active: rgba(0, 212, 255, 0.14);
-
-  /* Accent Colors */
-  --accent-primary: #00d4ff;
-  --accent-primary-hover: #61eaff;
-  --accent-secondary: #22d3ee;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
-
-  /* Text Colors */
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
-  --text-inverse: #1e293b;
-
-  /* Border Colors */
-  --border-primary: rgba(255, 255, 255, 0.1);
-  --border-secondary: rgba(255, 255, 255, 0.2);
-  --border-accent: #00d4ff;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-
-  /* Transitions */
-  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Typography */
-  --font-family: "Inter", sans-serif;
-}
-
-/* Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -76,41 +13,111 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Dashboard Layout */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.35);
+}
+
 .dashboard {
   display: flex;
   min-height: 100vh;
-  background-color: var(--bg-primary);
+  background: var(--bg-primary);
+  position: relative;
 }
 
-/* Main Content */
+.dashboard::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+  z-index: 9999;
+}
+
+@keyframes bgGlow {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.06; }
+}
+
+.dashboard::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(168, 85, 247, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 0%, rgba(0, 212, 255, 0.02) 0%, transparent 40%);
+  animation: bgGlow 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .mainContent {
   flex: 1;
   margin-left: 260px;
-  transition: var(--transition-normal);
+  transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 .mainContent.collapsed {
   margin-left: 80px;
 }
 
-/* Page Header */
+.contentWrapper {
+  flex: 1;
+  padding: 24px 32px 32px;
+  overflow-y: auto;
+  position: relative;
+}
+
 .pageHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 28px 32px 0;
+  padding: 28px 32px 16px;
   gap: var(--spacing-md);
   flex-wrap: wrap;
+  position: relative;
+}
+
+.pageHeader::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 32px;
+  right: 32px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.2), transparent);
 }
 
 .pageHeader h1 {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 800;
   color: var(--text-primary);
   margin: 0;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .pageHeaderActions {
@@ -119,7 +126,6 @@ body {
   gap: var(--spacing-md);
 }
 
-/* Mobile Menu Trigger */
 .mobileMenuTrigger {
   position: fixed;
   top: 16px;
@@ -127,59 +133,61 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: rgba(11, 17, 32, 0.6);
+  background: rgba(11, 17, 32, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--text-secondary);
   cursor: pointer;
   display: none;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(12px);
   transition: var(--transition-fast);
   z-index: 1200;
 }
 
 .mobileMenuTrigger:hover {
-  background: rgba(11, 17, 32, 0.8);
+  background: rgba(11, 17, 32, 0.9);
   color: var(--text-primary);
   box-shadow: 0 10px 24px rgba(2, 8, 20, 0.35);
 }
 
-/* Content Area */
-.content {
-  flex: 1;
-  overflow-y: auto;
-  background-color: var(--bg-primary);
-}
-
-/* Loading State */
 .loadingContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.05) 0%, transparent 60%),
+              var(--bg-primary);
+  gap: var(--spacing-lg);
 }
 
 .loadingSpinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-primary);
-  border-top: 3px solid var(--accent-primary);
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, var(--accent-primary));
   animation: spin 1s linear infinite;
-  margin-bottom: var(--spacing-lg);
+  position: relative;
+}
+
+.loadingSpinner::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: var(--bg-primary);
+  border-radius: 50%;
+}
+
+.loadingContainer p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @media (max-width: 768px) {
@@ -196,16 +204,24 @@ body {
   }
 
   .pageHeader {
-    /* 56px top: clears the fixed 40px hamburger + 16px offset */
     padding: 56px 20px 12px;
   }
 
+  .pageHeader::after {
+    left: 20px;
+    right: 20px;
+  }
+
   .pageHeader h1 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 
   .mobileMenuTrigger {
     display: flex;
+  }
+
+  .contentWrapper {
+    padding: 16px 16px 32px;
   }
 }
 

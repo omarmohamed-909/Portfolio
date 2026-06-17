@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /projects
+Allow: /skills
+Allow: /about
+Allow: /cv
+Allow: /contact
+Allow: /blog
+Allow: /blog/
+
+Disallow: /admin
+Disallow: /denied
+
+Sitemap: https://omarombark.me/sitemap.xml

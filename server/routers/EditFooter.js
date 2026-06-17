@@ -1,5 +1,5 @@
 import express from "express";
-import isAdminLogged from "../middlewares/isAdminLogged.js";
+import { isAdminOnly, isAdminOrViewer } from "../middlewares/isAdminOnly.js";
 import Footer from "../models/FooterSchema.js";
 import FooterSocialLinksModel from "../models/FooterSocialLinksSchema.js";
 import validateSocialLinksData from "../middlewares/SocialLinksValidation.js";
@@ -9,7 +9,7 @@ const Router = express.Router();
 
 Router.post(
   "/footer/platform/add",
-  isAdminLogged,
+  isAdminOnly,
   validateSocialLinksData,
   async (req, res) => {
     try {
@@ -24,20 +24,9 @@ Router.post(
         SocialIcon: req.body.SocialIcon,
         SocialLink: req.body.SocialLink,
       });
-      const Saved = await NewSocialLink.save();
-      if (!Saved) {
-        return res
-          .status(409)
-          .json({ message: "Something Wrong  NewSocialLink NOT SAVED" });
-      }
+      await NewSocialLink.save();
       FindFooterData.FooterSocialLinks.push(NewSocialLink._id);
-      const IsPushed = await FindFooterData.save();
-      if (!IsPushed) {
-        return res.status(409).json({
-          message:
-            "Something Wrong Happend When I Push New Link To Main Footer Collection Try Again",
-        });
-      }
+      await FindFooterData.save();
       return res.status(200).json({ message: "New Social Links Added" });
     } catch (err) {
       console.log(err);
@@ -47,7 +36,7 @@ Router.post(
 );
 Router.delete(
   "/footer/platform/delete/:id",
-  isAdminLogged,
+  isAdminOnly,
   async (req, res) => {
     try {
       const id = req.params.id;
@@ -82,7 +71,7 @@ Router.delete(
       FindFooterData.FooterSocialLinks.pull(id);
       const DeletedFromFooter = await FindFooterData.save();
       if (!DeletedFromFooter) {
-        res.status(409).json({
+        return res.status(409).json({
           message:
             "Footer Social Links Deleted But Something Wrong Happend SO Not DELTED IN MAIN FOOTER COLLECTION",
         });
@@ -99,7 +88,7 @@ Router.delete(
 
 Router.put(
   "/footer/platform/edit/:id",
-  isAdminLogged,
+  isAdminOnly,
   validateSocialLinksData,
   async (req, res) => {
     try {
@@ -109,20 +98,6 @@ Router.put(
           message: "Invalid ID format",
         });
       }
-      const FindFooterData = await Footer.findOne();
-      const FooterSocialLinks = await FooterSocialLinksModel.findOne();
-      if (!FindFooterData) {
-        return res.status(404).json({
-          message: "Main Footer Data Not Found You Need To Setup Backend ",
-        });
-      }
-
-      if (!FooterSocialLinks) {
-        return res.status(404).json({
-          message:
-            "FooterSocialLinks Data Not Found You Need To Setup Backend ",
-        });
-      }
 
       const UpdateSocialLink = await FooterSocialLinksModel.findByIdAndUpdate(
         id,
@@ -130,16 +105,16 @@ Router.put(
           SocialIcon: req.body.SocialIcon,
           SocialLink: req.body.SocialLink,
         },
-        { new: true }
+        { new: true, runValidators: true }
       );
       if (!UpdateSocialLink) {
         return res
           .status(404)
-          .json({ message: "I cant Find This Footer Social Links Collection" });
+          .json({ message: "Social link not found" });
       }
       return res
         .status(200)
-        .json({ message: "Social Links Deleted Successfully" });
+        .json({ message: "Social Links Updated Successfully" });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: "Something Wrong" });
@@ -147,9 +122,36 @@ Router.put(
   }
 );
 
+Router.get("/footer/data", async (req, res) => {
+  try {
+    const footerData = await Footer.findOne()
+      .select("FooterTitle FooterDescription OwnerEmail OwnerPhone OwnerAddress")
+      .populate({
+        path: "FooterSocialLinks",
+        select: "SocialIcon SocialLink",
+      });
+
+    if (!footerData) {
+      return res.status(200).json({
+        FooterTitle: "",
+        FooterDescription: "",
+        OwnerEmail: "",
+        OwnerPhone: "",
+        OwnerAddress: "",
+        FooterSocialLinks: [],
+        _empty: true,
+      });
+    }
+
+    return res.status(200).json(footerData);
+  } catch (err) {
+    return res.status(500).json({ message: "Server Error", error: err.message });
+  }
+});
+
 Router.put(
   "/footer/edit/footerdata",
-  isAdminLogged,
+  isAdminOnly,
   validateFooterData,
   async (req, res) => {
     try {

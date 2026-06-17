@@ -6,8 +6,9 @@ function validateProjectInput(req, res, next) {
     Description: Joi.string().min(10).required(),
     Image: Joi.string().uri(),
     ProjectLiveUrl: Joi.string().uri(),
+    GithubUrl: Joi.string().uri().allow(""),
     Project_technologies: Joi.array().items(Joi.string()),
-    Porject_Status: Joi.string()
+    Project_Status: Joi.string()
       .default([
         "completed",
         "in progress",

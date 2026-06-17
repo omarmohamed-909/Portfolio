@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./DeniedPage.module.css";
-import "../../../src/App.css";
 
 const DeniedPage = () => {
   return (

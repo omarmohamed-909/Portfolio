@@ -2,16 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
+import ConstellationBackground from "../NebulaDrift/NebulaDrift";
+import styles from "./cv.module.css";
+import { Download, Maximize2, FileText } from "lucide-react";
 import { Backend_Root_Url } from "../../config/AdminUrl.js";
 import { resolveAssetUrl } from "../../lib/assetUrl.js";
-import {
-  Download,
-  FileText,
-  AlertCircle,
-  Maximize2,
-  Minimize2,
-} from "lucide-react";
-import styles from "./cv.module.css";
 import "../../../src/App.css";
 
 const getCvDownloadName = (cvValue) => {
@@ -125,19 +120,22 @@ const CV = () => {
   if (loading) {
     return (
       <div className={styles.cvPage}>
-        <Navbar />
-        <div className={styles.cvLoading}>
-          <div className={styles.loadingContainer}>
-            <div className={styles.cvSpinner}></div>
-            <div className={styles.loadingDots}>
-              <span></span>
-              <span></span>
-              <span></span>
+        <ConstellationBackground />
+        <div className={styles.contentLayer}>
+          <Navbar />
+          <div className={styles.cvLoading}>
+            <div className={styles.loadingContainer}>
+              <div className={styles.cvSpinner}></div>
+              <div className={styles.loadingDots}>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <p>Loading your CV...</p>
             </div>
-            <p>Loading your CV...</p>
           </div>
+          <Footer />
         </div>
-        <Footer />
       </div>
     );
   }
@@ -145,20 +143,23 @@ const CV = () => {
   if (error) {
     return (
       <div className={styles.cvPage}>
-        <Navbar />
-        <div className={styles.cvError}>
-          <div className={styles.errorContainer}>
-            <h2>Something Went Wrong</h2>
-            <p>{error}</p>
-            <button
-              className={styles.retryButton}
-              onClick={() => window.location.reload()}
-            >
-              Try Again
-            </button>
+        <ConstellationBackground />
+        <div className={styles.contentLayer}>
+          <Navbar />
+          <div className={styles.cvError}>
+            <div className={styles.errorContainer}>
+              <h2>Something Went Wrong</h2>
+              <p>{error}</p>
+              <button
+                className={styles.retryButton}
+                onClick={() => window.location.reload()}
+              >
+                Try Again
+              </button>
+            </div>
           </div>
+          <Footer />
         </div>
-        <Footer />
       </div>
     );
   }
@@ -166,26 +167,29 @@ const CV = () => {
   if (noCvFound) {
     return (
       <div className={styles.cvPage}>
-        <Navbar />
-        <div className={styles.cvNotFound}>
-          <div className={styles.notFoundContainer}>
-            <div className={styles.noCvIcon}>
-              <FileText size={92} />
+        <ConstellationBackground />
+        <div className={styles.contentLayer}>
+          <Navbar />
+          <div className={styles.cvNotFound}>
+            <div className={styles.notFoundContainer}>
+              <div className={styles.noCvIcon}>
+                <FileText size={92} />
+              </div>
+              <h2>CV Not Available Yet</h2>
+              <p>
+                The CV hasn't been uploaded yet. Please check back later or
+                contact me directly for my resume.
+              </p>
+              <button
+                className={styles.retryButton}
+                onClick={() => window.location.reload()}
+              >
+                Check Again
+              </button>
             </div>
-            <h2>CV Not Available Yet</h2>
-            <p>
-              The CV hasn't been uploaded yet. Please check back later or
-              contact me directly for my resume.
-            </p>
-            <button
-              className={styles.retryButton}
-              onClick={() => window.location.reload()}
-            >
-              Check Again
-            </button>
           </div>
+          <Footer />
         </div>
-        <Footer />
       </div>
     );
   }
@@ -193,18 +197,21 @@ const CV = () => {
   if (!cvData || !cvData.Cv) {
     return (
       <div className={styles.cvPage}>
-        <Navbar />
-        <div className={styles.cvNotFound}>
-          <div className={styles.notFoundContainer}>
-            <FileText size={64} className={styles.noCvIcon} />
-            <h2>CV Not Available</h2>
-            <p>
-              The CV document is currently not available. Please check back
-              later.
-            </p>
+        <ConstellationBackground />
+        <div className={styles.contentLayer}>
+          <Navbar />
+          <div className={styles.cvNotFound}>
+            <div className={styles.notFoundContainer}>
+              <FileText size={64} className={styles.noCvIcon} />
+              <h2>CV Not Available</h2>
+              <p>
+                The CV document is currently not available. Please check back
+                later.
+              </p>
+            </div>
           </div>
+          <Footer />
         </div>
-        <Footer />
       </div>
     );
   }
@@ -215,11 +222,12 @@ const CV = () => {
         isFullscreen ? styles.fullscreenMode : ""
       }`}
     >
+      <ConstellationBackground />
+      <div className={styles.contentLayer}>
       <Navbar />
 
       <div className={styles.cvContainer}>
         <div className={styles.expertiseSection}>
-          <div className={styles.expertiseHeader}>💼 My Resume</div>
           <h1 className={styles.expertiseTitle}>Professional Resume</h1>
           <p className={styles.expertiseDescription}>
             Professional experience, skills, and key achievements at a glance.
@@ -230,8 +238,6 @@ const CV = () => {
         <div className={styles.contentLayout}>
           <div className={styles.pdfViewerSection}>
             <div className={styles.pdfControlsBar}>
-              <div className={styles.controlsGroup}></div>
-
               <div className={styles.controlsGroup}>
                 <button
                   onClick={handleDownload}
@@ -265,14 +271,24 @@ const CV = () => {
               <div className={styles.pdfWrapper}>
                 <div className={styles.pdfContainer}>
                   {pdfUrl ? (
-                    <iframe
-                      ref={iframeRef}
-                      src={pdfUrl}
-                      title="CV PDF Viewer"
-                      className={styles.pdfIframe}
-                      frameBorder="0"
-                      allowFullScreen
-                    />
+                    <>
+                      <iframe
+                        ref={iframeRef}
+                        src={pdfUrl}
+                        title="CV PDF Viewer"
+                        className={styles.pdfIframe}
+                        style={{ border: "none" }}
+                        allowFullScreen
+                      />
+                      <div className={styles.mobileFallback}>
+                        <FileText size={24} />
+                        <p>PDF viewer not available on mobile.</p>
+                        <button onClick={handleDownload} className={styles.downloadButton}>
+                          <Download size={16} />
+                          Download PDF
+                        </button>
+                      </div>
+                    </>
                   ) : (
                     <div className={styles.pdfLoadingOverlay}>
                       <div className={styles.pdfSpinner}></div>
@@ -287,6 +303,7 @@ const CV = () => {
       </div>
 
       {!isFullscreen && <Footer />}
+      </div>
     </div>
   );
 };

@@ -2,13 +2,15 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary.js";
 
-const ALLOWED_FOLDERS = new Set(["projectsimg", "aboutimg", "logo", "mycv"]);
+const ALLOWED_FOLDERS = new Set(["projectsimg", "aboutimg", "logo", "mycv", "seoimg", "blogimg"]);
 
 const ALLOWED_MIME_TYPES_BY_FOLDER = {
   projectsimg: new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]),
   aboutimg: new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]),
   logo: new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]),
   mycv: new Set(["application/pdf"]),
+  seoimg: new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]),
+  blogimg: new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]),
 };
 
 const storage = new CloudinaryStorage({

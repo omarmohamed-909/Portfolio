@@ -1,65 +1,11 @@
 /* DashboardSEO Component Styles */
 
-/* CSS Variables for consistent theming - inherited from DashboardHome */
-:root {
-  /* Color Palette - Professional Dark Theme */
-  --bg-primary: #060b17;
-  --bg-secondary: #0b1120;
-  --bg-tertiary: #131c2d;
-  --bg-card: #0b1120;
-  --bg-hover: rgba(148, 163, 184, 0.08);
-  --bg-active: rgba(148, 163, 184, 0.18);
-
-  /* Accent Colors */
-  --accent-primary: #00d4ff;
-  --accent-primary-hover: #61eaff;
-  --accent-secondary: #22d3ee;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
-
-  /* Text Colors */
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
-  --text-inverse: #1e293b;
-
-  /* Border Colors */
-  --border-primary: rgba(255, 255, 255, 0.1);
-  --border-secondary: rgba(255, 255, 255, 0.2);
-  --border-accent: #00d4ff;
-
-  /* Shadows */
-  --shadow-sm: 0 8px 24px rgba(2, 8, 20, 0.25);
-  --shadow-md: 0 14px 32px rgba(2, 8, 20, 0.34);
-  --shadow-lg: 0 20px 44px rgba(2, 8, 20, 0.42);
-  --shadow-xl: 0 28px 60px rgba(2, 8, 20, 0.55);
-
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-
-  /* Transitions */
-  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* SEO Section */
 .seoSection {
   padding: var(--spacing-xl);
   max-width: 1200px;
   margin: 0 auto;
-  padding-bottom: 100px; /* space for sticky save on mobile */
+  padding-bottom: 100px;
 }
 
 .actionsRow {
@@ -68,7 +14,6 @@
   margin-bottom: var(--spacing-lg);
 }
 
-/* Error Message */
 .errorMessage {
   background-color: rgba(239, 68, 68, 0.1);
   border: 1px solid var(--accent-danger);
@@ -80,7 +25,6 @@
   margin-bottom: var(--spacing-lg);
 }
 
-/* Styled Message Alert */
 .messageAlert {
   display: flex;
   align-items: center;
@@ -139,17 +83,30 @@
   }
 }
 
-/* Loading State */
 .loadingState {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-md);
   padding: var(--spacing-2xl);
   color: var(--text-secondary);
   font-size: 1.125rem;
 }
 
-/* Tab Bar — Desktop: underline style | Mobile: wrapped pill grid */
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid var(--border-primary);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .tabBar {
   display: flex;
   flex-wrap: nowrap;
@@ -158,7 +115,6 @@
   margin-bottom: 24px;
   overflow-x: auto;
   padding-bottom: 0;
-  /* hide scrollbar but keep functionality */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -183,7 +139,7 @@
   gap: 6px;
   white-space: nowrap;
   flex-shrink: 0;
-  margin-bottom: -1px; /* overlap the tabBar border-bottom */
+  margin-bottom: -1px;
 }
 
 .tab svg {
@@ -201,7 +157,6 @@
   text-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
 }
 
-/* Mobile: switch to wrapped pill-grid layout */
 @media (max-width: 640px) {
   .tabBar {
     flex-wrap: wrap;
@@ -240,21 +195,17 @@
   }
 }
 
-/* Form Container */
 .formContainer {
-  background: rgba(11, 17, 32, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-md);
-  backdrop-filter: blur(16px);
+  animation: fadeIn 0.3s ease-out;
 }
 
-/* Form Styles */
 .form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xl);
+  composes: form from '../AdminShared.module.css';
 }
 
 .formSection {
@@ -286,9 +237,25 @@
 }
 
 .formGroup {
+  composes: formGroup from '../AdminShared.module.css';
+}
+
+.labelRow {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.labelRow label {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.charCount {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
 
 .formGroup label {
@@ -325,10 +292,45 @@
   background-color: var(--bg-tertiary);
 }
 
+.formGroup input:focus-visible,
+.formGroup textarea:focus-visible,
+.formGroup select:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.formGroup input:hover,
+.formGroup textarea:hover,
+.formGroup select:hover {
+  border-color: var(--border-secondary);
+}
+
 .formGroup textarea {
   resize: vertical;
   min-height: 80px;
   line-height: 1.5;
+}
+
+.keywordChips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--spacing-sm);
+  color: var(--text-muted);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 212, 255, 0.10);
+  color: #a5f3fc;
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .formGroup small {
@@ -339,7 +341,6 @@
   margin-top: var(--spacing-xs);
 }
 
-/* Error States */
 .formGroup input.error,
 .formGroup textarea.error,
 .formGroup select.error {
@@ -356,25 +357,8 @@
   gap: var(--spacing-xs);
 }
 
-/* Button Styles */
 .btnPrimary {
-  background: linear-gradient(135deg, var(--accent-primary), #00a7cb);
-  color: #041622;
-  border: none;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.9rem;
-}
-
-.btnPrimary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 26px rgba(0, 212, 255, 0.3);
+  composes: btnPrimary from '../AdminShared.module.css';
 }
 
 .btnPrimary:disabled {
@@ -383,35 +367,72 @@
   transform: none;
 }
 
+.btnPrimary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(0, 212, 255, 0.3);
+}
+
 .btnSecondary {
-  background-color: var(--bg-hover);
-  color: var(--text-primary);
-  border: 1px solid var(--border-secondary);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
+  composes: btnSecondary from '../AdminShared.module.css';
+}
+
+.formGroup input[maxlength]:focus + small::after,
+.formGroup textarea[maxlength]:focus + small::after {
+  content: " (" attr(value) "/" attr(maxlength) ")";
+  color: var(--text-muted);
+  font-weight: normal;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .formGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .formGrid .formGroup:has(textarea),
+  .formGrid .formGroup:has(input[placeholder*="description"]),
+  .formGrid .formGroup:has(input[placeholder*="keywords"]) {
+    grid-column: 1 / -1;
+  }
+}
+
+.desktopSaveBtn {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.9rem;
 }
 
-.btnSecondary:hover {
-  background-color: var(--bg-active);
-  border-color: var(--border-accent);
+.stickySaveButton {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(11, 17, 32, 0.98);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 12px 16px 20px;
+  z-index: 200;
+  display: none;
 }
 
-/* Responsive Design */
+.stickySaveButton button {
+  width: 100%;
+  justify-content: center;
+  padding: 14px var(--spacing-lg);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+}
+
 @media (max-width: 768px) {
   .seoSection {
     padding: var(--spacing-md);
-    padding-bottom: 100px; /* space for sticky save bar */
+    padding-bottom: 100px;
   }
 
   .actionsRow {
-    /* Hide desktop save row — mobile uses sticky bar */
     display: none;
   }
 
@@ -425,6 +446,14 @@
 
   .form {
     gap: var(--spacing-lg);
+  }
+
+  .desktopSaveBtn {
+    display: none;
+  }
+
+  .stickySaveButton {
+    display: block;
   }
 }
 
@@ -444,11 +473,6 @@
   }
 }
 
-/* Animation for smooth transitions */
-.formContainer {
-  animation: fadeIn 0.3s ease-out;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -460,90 +484,97 @@
   }
 }
 
-/* Focus indicators for accessibility */
 .tab:focus-visible {
   outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
 
-.formGroup input:focus-visible,
-.formGroup textarea:focus-visible,
-.formGroup select:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
-}
-
-/* Hover effects for better UX */
-.formGroup input:hover,
-.formGroup textarea:hover,
-.formGroup select:hover {
-  border-color: var(--border-secondary);
-}
-
-/* Character count styling for inputs with maxLength */
-.formGroup input[maxlength]:focus + small::after,
-.formGroup textarea[maxlength]:focus + small::after {
-  content: " (" attr(value) "/" attr(maxlength) ")";
-  color: var(--text-muted);
-  font-weight: normal;
-}
-
-/* Form Grid Layout */
-.formGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-lg);
-}
-
-@media (min-width: 768px) {
-  .formGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  /* Full width for textareas and certain fields */
-  .formGrid .formGroup:has(textarea),
-  .formGrid .formGroup:has(input[placeholder*="description"]),
-  .formGrid .formGroup:has(input[placeholder*="keywords"]) {
-    grid-column: 1 / -1;
-  }
-}
-
-/* Desktop Save Button */
-.desktopSaveBtn {
+/* Image Upload */
+.imageUploadWrapper {
   display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-/* Sticky Save Button for Mobile */
-.stickySaveButton {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(11, 17, 32, 0.92);
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 12px 16px 20px;
-  z-index: 200;
+.uploadPlaceholder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 2px dashed rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  transition: var(--transition-fast);
+}
+
+.uploadPlaceholder:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: rgba(0, 212, 255, 0.04);
+}
+
+.dragOver .uploadPlaceholder {
+  border-color: var(--accent-primary);
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.imagePreviewRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.imagePreview {
+  width: 80px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.imagePreviewActions {
+  display: flex;
+  gap: 4px;
+}
+
+.imageActionBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.imageActionBtn:hover {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.imageActionBtnDanger:hover {
+  color: var(--accent-danger);
+  border-color: var(--accent-danger);
+}
+
+.fileInputHidden {
   display: none;
 }
 
-.stickySaveButton button {
-  width: 100%;
-  justify-content: center;
-  padding: 14px var(--spacing-lg);
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: var(--radius-lg);
+.imageUrlRow {
+  position: relative;
 }
 
-/* Show sticky button on mobile, hide desktop save button */
-@media (max-width: 768px) {
-  .desktopSaveBtn {
-    display: none;
-  }
+.spinnerIcon {
+  animation: spin 0.7s linear infinite;
+}
 
-  .stickySaveButton {
-    display: block;
-  }
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

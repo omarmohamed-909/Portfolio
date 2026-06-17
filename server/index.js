@@ -5,6 +5,7 @@ import AddProjectRouter from "./routers/EditProjectData.js";
 import AdminLogin from "./routers/auth.js";
 import cookieParser from "cookie-parser";
 import MainHomeData from "./routers/ShowHomeData.js";
+import ShowAboutData from "./routers/ShowAboutData.js";
 import EditHomeData from "./routers/EditHomeData.js";
 import AdminDashboardSecurity from "./routers/AdminDashboard_securityRule.js";
 import EditAboutData from "./routers/EditAboutData.js";
@@ -12,8 +13,15 @@ import EditFooter from "./routers/EditFooter.js";
 import EditSkills from "./routers/EditSkillsData.js";
 import EditCv from "./routers/EditCv.js";
 import Contact from "./routers/Contact.js";
+import EditMessages from "./routers/EditMessages.js";
 import EditSeo from "./routers/EditSeo.js";
+import BlockHistory from "./routers/BlockHistory.js";
+import GithubStats from "./routers/GithubStats.js";
+import EditExperience from "./routers/EditExperienceData.js";
+import BlogRouter from "./routers/EditBlogData.js";
+import ActivityLogRouter from "./routers/ActivityLogRouter.js";
 import cors from "cors";
+import helmet from "helmet";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -49,31 +57,59 @@ const cleanCustomDomain = () => {
 
 const customDomain = cleanCustomDomain();
 
-console.log("🔧 CORS Configuration:");
-console.log(`📝 Custom Domain: "${customDomain}"`);
-console.log(
-  `🚀 Mode: ${
-    customDomain
-      ? "PRODUCTION (Custom Domain Only)"
-      : "DEVELOPMENT (Localhost Allowed)"
-  }`
-);
+
 
 const app = express();
 
-// Apply security headers middleware before other middlewares
+// Derive allowed frontend origin for CSP
+const frontendOrigin = customDomain
+  ? customDomain
+  : `http://localhost:${FRONTEND_PORT}`;
+
+// Security headers via helmet
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  // Content Security Policy: blocks inline script injection (XSS)
+  // while allowing the resources the app actually needs.
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      // Scripts: only same-origin (no inline scripts → blocks XSS)
+      scriptSrc: ["'self'"],
+      // Styles: same-origin + inline (many component libraries need this)
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      // Fonts: Google Fonts CDN
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      // Images: same-origin + Cloudinary (uploads) + data URIs
+      imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
+      // API connections: same-origin + the backend itself
+      connectSrc: ["'self'", frontendOrigin],
+      // No embedded frames allowed
+      frameSrc: ["'none'"],
+      // Block object/embed tags
+      objectSrc: ["'none'"],
+      // Upgrade HTTP to HTTPS when possible
+      upgradeInsecureRequests: process.env.NODE_ENV === "production" ? [] : null,
+    },
+    // Report-only in dev so it doesn't break anything; enforced in prod
+    reportOnly: process.env.NODE_ENV !== "production",
+  },
+  // HSTS: only meaningful in production behind HTTPS
+  strictTransportSecurity: process.env.NODE_ENV === "production"
+    ? { maxAge: 31536000, includeSubDomains: true }
+    : false,
+  referrerPolicy: { policy: "no-referrer-when-downgrade" },
+}));
+
+// Selective Cache-Control based on path
 app.use((req, res, next) => {
-  // Set Cache-Control headers
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-
-  // Set Referrer Policy
-  res.setHeader("Referrer-Policy", "no-referrer-when-downgrade");
-
-  // Additional security headers
-  res.setHeader("X-Content-Type-Options", "nosniff");
-
+  if (req.path.startsWith("/uploads/")) {
+    res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+  } else if (req.path.startsWith("/api/") || req.path.startsWith("/auth/")) {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  } else {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  }
   next();
 });
 
@@ -170,6 +206,7 @@ app.get("/", (req, res) => {
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/", MainHomeData);
+app.use("/api/", ShowAboutData);
 app.use("/auth/", AdminLogin);
 app.use("/api/", AdminDashboardSecurity);
 app.use("/api/", EditSeo);
@@ -180,7 +217,13 @@ app.use("/api/", EditSkills);
 app.use("/api/", EditCv);
 app.use("/api/", EditFooter);
 app.use("/api/", Contact);
+app.use("/api/", EditMessages);
+app.use("/api/", BlockHistory);
+app.use("/api/", GithubStats);
+app.use("/api/", EditExperience);
+app.use("/api/", BlogRouter);
+app.use("/api/", ActivityLogRouter);
 
 app.listen(BACKEND_PORT, "0.0.0.0", () => {
-  console.log(`Server Alive At port ${BACKEND_PORT}`);
+  console.log(`Server running on port ${BACKEND_PORT}`);
 });

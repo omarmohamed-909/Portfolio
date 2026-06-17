@@ -16,6 +16,30 @@ const aboutUsShema = mongoose.Schema(
         ref: "AboutUsSlides",
       },
     ],
+    AcademicTitle: {
+      type: String,
+    },
+    AcademicMeta: {
+      type: String,
+    },
+    AcademicDescription: {
+      type: String,
+    },
+    IdentityCard1Title: { type: String },
+    IdentityCard1Subtitle: { type: String },
+    IdentityCard1Items: { type: [String] },
+    IdentityCard2Title: { type: String },
+    IdentityCard2Subtitle: { type: String },
+    IdentityCard2Items: { type: [String] },
+    IdentityCard3Title: { type: String },
+    IdentityCard3Subtitle: { type: String },
+    IdentityCard3Items: { type: [String] },
+    PhilosophyQuote: {
+      type: String,
+    },
+    PhilosophyMeta: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

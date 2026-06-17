@@ -17,12 +17,12 @@ const getCvDisplayName = (cvValue) => {
   return fileName;
 };
 
-const DashboardCV = () => {
+const DashboardCV = ({ userRole }) => {
   //Authentication check
   useEffect(() => {
     const checkAuth = async () => {
-      const isValid = await verifyJWTToken();
-      if (isValid === false) {
+      const { isAuthenticated } = await verifyJWTToken();
+      if (!isAuthenticated) {
         window.location.href = "/denied";
         return;
       }
@@ -274,6 +274,8 @@ const DashboardCV = () => {
           </div>
 
           {!cvData.cvFile ? (
+            <>
+            {userRole === "admin" && (
             <div
               className={`${styles.uploadArea} ${
                 dragActive ? styles.dragActive : ""
@@ -291,6 +293,8 @@ const DashboardCV = () => {
                 <small>Supported formats: PDF</small>
               </div>
             </div>
+            )}
+            </>
           ) : (
             <div className={styles.cvPreview}>
               <div className={styles.cvInfo}>
@@ -310,6 +314,7 @@ const DashboardCV = () => {
                       : "Document"}
                   </p>
                 </div>
+                {userRole === "admin" && (
                 <button
                   className={styles.removeBtn}
                   onClick={removeCV}
@@ -318,9 +323,11 @@ const DashboardCV = () => {
                 >
                   <X size={16} />
                 </button>
+                )}
               </div>
 
               <div className={styles.cvActions}>
+                {userRole === "admin" && (
                 <button
                   className={styles.btnSecondary}
                   onClick={previewCV}
@@ -330,6 +337,8 @@ const DashboardCV = () => {
                   <Eye size={16} />
                   Preview
                 </button>
+                )}
+                {userRole === "admin" && (
                 <button
                   className={styles.btnPrimary}
                   onClick={downloadCV}
@@ -339,6 +348,7 @@ const DashboardCV = () => {
                   <Download size={16} />
                   Download
                 </button>
+                )}
               </div>
             </div>
           )}
