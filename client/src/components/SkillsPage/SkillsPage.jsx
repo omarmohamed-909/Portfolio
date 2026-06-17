@@ -1,59 +1,133 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
+import ConstellationBackground from "../NebulaDrift/NebulaDrift";
+import ProjectDetailModal from "../ProjectsPage/ProjectDetailModal";
+import SkillProjectModal from "./SkillProjectModal";
 import styles from "./SkillsPage.module.css";
 import axios from "axios";
 import { Backend_Root_Url } from "../../config/AdminUrl.js";
+import { getTechIcon } from "../../lib/techIcons.jsx";
+import { resolveAssetUrl } from "../../lib/assetUrl.js";
+import { Code2, Server, Database, FileCode, ScanSearch, Brain, Box, Cloud, Wrench, Layers } from "lucide-react";
 import "../../../src/App.css";
+
+const getCategoryIcon = (catName) => {
+  const lowerCat = (catName || "").toLowerCase();
+  if (lowerCat.includes("front")) return Code2;
+  if (lowerCat.includes("back")) return Server;
+  if (lowerCat.includes("data") && !lowerCat.includes("base")) return ScanSearch;
+  if (lowerCat.includes("database")) return Database;
+  if (lowerCat.includes("language")) return FileCode;
+  if (lowerCat.includes("vision")) return ScanSearch;
+  if (lowerCat.includes("core") || lowerCat.includes("algorithm")) return Brain;
+  if (lowerCat.includes("3d") || lowerCat.includes("media") || lowerCat.includes("pipeline")) return Box;
+  if (lowerCat.includes("cloud") || lowerCat.includes("infra")) return Cloud;
+  if (lowerCat.includes("devops") || lowerCat.includes("tool")) return Wrench;
+  if (lowerCat.includes("state")) return Layers;
+  return Code2;
+};
 
 const SkillsPage = () => {
   const [skillsData, setSkillsData] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedSkill, setSelectedSkill] = useState(null);
+  const [isSkillModalOpen, setIsSkillModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [barsAnimated, setBarsAnimated] = useState(false);
 
   useEffect(() => {
-    const fetchSkills = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get(`${Backend_Root_Url}/api/show/skills`);
+        const [skillsRes, projectsRes] = await Promise.all([
+          axios.get(`${Backend_Root_Url}/api/show/skills`),
+          axios.get(`${Backend_Root_Url}/api/show/projects`),
+        ]);
 
-        // Transform API data to match component structure
-        const apiSkills = response.data.SkillsData || [];
-
-        // Group skills by category
+        // Transform skills
+        const raw = skillsRes.data;
+        const apiSkills = Array.isArray(raw) ? raw : raw?.SkillsData || raw?.data || raw?.skills || [];
         const groupedSkills = apiSkills.reduce((acc, skill) => {
           const category = skill.Category;
-          if (!acc[category]) {
-            acc[category] = [];
-          }
+          if (!acc[category]) acc[category] = [];
           acc[category].push({
             name: skill.SkillName,
             level: skill.Skill_Level,
           });
           return acc;
         }, {});
-
-        // Convert to array format expected by component
         const formattedSkills = Object.entries(groupedSkills).map(
-          ([category, skills]) => ({
-            category,
-            skills,
-          })
+          ([category, skills]) => ({ category, skills })
         );
-
         setSkillsData(formattedSkills);
+
+        // Transform projects
+        const transformedProjects = (projectsRes.data || []).map((project) => ({
+          id: project._id,
+          title: project.Title,
+          description: project.Description,
+          shortDescription: project.ShortDescription,
+          image:
+            resolveAssetUrl(project.Image, `${Backend_Root_Url}/uploads/projectsimg/`) ||
+            null,
+          technologies: project.Project_technologies || [],
+          category: "Project",
+          status: project.Project_Status,
+          demoUrl: project.ProjectLiveUrl || "",
+          githubUrl: project.GithubUrl || "",
+          featured: project.Featured,
+          DisplayOrder: project.DisplayOrder ?? null,
+        }));
+        setProjects(transformedProjects);
+
+        setLoading(false);
+        setTimeout(() => setBarsAnimated(true), 200);
       } catch (err) {
-        console.error("Failed to fetch skills:", err);
+        console.error("Failed to fetch data:", err);
         setError("Failed to load skills data. Please try again later.");
-      } finally {
         setLoading(false);
       }
     };
 
-    fetchSkills();
+    fetchData();
   }, []);
+
+  const getProjectsBySkill = (skillName) => {
+    const lowerSkill = skillName.toLowerCase();
+    return projects.filter((project) =>
+      project.technologies?.some((tech) => {
+        const lowerTech = tech.toLowerCase();
+        return lowerSkill.includes(lowerTech) || lowerTech.includes(lowerSkill);
+      })
+    );
+  };
+
+  const handleSkillClick = (skill) => {
+    setSelectedSkill(skill);
+    setIsSkillModalOpen(true);
+  };
+
+  const handleCloseSkillModal = () => {
+    setIsSkillModalOpen(false);
+    setSelectedSkill(null);
+  };
+
+  const handleProjectClick = (project) => {
+    setIsSkillModalOpen(false);
+    setSelectedProject(project);
+    setIsProjectModalOpen(true);
+  };
+
+  const handleCloseProjectModal = () => {
+    setIsProjectModalOpen(false);
+    setSelectedProject(null);
+  };
 
   const getSkillLevelColor = (level) => {
     if (level >= 90) return styles.expert;
@@ -95,13 +169,20 @@ const SkillsPage = () => {
   };
   if (loading) {
     return (
-      <div className={styles.pageContainer}>
-        <Navbar />
-        <div className={styles.loadingContainer}>
-          <div className={styles.loader}></div>
-          <p className={styles.loadingText}>Loading skills...</p>
+      <div className={styles.pageWrapper}>
+        <ConstellationBackground />
+        <div className={styles.contentLayer}>
+          <Navbar />
+          <main className={styles.mainContent}>
+            <div className={styles.container}>
+              <div className={styles.loadingState}>
+                <div className={styles.spinner} />
+                <p className={styles.loadingText}>Loading skills...</p>
+              </div>
+            </div>
+          </main>
+          <Footer />
         </div>
-        <Footer />
       </div>
     );
   }
@@ -127,71 +208,72 @@ const SkillsPage = () => {
 
   if (skillsData.length === 0) {
     return (
-      <div className={styles.pageContainer}>
-        <Navbar />
-        <main className={styles.mainContent}>
-          <div className={styles.container}>
-            {/* Header Section */}
-            <section className={styles.headerSection}>
-              <div className={styles.headerContent}>
-                <span className={styles.greeting}>👋 My Expertise</span>
-                <h1 className={styles.title}>Skills & Technologies</h1>
-                <p className={styles.subtitle}>
-                  A comprehensive overview of my technical skills and
-                  proficiency levels across various technologies and tools.
-                </p>
-              </div>
-            </section>
-
-            {/* No Skills Message */}
-            <section className={styles.noSkillsSection}>
-              <div className={styles.noSkillsContainer}>
-                <div className={styles.noSkillsIcon}>
-                  <svg
-                    className={styles.calendarIcon}
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-                  </svg>
+      <div className={styles.pageWrapper}>
+        <ConstellationBackground />
+        <div className={styles.contentLayer}>
+          <Navbar />
+          <main className={styles.mainContent}>
+            <div className={styles.container}>
+              <section className={styles.headerSection}>
+                <div className={styles.headerContent}>
+                  <h1 className={styles.title}>Skills & Technologies</h1>
+                  <p className={styles.subtitle}>
+                    A comprehensive overview of my technical skills and
+                    proficiency levels across various technologies and tools.
+                  </p>
                 </div>
-                <h3 className={styles.noSkillsTitle}>Skills Coming Soon!</h3>
-                <p className={styles.noSkillsText}>
-                  I'm currently building an amazing portfolio of skills and
-                  technologies. Check back soon to see my expertise in action!
-                </p>
-                <div className={styles.emptyActions}>
-                  <button className={styles.refreshButton} onClick={retryFetch}>
+              </section>
+              <section className={styles.noSkillsSection}>
+                <div className={styles.noSkillsContainer}>
+                  <div className={styles.noSkillsIcon}>
                     <svg
-                      width="16"
-                      height="16"
+                      className={styles.calendarIcon}
+                      width="32"
+                      height="32"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="2"
+                      strokeWidth="1.5"
                     >
-                      <polyline points="23,4 23,10 17,10" />
-                      <polyline points="1,20 1,14 7,14" />
-                      <path d="M20.49,9A9,9,0,0,0,5.64,5.64L1,10m22,4L18.36,18.36A9,9,0,0,1,3.51,15" />
+                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
                     </svg>
-                    Refresh
-                  </button>
+                  </div>
+                  <h3 className={styles.noSkillsTitle}>Skills Coming Soon!</h3>
+                  <p className={styles.noSkillsText}>
+                    I'm currently building an amazing portfolio of skills and
+                    technologies. Check back soon to see my expertise in action!
+                  </p>
+                  <div className={styles.emptyActions}>
+                    <button className={styles.refreshButton} onClick={retryFetch}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <polyline points="23,4 23,10 17,10" />
+                        <polyline points="1,20 1,14 7,14" />
+                        <path d="M20.49,9A9,9,0,0,0,5.64,5.64L1,10m22,4L18.36,18.36A9,9,0,0,1,3.51,15" />
+                      </svg>
+                      Refresh
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </section>
-          </div>
-        </main>
-        <Footer />
+              </section>
+            </div>
+          </main>
+          <Footer />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.pageContainer}>
+    <div className={styles.pageWrapper}>
+      <ConstellationBackground />
+      <div className={styles.contentLayer}>
       <Navbar />
 
       <main className={styles.mainContent}>
@@ -199,7 +281,6 @@ const SkillsPage = () => {
           {/* Header Section */}
           <section className={styles.headerSection}>
             <div className={styles.headerContent}>
-              <span className={styles.greeting}>👋 My Expertise</span>
               <h1 className={styles.title}>Skills & Technologies</h1>
               <p className={styles.subtitle}>
                 A comprehensive overview of my technical skills and proficiency
@@ -214,11 +295,16 @@ const SkillsPage = () => {
               {skillsData.map((category, categoryIndex) => (
                 <div key={categoryIndex} className={styles.categoryCard}>
                   <div className={styles.categoryHeader}>
-                    <h3 className={styles.categoryTitle}>
-                      {category.category}
-                    </h3>
-                    <div className={styles.categoryIcon}>
-                      <span className={styles.iconNumber}>
+                    <div className={styles.categoryTitleGroup}>
+                      <span className={styles.categoryIconWrap}>
+                        {(() => { const Icon = getCategoryIcon(category.category); return <Icon size={16} />; })()}
+                      </span>
+                      <h3 className={styles.categoryTitle}>
+                        {category.category}
+                      </h3>
+                    </div>
+                    <div className={styles.categoryCount}>
+                      <span className={styles.countNumber}>
                         {category.skills.length}
                       </span>
                     </div>
@@ -226,9 +312,14 @@ const SkillsPage = () => {
 
                   <div className={styles.skillsList}>
                     {category.skills.map((skill, skillIndex) => (
-                      <div key={skillIndex} className={styles.skillItem}>
+                      <div key={skillIndex} className={styles.skillItem} onClick={() => handleSkillClick(skill.name)}>
                         <div className={styles.skillHeader}>
-                          <span className={styles.skillName}>{skill.name}</span>
+                          <span className={styles.skillName}>
+                            <span className={styles.iconWrapper}>
+                              {(() => { const Icon = getTechIcon(skill.name); return <Icon size={15} />; })()}
+                            </span>
+                            <span className={styles.skillNameText}>{skill.name}</span>
+                          </span>
                           <div className={styles.skillLevel}>
                             <span
                               className={`${
@@ -249,7 +340,7 @@ const SkillsPage = () => {
                               className={`${
                                 styles.progressFill
                               } ${getSkillLevelColor(skill.level)}`}
-                              style={{ width: `${skill.level}%` }}
+                              style={{ transform: `scaleX(${barsAnimated ? skill.level / 100 : 0})` }}
                             ></div>
                           </div>
                         </div>
@@ -286,6 +377,23 @@ const SkillsPage = () => {
       </main>
 
       <Footer />
+      </div>
+
+      {isSkillModalOpen && selectedSkill && (
+        <SkillProjectModal
+          skill={selectedSkill}
+          projects={getProjectsBySkill(selectedSkill)}
+          onClose={handleCloseSkillModal}
+          onProjectClick={handleProjectClick}
+        />
+      )}
+
+      {isProjectModalOpen && selectedProject && (
+        <ProjectDetailModal
+          project={selectedProject}
+          onClose={handleCloseProjectModal}
+        />
+      )}
     </div>
   );
 };

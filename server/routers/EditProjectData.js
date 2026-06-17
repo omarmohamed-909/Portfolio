@@ -2,8 +2,9 @@ import express from "express";
 const Router = express.Router();
 import Project from "../models/ProjectSchema.js";
 import validateProjectInput from "../middlewares/validateProjectInput.js";
-import isAdminLogged from "../middlewares/isAdminLogged.js";
+import { isAdminOnly, isAdminOrViewer } from "../middlewares/isAdminOnly.js";
 import { removeCloudinaryAsset, upload } from "../controllers/storage.js";
+import { activityLoggerMiddleware } from "../utils/activityLogger.js";
 import PorjectsLogoFolderValidation from "../middlewares/ProjectsLogos.js";
 import mongoose from "mongoose";
 
@@ -12,8 +13,9 @@ const ALLOWED_PROJECT_UPDATE_FIELDS = new Set([
   "ShortDescription",
   "Description",
   "ProjectLiveUrl",
+  "GithubUrl",
   "Project_technologies",
-  "Porject_Status",
+  "Project_Status",
   "DisplayOrder",
   "Featured",
   "FeaturedDisplayOrder",
@@ -22,10 +24,11 @@ const ALLOWED_PROJECT_UPDATE_FIELDS = new Set([
 // This route expects a POST request with project details in the request body
 Router.post(
   "/projects/add/project",
-  isAdminLogged,
+  isAdminOnly,
   validateProjectInput,
   PorjectsLogoFolderValidation,
   upload.single("image"),
+  activityLoggerMiddleware("project"),
   async (req, res) => {
     try {
       const NewProject = new Project({
@@ -34,13 +37,15 @@ Router.post(
         Description: req.body.Description,
         Image: req.file?.path,
         ProjectLiveUrl: req.body.ProjectLiveUrl,
+        GithubUrl: req.body.GithubUrl,
         Project_technologies: req.body.Project_technologies,
-        Porject_Status: req.body.Porject_Status,
+        Project_Status: req.body.Project_Status,
         DisplayOrder: req.body.DisplayOrder,
         Featured: req.body.Featured,
         FeaturedDisplayOrder: req.body.FeaturedDisplayOrder,
       });
       const savedProject = await NewProject.save();
+      req.activityDetails = { title: savedProject.Title };
       return res.status(201).json(savedProject);
     } catch (error) {
       return res
@@ -50,7 +55,7 @@ Router.post(
   }
 );
 
-Router.delete("/projects/delete/:id", isAdminLogged, async (req, res) => {
+Router.delete("/projects/delete/:id", isAdminOnly, activityLoggerMiddleware("project"), async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -65,13 +70,13 @@ Router.delete("/projects/delete/:id", isAdminLogged, async (req, res) => {
     if (FindProject.Image != "Nothing") {
       try {
         await removeCloudinaryAsset(FindProject.Image);
-        console.log("Old Project image Removed");
       } catch (err) {
-        console.log("I Cant Remove Old Project image");
+        console.error("Cloudinary remove failed (delete project):", err.message);
       }
     }
     await Project.findByIdAndDelete(id);
 
+    req.activityDetails = { title: FindProject.Title };
     return res.status(200).json({ message: `Project Deleted ` });
   } catch (error) {
     return res
@@ -82,9 +87,10 @@ Router.delete("/projects/delete/:id", isAdminLogged, async (req, res) => {
 
 Router.put(
   "/projects/edit/:id",
-  isAdminLogged,
+  isAdminOnly,
   PorjectsLogoFolderValidation,
   upload.single("image"),
+  activityLoggerMiddleware("project"),
   async (req, res) => {
     try {
       const id = req.params.id;
@@ -163,9 +169,8 @@ Router.put(
         NewData.Image = image;
         try {
           await removeCloudinaryAsset(FindProject.Image);
-          console.log("Old Project Icon Removed");
         } catch (err) {
-          console.log("I Cant Remove Old Project Icon");
+          console.error("Cloudinary remove failed (update image):", err.message);
         }
       }
 
@@ -179,6 +184,7 @@ Router.put(
         return res.status(409).json({ message: `Project Update Failed` });
       }
 
+      req.activityDetails = { title: UpdateProjec.Title };
       return res.status(200).json({
         message: `Project Updated Successfully`,
       });
@@ -194,7 +200,7 @@ Router.get("/show/projects", async (req, res) => {
   try {
     const Projects = await Project.find();
     if (Projects.length === 0) {
-      return res.status(404).json({ message: "No Projects Found" });
+      return res.status(200).json([]);
     }
     const FilteredData = Projects.map((doc) => ({
       _id: doc._id,
@@ -203,8 +209,9 @@ Router.get("/show/projects", async (req, res) => {
       Description: doc.Description,
       Image: doc.Image,
       ProjectLiveUrl: doc.ProjectLiveUrl,
+      GithubUrl: doc.GithubUrl,
       Project_technologies: doc.Project_technologies,
-      Porject_Status: doc.Porject_Status,
+      Project_Status: doc.Project_Status,
       DisplayOrder: doc.DisplayOrder,
       Featured: doc.Featured,
       FeaturedDisplayOrder: doc.FeaturedDisplayOrder,
@@ -212,11 +219,10 @@ Router.get("/show/projects", async (req, res) => {
     return res.status(200).json(FilteredData);
   } catch (err) {
     res.status(500).json({ message: "Server Error" });
-    return console.log("Something Wrong ", err);
   }
 });
 
-Router.put("/projects/image/remove/:id", isAdminLogged, async (req, res) => {
+Router.put("/projects/image/remove/:id", isAdminOnly, activityLoggerMiddleware("project"), async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -231,8 +237,9 @@ Router.put("/projects/image/remove/:id", isAdminLogged, async (req, res) => {
 
     try {
       await removeCloudinaryAsset(FindProject.Image);
-      console.log("Old Project Icon Removed");
-    } catch (err) {}
+    } catch (err) {
+      console.error("Cloudinary remove failed (remove image route):", err.message);
+    }
 
     const UpdateProject = await Project.findByIdAndUpdate(
       FindProject._id,
@@ -246,6 +253,7 @@ Router.put("/projects/image/remove/:id", isAdminLogged, async (req, res) => {
       return res.status(409).json({ message: `Project Image Update Failed` });
     }
 
+    req.activityDetails = { title: UpdateProject.Title };
     return res.status(200).json({
       message: `Project Image Removed Successfully`,
     });

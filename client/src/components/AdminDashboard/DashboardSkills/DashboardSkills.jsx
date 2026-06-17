@@ -1,23 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./DashboardSkills.module.css";
 import { verifyJWTToken } from "../utils/authUtils";
-import { Plus, Edit3, Trash2, Save, X } from "lucide-react";
+import { Plus, Edit3, Trash2, Save, X, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
+import { motion, AnimatePresence } from "framer-motion";
 
-const DashboardSkills = () => {
+const CATEGORIES = [
+  "Frontend",
+  "Backend",
+  "Database",
+  "Languages",
+  "Computer Vision & Data",
+  "Core CS & Algorithms",
+  "3D & Media Pipelines",
+  "Cloud & Infra",
+  "DevOps & Tools",
+  "State Management",
+];
+
+const DashboardSkills = ({ userRole }) => {
   //Authentication check
   const navigate = useNavigate();
   useEffect(() => {
     const checkAuth = async () => {
-      const isValid = await verifyJWTToken();
-      if (isValid === false) {
+      const { isAuthenticated } = await verifyJWTToken();
+      if (!isAuthenticated) {
         window.location.href = "/denied";
         return;
-      } else {
-        fetchSkills();
       }
+      fetchSkills();
     };
     checkAuth();
   }, [navigate]);
@@ -31,11 +44,14 @@ const DashboardSkills = () => {
       });
 
       // Transform API data to match component structure
-      const transformedData = response.data.SkillsData.map((skill) => ({
+      const raw = response.data;
+      const skillsArray = Array.isArray(raw) ? raw : raw?.SkillsData || raw?.data || raw?.skills || [];
+      const transformedData = (Array.isArray(skillsArray) ? skillsArray : []).map((skill) => ({
         id: skill._id,
         name: skill.SkillName,
         level: skill.Skill_Level,
         category: skill.Category,
+        detail: skill.Detail || "",
       }));
 
       setSkillsData(transformedData);
@@ -56,6 +72,7 @@ const DashboardSkills = () => {
           Category: skillData.category,
           SkillName: skillData.name,
           Skill_Level: parseInt(skillData.level),
+          Detail: skillData.detail,
         },
         {
           withCredentials: true,
@@ -80,6 +97,7 @@ const DashboardSkills = () => {
       if (skillData.category) updateData.Category = skillData.category;
       if (skillData.name) updateData.SkillName = skillData.name;
       if (skillData.level) updateData.Skill_Level = parseInt(skillData.level);
+      if (skillData.detail !== undefined) updateData.Detail = skillData.detail;
 
       const response = await axios.put(
         `${Backend_Root_Url}/api/skills/edit/skill/${skillId}`,
@@ -130,6 +148,10 @@ const DashboardSkills = () => {
   // Form validation state
   const [validationErrors, setValidationErrors] = useState({});
 
+  // Custom dropdown state
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
   // Slide panel state
   const [slidePanel, setSlidePanel] = useState({
     isOpen: false,
@@ -149,6 +171,24 @@ const DashboardSkills = () => {
   // Form states for slide panel
   const [formData, setFormData] = useState({});
 
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsCategoryOpen(false);
+      }
+    };
+    const handleEscape = (e) => {
+      if (e.key === "Escape") setIsCategoryOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
   // Slide panel functions
   const openSlidePanel = (type, data = null, title = "") => {
     setSlidePanel({
@@ -165,6 +205,7 @@ const DashboardSkills = () => {
         name: "",
         category: "",
         level: 50,
+        detail: "",
       });
     }
 
@@ -288,9 +329,11 @@ const DashboardSkills = () => {
             >
               Cancel
             </button>
+            {userRole === "admin" && (
             <button className={styles.btnDanger} onClick={confirmDelete}>
               Delete
             </button>
+            )}
           </div>
         </div>
       </div>
@@ -298,12 +341,16 @@ const DashboardSkills = () => {
   };
 
   const renderSlidePanel = () => {
-    if (!slidePanel.isOpen) return null;
-
     const { type, title } = slidePanel;
 
     return (
-      <div className={styles.slidePanel}>
+      <motion.div
+        className={styles.slidePanel}
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", damping: 28, stiffness: 300 }}
+      >
         <div className={styles.slidePanelHeader}>
           <h3>{title}</h3>
           <button className={styles.closeBtn} onClick={closeSlidePanel}>
@@ -339,18 +386,42 @@ const DashboardSkills = () => {
 
               <div className={styles.formGroup}>
                 <label>Category *</label>
-                <input
-                  type="text"
-                  value={formData.category || ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      category: e.target.value,
-                    }))
-                  }
-                  placeholder="e.g., Frontend, Backend, Database"
-                  className={validationErrors.category ? styles.inputError : ""}
-                />
+                <div
+                  className={`${styles.customSelect} ${validationErrors.category ? styles.inputError : ""}`}
+                  ref={dropdownRef}
+                >
+                  <div
+                    className={styles.selectTrigger}
+                    onClick={() => setIsCategoryOpen((prev) => !prev)}
+                  >
+                    <span className={formData.category ? styles.selectValue : styles.selectPlaceholder}>
+                      {formData.category || "Select a category"}
+                    </span>
+                    <ChevronDown
+                      size={16}
+                      className={`${styles.selectChevron} ${isCategoryOpen ? styles.selectChevronOpen : ""}`}
+                    />
+                  </div>
+                  {isCategoryOpen && (
+                    <ul className={styles.selectMenu}>
+                      {CATEGORIES.map((cat) => (
+                        <li
+                          key={cat}
+                          className={`${styles.selectOption} ${formData.category === cat ? styles.selectOptionActive : ""}`}
+                          onClick={() => {
+                            setFormData((prev) => ({ ...prev, category: cat }));
+                            setIsCategoryOpen(false);
+                          }}
+                        >
+                          {formData.category === cat && (
+                            <span className={styles.selectOptionCheckmark}>&#10003;</span>
+                          )}
+                          {cat}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
                 {validationErrors.category && (
                   <span className={styles.errorText}>
                     {validationErrors.category}
@@ -385,6 +456,21 @@ const DashboardSkills = () => {
                   </span>
                 )}
               </div>
+
+              <div className={styles.formGroup}>
+                <label>Detail / Subtitle</label>
+                <input
+                  type="text"
+                  value={formData.detail || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      detail: e.target.value,
+                    }))
+                  }
+                  placeholder="e.g., Vite · Hooks · Context"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -393,18 +479,21 @@ const DashboardSkills = () => {
           <button className={styles.btnSecondary} onClick={closeSlidePanel}>
             Cancel
           </button>
+          {userRole === "admin" && (
           <button className={styles.btnPrimary} onClick={handleSave}>
             <Save size={16} />
             Save Changes
           </button>
+          )}
         </div>
-      </div>
+      </motion.div>
     );
   };
 
   return (
     <div className={styles.skillsSection}>
       <div className={styles.sectionHeader}>
+        {userRole === "admin" && (
         <button
           className={styles.btnPrimary}
           onClick={() => openSlidePanel("addSkill", null, "Add New Skill")}
@@ -412,6 +501,7 @@ const DashboardSkills = () => {
           <Plus size={16} />
           Add Skill
         </button>
+        )}
       </div>
 
       {loading ? (
@@ -447,6 +537,7 @@ const DashboardSkills = () => {
                         </span>
                       </div>
                       <div className={styles.skillActions}>
+                        {userRole === "admin" && (
                         <button
                           className={styles.iconBtn}
                           onClick={() =>
@@ -455,6 +546,8 @@ const DashboardSkills = () => {
                         >
                           <Edit3 size={14} />
                         </button>
+                        )}
+                        {userRole === "admin" && (
                         <button
                           className={styles.iconBtn}
                           onClick={() =>
@@ -467,8 +560,12 @@ const DashboardSkills = () => {
                         >
                           <Trash2 size={14} />
                         </button>
+                        )}
                       </div>
                     </div>
+                    {skill.detail && (
+                      <p className={styles.skillDetail}>{skill.detail}</p>
+                    )}
                     <div className={styles.skillLevel}>
                       <div className={styles.skillBar}>
                         <div
@@ -488,7 +585,9 @@ const DashboardSkills = () => {
         </div>
       )}
 
-      {renderSlidePanel()}
+      <AnimatePresence>
+        {slidePanel.isOpen && renderSlidePanel()}
+      </AnimatePresence>
       {renderDeleteConfirmation()}
     </div>
   );

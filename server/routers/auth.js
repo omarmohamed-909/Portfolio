@@ -30,20 +30,20 @@ Router.post(
     try {
       const AdminUser = await Admin.findOne({ userName: req.body.userName });
       if (!AdminUser) {
-        return res.status(403).json({ message: "Access Denied" });
+        return res.status(403).json({ message: "Invalid username or password" });
       }
       const isMatch = await bcrypt.compare(
         req.body.password,
         AdminUser.password
       );
       if (!isMatch) {
-        return res.status(403).json({ message: "Access Denied" });
+        return res.status(403).json({ message: "Invalid username or password" });
       }
       const jti = uuidv4();
       const token = jwt.sign(
         {
           id: AdminUser._id,
-          role: "admin",
+          role: AdminUser.role,
           jti: jti,
         },
         process.env.JWT_SECRET,
@@ -83,9 +83,6 @@ Router.post(`/logout`, async (req, res) => {
       return res.status(404).json({ message: "You have already logged out." });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded) {
-      return res.status(400).json({ message: "Invalid Jwt" });
-    }
     await AdminJti.deleteOne({ AdminObjectId: decoded.id, Jti: decoded.jti });
 
     res.clearCookie("token", {

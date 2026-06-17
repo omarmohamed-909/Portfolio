@@ -4,7 +4,7 @@ function EditSeoValidation(req, res, next) {
     return res.status(400).json({ message: "No data provided for validation" });
   }
   const SeoSchema = Joi.object({
-    Title: Joi.string().required(),
+    Title: Joi.string().allow("", null),
     Description: Joi.string().allow("", null),
     Keywords: Joi.array().items(Joi.string()).allow(null),
     SocialTitle: Joi.string().allow("", null),

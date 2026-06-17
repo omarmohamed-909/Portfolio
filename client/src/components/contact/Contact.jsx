@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
+import ConstellationBackground from "../NebulaDrift/NebulaDrift";
 import {
   Mail,
   Phone,
@@ -28,16 +29,18 @@ import {
   Video,
   Users,
   Share2,
+  Calendar,
 } from "lucide-react";
 import styles from "./Contact.module.css";
 import { Backend_Root_Url } from "../../config/AdminUrl.js";
 import axios from "axios";
+import iconMap from "../../lib/iconMap.js";
 import "../../../src/App.css";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     fullname: "",
-    address: "",
+    email: "",
     subject: "",
     message: "",
   });
@@ -49,33 +52,8 @@ const Contact = () => {
   const [formErrors, setFormErrors] = useState({});
   const [footerInfo, setFooterInfo] = useState(null);
   const [socialLinks, setSocialLinks] = useState([]);
+  const [calendlyUrl, setCalendlyUrl] = useState("");
   const [loading, setLoading] = useState(true);
-
-  // Icon mapping for social links
-  const iconMap = {
-    Github,
-    Linkedin,
-    Twitter,
-    Mail,
-    Phone,
-    MapPin,
-    Heart,
-    Facebook,
-    Instagram,
-    Youtube,
-    Twitch,
-    Globe,
-    MessageCircle,
-    Send,
-    Palette,
-    Briefcase,
-    Zap,
-    Music,
-    Camera,
-    Video,
-    Users,
-    Share2,
-  };
 
   // Fetch footer data on component mount
   useEffect(() => {
@@ -88,6 +66,10 @@ const Contact = () => {
 
         if (data.FooterInfo) {
           setFooterInfo(data.FooterInfo);
+        }
+
+        if (data.CalendlyUrl) {
+          setCalendlyUrl(data.CalendlyUrl);
         }
 
         if (
@@ -130,10 +112,10 @@ const Contact = () => {
       errors.fullname = "Full name is required";
     }
 
-    if (!formData.address.trim()) {
-      errors.address = "Email address is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.address)) {
-      errors.address = "Please enter a valid email address";
+    if (!formData.email.trim()) {
+      errors.email = "Email address is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = "Please enter a valid email address";
     }
 
     if (!formData.subject.trim()) {
@@ -166,7 +148,7 @@ const Contact = () => {
       );
 
       setFormStatus({ loading: false, success: true, error: null });
-      setFormData({ fullname: "", address: "", subject: "", message: "" });
+      setFormData({ fullname: "", email: "", subject: "", message: "" });
 
       // Auto-hide success message after 5 seconds
       setTimeout(() => {
@@ -199,19 +181,19 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email",
-      value: "contact@portfolio.com",
-      href: "mailto:contact@portfolio.com",
+      value: "",
+      href: "mailto:",
     },
     {
       icon: Phone,
       title: "Phone",
-      value: "+216 1234567",
-      href: "tel:+21651234567",
+      value: "",
+      href: "tel:",
     },
     {
       icon: MapPin,
       title: "Location",
-      value: "Tunisia, TN",
+      value: "Egypt",
       href: "#",
     },
   ];
@@ -239,8 +221,8 @@ const Contact = () => {
             footerInfo.OwnerAddress
           )}`,
         },
-      ]
-    : defaultContactInfo;
+      ].filter((c) => c.value)
+    : defaultContactInfo.filter((c) => c.value);
 
   // Default social links (fallback if API fails)
   const defaultSocialLinks = [
@@ -265,38 +247,33 @@ const Contact = () => {
       : defaultSocialLinks;
 
   function getSocialColor(iconName) {
-    const colorMap = {
-      Github: "#333",
-      Linkedin: "#0077b5",
-      Twitter: "#1da1f2",
-      Facebook: "#1877f2",
-      Instagram: "#e4405f",
-      Youtube: "#ff0000",
-      Twitch: "#9146ff",
-      Globe: "#3b82f6",
-    };
-    return colorMap[iconName] || "#3b82f6";
+    return "#0891b2";
   }
 
   if (loading) {
     return (
-      <div className={styles.pageContainer}>
-        <Navbar />
-        <main className={styles.mainContent}>
-          <div className={styles.container}>
-            <div className={styles.loadingContainer}>
-              <div className={styles.spinner}></div>
-              <p>Loading contact information...</p>
+      <div className={styles.pageWrapper}>
+        <ConstellationBackground />
+        <div className={styles.contentLayer}>
+          <Navbar />
+          <main className={styles.mainContent}>
+            <div className={styles.container}>
+              <div className={styles.loadingContainer}>
+                <div className={styles.spinner}></div>
+                <p>Loading contact information...</p>
+              </div>
             </div>
-          </div>
-        </main>
-        <Footer />
+          </main>
+          <Footer />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.pageContainer}>
+    <div className={styles.pageWrapper}>
+      <ConstellationBackground />
+      <div className={styles.contentLayer}>
       <Navbar />
 
       <main className={styles.mainContent}>
@@ -304,7 +281,6 @@ const Contact = () => {
           {/* Header Section */}
           <section className={styles.headerSection}>
             <div className={styles.headerContent}>
-              <span className={styles.greeting}>📧 Get In Touch</span>
               <h1 className={styles.title}>Contact Me</h1>
               <p className={styles.subtitle}>
                 Have a project in mind or just want to say hello? I'd love to
@@ -370,25 +346,25 @@ const Contact = () => {
                     </div>
 
                     <div className={styles.inputGroup}>
-                      <label htmlFor="address" className={styles.label}>
+                      <label htmlFor="email" className={styles.label}>
                         <Mail size={18} />
                         Email Address
                       </label>
                       <input
                         type="email"
-                        id="address"
-                        name="address"
-                        value={formData.address}
+                        id="email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleInputChange}
                         className={`${styles.input} ${
-                          formErrors.address ? styles.inputError : ""
+                          formErrors.email ? styles.inputError : ""
                         }`}
                         placeholder="Enter your email address"
                         disabled={formStatus.loading}
                       />
-                      {formErrors.address && (
+                      {formErrors.email && (
                         <span className={styles.errorText}>
-                          {formErrors.address}
+                          {formErrors.email}
                         </span>
                       )}
                     </div>
@@ -519,6 +495,24 @@ const Contact = () => {
                   </div>
                 </div>
 
+                {calendlyUrl && (
+                  <a
+                    href={calendlyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.scheduleCard}
+                  >
+                    <div className={styles.scheduleIcon}>
+                      <Calendar size={24} />
+                    </div>
+                    <div className={styles.scheduleInfo}>
+                      <h4>Schedule a Meeting</h4>
+                      <p>Book a time that works for you</p>
+                    </div>
+                    <span className={styles.scheduleArrow}>→</span>
+                  </a>
+                )}
+
                 <div className={styles.responseTime}>
                   <div className={styles.responseIcon}>
                     <CheckCircle size={20} />
@@ -535,6 +529,7 @@ const Contact = () => {
       </main>
 
       <Footer />
+      </div>
     </div>
   );
 };

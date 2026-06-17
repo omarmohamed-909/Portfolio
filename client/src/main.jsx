@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import App from "./App.jsx";
 import "./theme.css";
-import "./LazyLoding.css";
+import "./App.css";
+import "./LazyLoading.css";
 
 const container = document.getElementById("root");
 const root = createRoot(container);

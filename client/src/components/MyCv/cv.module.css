@@ -4,10 +4,14 @@
 
 .cvPage {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: transparent;
   color: var(--text-primary);
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.contentLayer {
+  position: relative;
+  z-index: 1;
 }
 
 .fullscreenMode {
@@ -31,27 +35,6 @@
 .expertiseSection {
   text-align: center;
   padding: 2.5rem 0 2rem;
-}
-
-.expertiseHeader {
-  margin-top: 45px;
-  display: inline-block;
-  background: rgba(8, 145, 178, 0.10);
-  color: #0a4f63;
-  padding: 0.55rem 1.2rem;
-  border-radius: 25px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  border: 1px solid rgba(8, 145, 178, 0.28);
-  letter-spacing: 0.04em;
-  transition: all 0.3s ease;
-}
-
-[data-theme="dark"] .expertiseHeader {
-  background: rgba(0, 212, 255, 0.10);
-  color: #a5f3fc;
-  border-color: rgba(0, 212, 255, 0.25);
 }
 
 .expertiseTitle {
@@ -97,8 +80,7 @@
 }
 
 [data-theme="dark"] .pdfViewerSection {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.85);
   border-color: rgba(0, 212, 255, 0.10);
 }
 
@@ -270,7 +252,6 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 20px;
-  backdrop-filter: blur(12px);
   box-shadow: var(--shadow-xl);
   transition: all 0.3s ease;
 }
@@ -320,7 +301,7 @@
   height: 8px;
   border-radius: 50%;
   background: #00d4ff;
-  animation: dot-bounce 1.2s ease-in-out infinite;
+  animation: dot-bounce 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .loadingDots span:nth-child(2) { animation-delay: 0.2s; }
@@ -366,6 +347,30 @@
   .controlsGroup { justify-content: center; }
   .downloadButton { width: 100%; justify-content: center; }
   .expertiseTitle { font-size: 2.4rem; }
+}
+
+.mobileFallback {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .pdfIframe {
+    display: none;
+  }
+  .mobileFallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: #94a3b8;
+  }
+  .mobileFallback .downloadButton {
+    width: auto;
+    padding: 0.75rem 2rem;
+  }
 }
 
 @media (max-width: 1200px) { .pdfWrapper { padding: 1rem; } }

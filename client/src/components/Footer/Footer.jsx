@@ -26,44 +26,12 @@ import {
 import styles from "./Footer.module.css";
 import { Link } from "react-router-dom";
 import { Backend_Root_Url } from "../../config/AdminUrl.js";
+import iconMap from "../../lib/iconMap.js";
 
 const Footer = () => {
   const [footerData, setFooterData] = useState(null);
   const [loading, setLoading] = useState(true);
   const currentYear = new Date().getFullYear();
-
-  // Dynamic icon mapping for Lucide React icons
-  const iconMap = {
-    // Main social media platforms
-    Facebook,
-    Twitter,
-    Instagram,
-    LinkedIn: Linkedin,
-    Github,
-    Youtube,
-    Mail,
-    Twitch,
-    Globe,
-
-    // Additional social media and platforms
-    Discord: MessageCircle,
-    Telegram: Send,
-    Pinterest: Palette,
-    Fiverr: Briefcase,
-    Reddit: Share2,
-    TikTok: Music,
-    Snapchat: Camera,
-    Vimeo: Video,
-    WhatsApp: MessageCircle,
-    Slack: Users,
-    Dribbble: Zap,
-    Behance: Palette,
-
-    // Generic fallbacks
-    Website: Globe,
-    Email: Mail,
-    Phone: Phone,
-  };
 
   // Fetch data from API
   useEffect(() => {
@@ -94,20 +62,10 @@ const Footer = () => {
 
   const quickLinks = [
     { name: "Home", href: "/" },
-    { name: "Projects", href: "projects" },
-    { name: "Skills", href: "skills" },
-    { name: "CV", href: "cv" },
-    { name: "Contact", href: "contact" },
-  ];
-
-  const staticContactInfo = [
-    {
-      icon: Mail,
-      text: "contact@portfolio.com",
-      href: "mailto:contact@portfolio.com",
-    },
-    { icon: Phone, text: "+201123456789", href: "tel:+201123456789" },
-    { icon: MapPin, text: "EGYPT, EG", href: "#" },
+    { name: "Projects", href: "/projects" },
+    { name: "Skills", href: "/skills" },
+    { name: "CV", href: "/cv" },
+    { name: "Contact", href: "/contact" },
   ];
 
   // Get dynamic data or fallback to static
@@ -115,8 +73,8 @@ const Footer = () => {
     FooterTitle: "Portfolio",
     FooterDescription:
       "Crafting digital experiences with passion and precision. Let's build something amazing together.",
-    OwnerEmail: "contact@portfolio.com",
-    OwnerPhone: "+201123456789",
+    OwnerEmail: "",
+    OwnerPhone: "",
     OwnerAddress: "EGYPT, EG",
   };
 
@@ -146,14 +104,14 @@ const Footer = () => {
       text: footerInfo.OwnerAddress,
       href: `https://www.google.com/maps/search/${footerInfo.OwnerAddress}`,
     },
-  ];
+  ].filter((c) => c.text);
 
   if (loading) {
     return (
       <footer className={styles.footer}>
         <div className={styles.container}>
           <div className={styles.footerContent}>
-            <div>Loading...</div>
+            <div className={styles.loadingSpinner} />
           </div>
         </div>
       </footer>
@@ -199,9 +157,9 @@ const Footer = () => {
             <ul className={styles.linksList}>
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <a href={link.href} className={styles.footerLink}>
+                  <Link to={link.href} className={styles.footerLink}>
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -249,9 +207,9 @@ const Footer = () => {
           <div className={styles.madeWith}>
             <p>
               Made By <Heart size={16} className={styles.heartIcon} />
-              <Link to="https://github.com/omarmohamed-909">
+              <a href="https://github.com/omarmohamed-909" target="_blank" rel="noopener noreferrer">
                 Omar
-              </Link>
+              </a>
             </p>
           </div>
         </div>

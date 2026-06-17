@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
 import { resolveAssetUrl } from "../../../lib/assetUrl.js";
+import { toast } from "sonner";
 
 import {
   Plus,
@@ -32,7 +33,7 @@ import {
   Edit,
 } from "lucide-react";
 
-const DashboardProjects = () => {
+const DashboardProjects = ({ userRole }) => {
   //Authentication check
   useEffect(() => {
     const checkAuth = async () => {
@@ -303,7 +304,6 @@ const DashboardProjects = () => {
         .sort((a, b) => a.DisplayOrder - b.DisplayOrder);
 
       if (projectsWithOrder.length === 0) {
-        console.log("No projects with DisplayOrder to reorganize");
         return;
       }
 
@@ -322,7 +322,6 @@ const DashboardProjects = () => {
         }
       }
 
-      console.log("All DisplayOrder reorganized successfully");
     } catch (err) {
       console.error("❌ Error reorganizing DisplayOrder:", err);
       throw err;
@@ -353,7 +352,6 @@ const DashboardProjects = () => {
         .sort((a, b) => a.FeaturedDisplayOrder - b.FeaturedDisplayOrder);
 
       if (featuredProjects.length === 0) {
-        console.log("No featured projects to reorganize");
         return;
       }
 
@@ -449,7 +447,7 @@ const DashboardProjects = () => {
           for (const child of node.childNodes) {
             const truncatedChild = truncateNode(child);
             if (truncatedChild) clone.appendChild(truncatedChild);
-            if (charCount >= 100) break;
+            if (charCount >= 300) break;
           }
           return clone;
         }
@@ -665,9 +663,10 @@ Available for iOS and Android platforms.`,
         technoligue: Array.isArray(project.Project_technologies)
           ? project.Project_technologies
           : [],
-        projectStatus: project.Porject_Status,
+        projectStatus: project.Project_Status,
         featured: project.Featured,
         liveUrl: project.ProjectLiveUrl || "",
+        githubUrl: project.GithubUrl || "",
         DisplayOrder: project.DisplayOrder ?? null,
         FeaturedDisplayOrder: project.FeaturedDisplayOrder ?? null,
       }));
@@ -878,8 +877,6 @@ Available for iOS and Android platforms.`,
           withCredentials: true,
         });
 
-        console.log("Project deleted successfully");
-
         await forceReorganizeDisplayOrders();
 
         if (wasFeatured) {
@@ -929,7 +926,7 @@ Available for iOS and Android platforms.`,
 
   const handleFileUpload = useCallback((file) => {
     if (!file.type.startsWith("image/")) {
-      alert("Please upload only image files");
+      toast.error("Please upload only image files");
       return;
     }
 
@@ -998,6 +995,7 @@ Available for iOS and Android platforms.`,
       formDataToSend.append("ShortDescription", formData.shortDescription);
       formDataToSend.append("Description", formData.description);
       formDataToSend.append("ProjectLiveUrl", formData.liveUrl || "");
+      formDataToSend.append("GithubUrl", formData.githubUrl || "");
 
       const technologies = formData.technoligue
         ? formData.technoligue
@@ -1009,7 +1007,7 @@ Available for iOS and Android platforms.`,
       technologies.forEach((tech) =>
         formDataToSend.append("Project_technologies[]", tech)
       );
-      formDataToSend.append("Porject_Status", formData.projectStatus);
+      formDataToSend.append("Project_Status", formData.projectStatus);
       formDataToSend.append("Featured", formData.featured || false);
 
       if (type === "addProject") {
@@ -1226,7 +1224,6 @@ Available for iOS and Android platforms.`,
                   headers: { "Content-Type": "application/json" },
                 }
               );
-              console.log("Featured swap completed successfully!");
             } catch (swapError) {
               console.error(
                 "Error completing FeaturedDisplayOrder swap:",
@@ -1239,11 +1236,7 @@ Available for iOS and Android platforms.`,
             }
           }
         } else if (isFeaturedNow && !wasFeatured) {
-          console.log("Newly featured project - no swap needed");
         } else if (!isFeaturedNow && wasFeatured) {
-          console.log(
-            "Project changed from featured to non-featured - reorganizing all featured projects"
-          );
           await forceReorganizeFeaturedDisplayOrders();
         }
       }
@@ -1303,7 +1296,6 @@ Available for iOS and Android platforms.`,
           }
         );
 
-        console.log("Project featured status updated successfully");
         await forceReorganizeFeaturedDisplayOrders();
         await loadProjects();
         setError(null);
@@ -1343,9 +1335,11 @@ Available for iOS and Android platforms.`,
             >
               Cancel
             </button>
+            {userRole === "admin" && (
             <button className={styles.btnDanger} onClick={confirmDelete}>
               Delete
             </button>
+            )}
           </div>
         </div>
       </div>
@@ -1603,6 +1597,21 @@ Available for iOS and Android platforms.`,
                 )}
               </div>
 
+              <div className={styles.formGroup}>
+                <label>GitHub URL</label>
+                <input
+                  type="url"
+                  value={formData.githubUrl || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      githubUrl: e.target.value,
+                    }))
+                  }
+                  placeholder="https://github.com/username/repo"
+                />
+              </div>
+
               {type === "editProject" &&
                 formData.originalDisplayOrder !== null &&
                 formData.originalDisplayOrder !== undefined && (
@@ -1736,6 +1745,8 @@ Available for iOS and Android platforms.`,
                       <img
                         src={formData.imageUrl}
                         alt="Project preview"
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => {
                           e.target.style.display = "none";
                           setFormData((prev) => ({
@@ -1744,6 +1755,7 @@ Available for iOS and Android platforms.`,
                           }));
                         }}
                       />
+                      {userRole === "admin" && (
                       <button
                         type="button"
                         className={styles.clearImageBtn}
@@ -1751,8 +1763,9 @@ Available for iOS and Android platforms.`,
                       >
                         <X size={14} />
                       </button>
+                      )}
                     </div>
-                  ) : (
+                  ) : userRole === "admin" && (
                     <div className={styles.uploadPlaceholder}>
                       <Upload size={24} />
                       <p>Click or drag image here</p>
@@ -1936,6 +1949,7 @@ Available for iOS and Android platforms.`,
           <button className={styles.btnSecondary} onClick={closeSlidePanel}>
             Cancel
           </button>
+          {userRole === "admin" && (
           <button
             className={styles.btnPrimary}
             onClick={handleSave}
@@ -1944,6 +1958,7 @@ Available for iOS and Android platforms.`,
             <Save size={16} />
             {loading ? "Saving..." : "Save Changes"}
           </button>
+          )}
         </div>
       </div>
     );
@@ -1993,6 +2008,7 @@ Available for iOS and Android platforms.`,
       )}
 
       <div className={styles.sectionHeader}>
+        {userRole === "admin" && (
         <button
           className={styles.btnPrimary}
           onClick={() => openSlidePanel("addProject", null, "Add New Project")}
@@ -2001,6 +2017,7 @@ Available for iOS and Android platforms.`,
           <Plus size={16} />
           Add Project
         </button>
+        )}
       </div>
 
       <div className={styles.projectsGrid}>
@@ -2016,6 +2033,8 @@ Available for iOS and Android platforms.`,
                   <img
                     src={project.imageUrl}
                     alt={project.title}
+                    loading="lazy"
+                    decoding="async"
                     onError={() => handleImageError(project.projectId)}
                   />
                 ) : (
@@ -2031,6 +2050,7 @@ Available for iOS and Android platforms.`,
                   </div>
                 )}
                 <div className={styles.projectActions}>
+                  {userRole === "admin" && (
                   <button
                     className={`${styles.iconBtn} ${
                       project.featured ? styles.featured : ""
@@ -2043,6 +2063,8 @@ Available for iOS and Android platforms.`,
                   >
                     <Star size={16} />
                   </button>
+                  )}
+                  {userRole === "admin" && (
                   <button
                     className={styles.iconBtn}
                     onClick={() =>
@@ -2053,6 +2075,8 @@ Available for iOS and Android platforms.`,
                   >
                     <Edit3 size={16} />
                   </button>
+                  )}
+                  {userRole === "admin" && (
                   <button
                     className={styles.iconBtn}
                     onClick={() =>
@@ -2067,6 +2091,7 @@ Available for iOS and Android platforms.`,
                   >
                     <Trash2 size={16} />
                   </button>
+                  )}
                 </div>
               </div>
               <div className={styles.projectContent}>
@@ -2139,6 +2164,21 @@ Available for iOS and Android platforms.`,
                     >
                       <ExternalLink size={16} />
                       Live URL
+                    </a>
+                  )}
+                  {project.githubUrl && (
+                    <a
+                      href={
+                        project.githubUrl.startsWith("http")
+                          ? project.githubUrl
+                          : `https://${project.githubUrl}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.liveUrlBtn}
+                    >
+                      <Github size={16} />
+                      GitHub
                     </a>
                   )}
                 </div>

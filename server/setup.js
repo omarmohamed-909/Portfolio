@@ -52,19 +52,16 @@ async function setupAboutSlides_DefaultValues() {
 
     const SlidesData = [
       {
-        slideImage: "defaulticon1.png",
         slideTitle: "Web Development",
         slideDescription:
           "Building responsive and performant web applications using modern technologies and best practices. Always You Can Change this default data from dashboard",
       },
       {
-        slideImage: "defaulticon2.png",
         slideTitle: "UI/UX Design",
         slideDescription:
           "Creating intuitive and beautiful user interfaces that provide exceptional user experiences. Always You Can Change this default data from dashboard",
       },
       {
-        slideImage: "defaulticon3.png",
         slideTitle: "Performance Optimization",
         slideDescription:
           "Optimizing applications for speed, accessibility, and search engine visibility. Always You Can Change this default data from dashboard",
@@ -100,6 +97,20 @@ async function setupAboutUs_DefaultValues() {
         "Responsive Design",
       ],
       AboutUsSlides: ImportSlides,
+      AcademicTitle: "B.Sc. Computer Science & Artificial Intelligence",
+      AcademicMeta: "South Valley University · Senior Year (2026)",
+      AcademicDescription: "Specialising in algorithm design, systems programming, and full-stack architecture. Combining theoretical CS foundations with hands-on engineering across the entire stack.",
+      IdentityCard1Title: "Competitive Programming",
+      IdentityCard1Subtitle: "Core CS & Algorithms",
+      IdentityCard1Items: ["Problem Solving (C++)", "Data Structures & Algorithms", "Codeforces & AtCoder"],
+      IdentityCard2Title: "Computer Vision & Data",
+      IdentityCard2Subtitle: "Image Processing & Analysis",
+      IdentityCard2Items: ["OpenCV & Python", "Image Processing Pipelines", "Pattern Recognition"],
+      IdentityCard3Title: "3D & Media Pipelines",
+      IdentityCard3Subtitle: "Blender · Modeling · Rendering",
+      IdentityCard3Items: ["3D Modeling & Sculpting", "Rendering & Compositing", "Pipeline Automation"],
+      PhilosophyQuote: "I architect and build complete systems from database to UI. My focus is on clean architecture, algorithmic efficiency, and scalable solutions — not just decorating interfaces.",
+      PhilosophyMeta: "Full-stack development from schema design to production deployment",
     });
 
     await AboutData.save();
@@ -160,7 +171,7 @@ async function setupFooter_DefaultValues() {
         "Crafting digital experiences with passion and precision. Let's build something amazing together.",
       OwnerEmail: "contact@portfolio.com",
       OwnerPhone: "+216 1234567",
-      OwnerAddress: "Tunisia, Tn",
+      OwnerAddress: "Qena, Egypt",
       FooterSocialLinks: ImportSocialLinks,
     });
 
@@ -221,10 +232,10 @@ async function setupStaticSeo_DefaultValues() {
       WebsiteName: "Your Website Name",
       LangCode: "en",
       Lang: "English",
-      CountryCode: "Tn",
-      City: "Tunisia",
-      Geographic: "33.8869;9.5375",
-      ICBM: "33.8869, 9.5375",
+      CountryCode: "EG",
+      City: "Qena",
+      Geographic: "26.1551;32.7160",
+      ICBM: "26.1551, 32.7160",
     });
 
     await Static.save();
@@ -304,6 +315,25 @@ async function setupSeo_DefaultValues() {
         SocialImage: "",
         TwitterTitle: `My CV`,
         TwitterDescription: `Review my professional CV with details on experience and education.`,
+        TwitterImage: "",
+      },
+      {
+        Page: "about",
+        Title: `My Portfolio | About`,
+        Description: `Learn more about my background, engineering identity, and philosophy.`,
+        Keywords: [
+          "about",
+          "background",
+          "engineering",
+          "philosophy",
+          "full-stack",
+        ],
+        SocialTitle: `About Me`,
+        SocialDescription: `Discover my academic background, skills, and engineering philosophy.`,
+        PageUrl: `https://www.YourDomainHere.com/about`,
+        SocialImage: "",
+        TwitterTitle: `About Me`,
+        TwitterDescription: `Learn about my background, skills, and what drives me.`,
         TwitterImage: "",
       },
       {

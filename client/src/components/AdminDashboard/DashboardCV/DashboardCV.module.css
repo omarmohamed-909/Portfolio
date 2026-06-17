@@ -1,59 +1,5 @@
 /* DashboardCV Component Styles */
 
-/* CSS Variables for consistent theming */
-:root {
-  /* Color Palette - Professional Dark Theme */
-  --bg-primary: #060b17;
-  --bg-secondary: #0b1120;
-  --bg-tertiary: #131c2d;
-  --bg-card: rgba(11, 17, 32, 0.78);
-  --bg-hover: rgba(148, 163, 184, 0.08);
-  --bg-active: rgba(148, 163, 184, 0.18);
-
-  /* Accent Colors */
-  --accent-primary: #00d4ff;
-  --accent-primary-hover: #61eaff;
-  --accent-secondary: #22d3ee;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
-
-  /* Text Colors */
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
-  --text-inverse: #1e293b;
-
-  /* Border Colors */
-  --border-primary: rgba(255, 255, 255, 0.1);
-  --border-secondary: rgba(255, 255, 255, 0.2);
-  --border-accent: #00d4ff;
-
-  /* Shadows */
-  --shadow-sm: 0 8px 24px rgba(2, 8, 20, 0.25);
-  --shadow-md: 0 14px 32px rgba(2, 8, 20, 0.34);
-  --shadow-lg: 0 20px 44px rgba(2, 8, 20, 0.42);
-  --shadow-xl: 0 28px 60px rgba(2, 8, 20, 0.55);
-
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-
-  /* Transitions */
-  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* CV Section */
 .cvSection {
   padding: var(--spacing-xl);
@@ -82,19 +28,7 @@
 
 /* Card Styles */
 .card {
-  background-color: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
-  transition: var(--transition-fast);
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(12px);
-}
-
-.card:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  composes: card from '../AdminShared.module.css';
 }
 
 .card h3 {
@@ -105,10 +39,7 @@
 }
 
 .cardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-lg);
+  composes: cardHeader from '../AdminShared.module.css';
 }
 
 .cardHeader h3 {
@@ -135,12 +66,14 @@
   background-color: rgba(0, 212, 255, 0.05);
 }
 
+.uploadArea.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .uploadPlaceholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-lg);
-  color: var(--text-muted);
+  composes: uploadPlaceholder from '../AdminShared.module.css';
 }
 
 .uploadPlaceholder h4 {
@@ -229,6 +162,12 @@
   background-color: #dc2626;
 }
 
+.removeBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .cvActions {
   display: flex;
   gap: var(--spacing-md);
@@ -260,43 +199,23 @@
 
 /* Button Styles */
 .btnPrimary {
-  background: linear-gradient(135deg, var(--accent-primary), #00a7cb);
-  color: #041622;
-  border: none;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.9rem;
+  composes: btnPrimary from '../AdminShared.module.css';
 }
 
-.btnPrimary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 26px rgba(0, 212, 255, 0.3);
+.btnPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .btnSecondary {
-  background-color: var(--bg-hover);
-  color: var(--text-primary);
-  border: 1px solid var(--border-secondary);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.9rem;
+  composes: btnSecondary from '../AdminShared.module.css';
 }
 
-.btnSecondary:hover {
-  background-color: var(--bg-active);
-  border-color: var(--border-accent);
+.btnSecondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Responsive Design */
@@ -344,7 +263,6 @@
   }
 }
 
-/* Loading Container */
 .loadingContainer {
   display: flex;
   align-items: center;
@@ -371,7 +289,6 @@
   }
 }
 
-/* Success Message */
 .successMessage {
   padding: 15px;
   background-color: rgba(34, 211, 238, 0.12);
@@ -382,7 +299,6 @@
   font-weight: 500;
 }
 
-/* Error Message */
 .errorMessage {
   padding: 15px;
   background-color: rgba(239, 68, 68, 0.14);
@@ -391,20 +307,4 @@
   border-radius: 8px;
   margin-bottom: 20px;
   font-weight: 500;
-}
-
-/* Disabled state for upload area */
-.uploadArea.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-/* Disabled state for buttons */
-.btnPrimary:disabled,
-.btnSecondary:disabled,
-.removeBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
 }

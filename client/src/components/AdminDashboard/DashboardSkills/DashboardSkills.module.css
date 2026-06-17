@@ -1,59 +1,5 @@
 /* DashboardSkills Component Styles */
 
-/* CSS Variables for consistent theming */
-:root {
-  /* Color Palette - Professional Dark Theme */
-  --bg-primary: #060b17;
-  --bg-secondary: #0b1120;
-  --bg-tertiary: #131c2d;
-  --bg-card: rgba(11, 17, 32, 0.78);
-  --bg-hover: rgba(148, 163, 184, 0.08);
-  --bg-active: rgba(148, 163, 184, 0.18);
-
-  /* Accent Colors */
-  --accent-primary: #00d4ff;
-  --accent-primary-hover: #61eaff;
-  --accent-secondary: #22d3ee;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
-
-  /* Text Colors */
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
-  --text-inverse: #1e293b;
-
-  /* Border Colors */
-  --border-primary: rgba(255, 255, 255, 0.1);
-  --border-secondary: rgba(255, 255, 255, 0.2);
-  --border-accent: #00d4ff;
-
-  /* Shadows */
-  --shadow-sm: 0 8px 24px rgba(2, 8, 20, 0.25);
-  --shadow-md: 0 14px 32px rgba(2, 8, 20, 0.34);
-  --shadow-lg: 0 20px 44px rgba(2, 8, 20, 0.42);
-  --shadow-xl: 0 28px 60px rgba(2, 8, 20, 0.55);
-
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-
-  /* Transitions */
-  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* Skills Section */
 .skillsSection {
   padding: var(--spacing-xl);
@@ -111,7 +57,6 @@
   transition: var(--transition-fast);
   position: relative;
   box-shadow: var(--shadow-md);
-  backdrop-filter: blur(12px);
 }
 
 .skillCard:hover {
@@ -152,6 +97,14 @@
   font-size: 0.75rem;
   font-weight: 500;
   width: fit-content;
+}
+
+.skillDetail {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0 0 var(--spacing-md);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
 }
 
 .skillActions {
@@ -202,105 +155,28 @@
 
 /* Button Styles */
 .btnPrimary {
-  background: linear-gradient(135deg, var(--accent-primary), #00a7cb);
-  color: #041622;
-  border: none;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.9rem;
-}
-
-.btnPrimary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 26px rgba(0, 212, 255, 0.3);
+  composes: btnPrimary from '../AdminShared.module.css';
 }
 
 .btnSecondary {
-  background-color: var(--bg-hover);
-  color: var(--text-primary);
-  border: 1px solid var(--border-secondary);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.9rem;
-}
-
-.btnSecondary:hover {
-  background-color: var(--bg-active);
-  border-color: var(--border-accent);
+  composes: btnSecondary from '../AdminShared.module.css';
 }
 
 .btnDanger {
-  background-color: var(--accent-danger);
-  color: white;
-  border: none;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.9rem;
-}
-
-.btnDanger:hover {
-  background-color: #dc2626;
-  transform: translateY(-1px);
+  composes: btnDanger from '../AdminShared.module.css';
 }
 
 .iconBtn {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-md);
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.iconBtn:hover {
-  background-color: var(--bg-hover);
-  color: var(--text-primary);
+  composes: iconBtn from '../AdminShared.module.css';
 }
 
 /* Slide Panel */
 .slidePanel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 400px;
-  height: 100vh;
-  background-color: rgba(11, 17, 32, 0.94);
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-xl);
-  backdrop-filter: blur(14px);
+  composes: slidePanel from '../AdminShared.module.css';
 }
 
 .slidePanelHeader {
-  padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--border-primary);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  composes: slidePanelHeader from '../AdminShared.module.css';
 }
 
 .slidePanelHeader h3 {
@@ -311,45 +187,24 @@
 }
 
 .closeBtn {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-md);
-  transition: var(--transition-fast);
-}
-
-.closeBtn:hover {
-  background-color: var(--bg-hover);
-  color: var(--text-primary);
+  composes: closeBtn from '../AdminShared.module.css';
 }
 
 .slidePanelContent {
-  flex: 1;
-  padding: var(--spacing-lg);
-  overflow-y: auto;
+  composes: slidePanelContent from '../AdminShared.module.css';
 }
 
 .slidePanelFooter {
-  padding: var(--spacing-lg);
-  border-top: 1px solid var(--border-primary);
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: flex-end;
+  composes: slidePanelFooter from '../AdminShared.module.css';
 }
 
 /* Form Styles */
 .form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
+  composes: form from '../AdminShared.module.css';
 }
 
 .formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+  composes: formGroup from '../AdminShared.module.css';
 }
 
 .formGroup label {
@@ -369,6 +224,110 @@
   color: var(--text-primary);
   font-size: 0.9rem;
   transition: var(--transition-fast);
+}
+
+.customSelect {
+  position: relative;
+  width: 100%;
+}
+
+.selectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  user-select: none;
+  transition: var(--transition-fast);
+}
+
+.selectTrigger:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.selectPlaceholder {
+  color: var(--text-muted);
+}
+
+.selectValue {
+  color: var(--text-primary);
+}
+
+.selectChevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.selectChevronOpen {
+  transform: rotate(180deg);
+}
+
+.selectMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #0f172a;
+  border: 1px solid rgba(0, 212, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 0.35rem;
+  z-index: 100;
+  max-height: 260px;
+  overflow-y: auto;
+  box-shadow: 0 12px 32px rgba(2, 8, 20, 0.5);
+}
+
+.selectOption {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  list-style: none;
+}
+
+.selectOption:hover {
+  background: rgba(0, 212, 255, 0.06);
+  color: var(--text-primary);
+}
+
+.selectOptionActive {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.selectOptionCheckmark {
+  color: var(--accent-primary);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  width: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selectMenu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.selectMenu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.selectMenu::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 4px;
 }
 
 .formGroup input:focus,
@@ -421,27 +380,11 @@
 
 /* Modal Styles */
 .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
+  composes: overlay from '../AdminShared.module.css';
 }
 
 .modal {
-  background-color: rgba(11, 17, 32, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
-  max-width: 400px;
-  width: 90%;
-  box-shadow: var(--shadow-xl);
-  backdrop-filter: blur(14px);
+  composes: modal from '../AdminShared.module.css';
 }
 
 .modal h3 {
@@ -458,9 +401,7 @@
 }
 
 .modalActions {
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: flex-end;
+  composes: modalActions from '../AdminShared.module.css';
 }
 
 /* Responsive Design */
@@ -515,14 +456,7 @@
 }
 
 .errorMessage {
-  background-color: rgba(239, 68, 68, 0.1);
-  border: 1px solid var(--accent-danger);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  color: var(--accent-danger);
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: var(--spacing-lg);
+  composes: errorMessage from '../AdminShared.module.css';
   display: flex;
   align-items: center;
 }

@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, User, AlertCircle } from "lucide-react";
 import styles from "./auth.module.css";
 import axios from "axios";
 import { Frontend_Admin_Url, Backend_Root_Url } from "../../config/AdminUrl.js";
 import { verifyJWTToken } from "../AdminDashboard/utils/authUtils";
-import { useEffect } from "react";
+import NebulaDrift from "../NebulaDrift/NebulaDrift";
 
-import "../../../src/App.css";
+const dashboardUrl = `/${Frontend_Admin_Url}/dashboard`;
 
-const AdminDashboard = "/" + Frontend_Admin_Url;
 const AuthPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -17,17 +18,16 @@ const AuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const AdminDashboardHref = [{ href: `${AdminDashboard}/dashboard` }];
-  //Authentication check
+
   useEffect(() => {
     const checkAuth = async () => {
-      const isValid = await verifyJWTToken();
-      if (isValid === true) {
-        window.location.href = AdminDashboardHref[0].href;
+      const { isAuthenticated } = await verifyJWTToken();
+      if (isAuthenticated) {
+        navigate(dashboardUrl);
       }
     };
     checkAuth();
-  }, []);
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,6 +39,7 @@ const AuthPage = () => {
       setErrorMessage("");
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -56,8 +57,7 @@ const AuthPage = () => {
         }
       );
 
-      console.log("Login successful");
-      window.location.href = AdminDashboardHref[0].href;
+      navigate(dashboardUrl);
     } catch (error) {
       if (error.response) {
         const errorMsg =
@@ -81,16 +81,17 @@ const AuthPage = () => {
 
   return (
     <div className={styles.authContainer}>
+      <NebulaDrift />
       <div className={styles.authCard}>
         <div className={styles.authHeader}>
           <div className={styles.logoContainer}>
             <Lock className={styles.logoIcon} />
           </div>
           <h1 className={styles.title}>Admin Access</h1>
-          <p className={styles.subtitle}>Sign in to your admin dashboard</p>
+          <p className={styles.subtitle}>Sign in to your dashboard</p>
         </div>
 
-        <div className={styles.authForm}>
+        <form className={styles.authForm} onSubmit={handleSubmit}>
           {errorMessage && (
             <div className={styles.errorMessage}>
               <AlertCircle className={styles.errorIcon} />
@@ -114,6 +115,7 @@ const AuthPage = () => {
                 placeholder="Enter your username"
                 required
                 disabled={isLoading}
+                autoComplete="username"
               />
             </div>
           </div>
@@ -134,12 +136,14 @@ const AuthPage = () => {
                 placeholder="Enter your password"
                 required
                 disabled={isLoading}
+                autoComplete="current-password"
               />
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
                 className={styles.passwordToggle}
                 disabled={isLoading}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -147,7 +151,7 @@ const AuthPage = () => {
           </div>
 
           <button
-            onClick={handleSubmit}
+            type="submit"
             className={styles.submitButton}
             disabled={isLoading || !formData.username || !formData.password}
           >
@@ -160,18 +164,13 @@ const AuthPage = () => {
               "Sign In"
             )}
           </button>
-        </div>
+        </form>
 
         <div className={styles.authFooter}>
           <p className={styles.footerText}>
-            Secure admin access • Protected by encryption
+            Secure admin access &bull; Protected by encryption
           </p>
         </div>
-      </div>
-
-      <div className={styles.backgroundPattern}>
-        <div className={styles.circlePattern}></div>
-        <div className={styles.gridPattern}></div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import express from "express";
 import HomeData from "../models/HomeDataSchema.js";
 import { removeCloudinaryAsset, upload } from "../controllers/storage.js";
 import HomeLogoFolder from "../middlewares/HomeLogo.js";
-import isAdminLogged from "../middlewares/isAdminLogged.js";
+import { isAdminOnly, isAdminOrViewer } from "../middlewares/isAdminOnly.js";
 import validateEditHomeData from "../middlewares/EditHomeDataValidation.js";
 import Stats from "../models/StatsSchema.js";
 import validateAddStat from "../middlewares/AddStatValidation.js";
@@ -12,7 +12,7 @@ const Router = express.Router();
 
 Router.put(
   "/home/update/logo",
-  isAdminLogged,
+  isAdminOnly,
   HomeLogoFolder,
   upload.single("image"),
   async (req, res) => {
@@ -63,15 +63,17 @@ Router.put(
 
 Router.put(
   "/home/edit/homedata",
-  isAdminLogged,
+  isAdminOnly,
   validateEditHomeData,
   async (req, res) => {
     try {
       const NewData = req.body;
 
+      // Use $set so only the provided fields are updated —
+      // without it, HomeLogo and the AboutUs ObjectId ref would be wiped.
       const UpdateData = await HomeData.findOneAndUpdate(
         {},
-        NewData,
+        { $set: NewData },
         { runValidators: true, new: true, upsert: true }
       );
 
@@ -91,7 +93,7 @@ Router.put(
 
 Router.post(
   "/home/add/stat",
-  isAdminLogged,
+  isAdminOnly,
   validateAddStat,
   async (req, res) => {
     try {
@@ -121,7 +123,7 @@ Router.post(
   }
 );
 
-Router.delete("/home/delete/stat/:id", isAdminLogged, async (req, res) => {
+Router.delete("/home/delete/stat/:id", isAdminOnly, async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -156,7 +158,7 @@ Router.delete("/home/delete/stat/:id", isAdminLogged, async (req, res) => {
 
 Router.put(
   "/home/update/stat/:id",
-  isAdminLogged,
+  isAdminOnly,
   validateEditStat,
   async (req, res) => {
     try {

@@ -14,6 +14,20 @@
     border-color 0.3s ease;
 }
 
+.loadingSpinner {
+  width: 28px;
+  height: 28px;
+  margin: 2rem auto;
+  border: 3px solid rgba(0, 212, 255, 0.12);
+  border-top-color: #00d4ff;
+  border-radius: 50%;
+  animation: footerSpin 0.7s linear infinite;
+}
+
+@keyframes footerSpin {
+  to { transform: rotate(360deg); }
+}
+
 /* Dark mode: slightly deepen footer so it feels grounded */
 [data-theme="dark"] .footer {
   background: #0a1628;
