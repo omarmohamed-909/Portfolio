@@ -21,3 +21,8 @@ Thumbs.db
 
 # Local env overrides
 *.local
+
+# AI Agent & Workspace Directories
+.gemini/
+.agents/
+.impeccable/
