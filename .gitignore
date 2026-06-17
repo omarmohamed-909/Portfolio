@@ -26,3 +26,6 @@ Thumbs.db
 .gemini/
 .agents/
 .impeccable/
+.claude/
+.cursor/
+.sixth/
