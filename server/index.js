@@ -119,56 +119,15 @@ app.use(express.json());
 // SINGLE CORS configuration
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (mobile apps, curl, postman, etc.)
-      if (!origin) return callback(null, true);
-
-      // If no custom domain is set, allow localhost variations
-      if (!customDomain) {
-        const localhostOrigins = [
-          `http://[::1]:${FRONTEND_PORT}`,
-          `http://127.0.0.1:${FRONTEND_PORT}`,
-          `http://localhost:${FRONTEND_PORT}`,
-        ];
-
-        if (localhostOrigins.includes(origin)) {
-          return callback(null, true);
-        }
-
-        // Allow flexible localhost matching
-        if (
-          origin.match(/^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/)
-        ) {
-          return callback(null, true);
-        }
-      } else {
-        // Production mode: only allow custom domain
-        if (origin === customDomain) {
-          return callback(null, true);
-        }
-
-        // Allow variations of custom domain
-        try {
-          const customUrl = new URL(
-            "https://" + customDomain.replace(/^https?:\/\//, "")
-          );
-          const originUrl = new URL(origin);
-
-          if (
-            originUrl.hostname === customUrl.hostname ||
-            originUrl.hostname.endsWith("." + customUrl.hostname) ||
-            customUrl.hostname.endsWith("." + originUrl.hostname)
-          ) {
-            return callback(null, true);
-          }
-        } catch (e) {
-          // Invalid URL format, reject
-        }
-      }
-
-      // Reject all other origins
-      return callback(null, false);
-    },
+    origin: [
+      `http://[::1]:${FRONTEND_PORT}`,
+      `http://127.0.0.1:${FRONTEND_PORT}`,
+      `http://localhost:${FRONTEND_PORT}`,
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "https://www.omarombark.me",
+      "https://omarombark.me"
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: [
