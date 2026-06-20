@@ -10,14 +10,10 @@ const Router = express.Router();
 const TOKEN_MAX_AGE = 6 * 60 * 60 * 1000;
 
 function getCookieOptions() {
-  const isProd = Boolean(
-    process.env.CUSTOM_DOMAIN && process.env.CUSTOM_DOMAIN.trim() !== ""
-  );
-
   return {
     httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
+    secure: true, // ضروري جداً في الـ Production عشان الـ HTTPS
+    sameSite: "none", // الكلمة السحرية اللي بتسمح بنقل الكوكي من DigitalOcean لـ Vercel
     maxAge: TOKEN_MAX_AGE,
     path: "/",
   };
