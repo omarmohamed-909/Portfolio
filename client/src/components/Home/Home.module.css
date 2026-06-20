@@ -302,7 +302,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: float 3s ease-in-out infinite;
+  animation: float 5s ease-in-out infinite;
 }
 
 .photoFrame {
@@ -329,7 +329,7 @@
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
+  50%      { transform: translateY(-8px); }
 }
 
 /* ==========================================================================
@@ -1338,7 +1338,7 @@
 
   .heroButtons {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .primaryButton,
