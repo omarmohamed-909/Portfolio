@@ -237,22 +237,10 @@
   box-shadow: 0 4px 14px rgba(0, 212, 255, 0.30);
 }
 
-.primaryButton::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, #00d4ff, #0891b2);
-  opacity: 0;
-  border-radius: inherit;
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 .primaryButton:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 8px 28px rgba(0, 212, 255, 0.45);
 }
-
-.primaryButton:hover::before { opacity: 1; }
 
 .primaryButton:active {
   transform: translateY(0) scale(0.98);
@@ -314,6 +302,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: float 3s ease-in-out infinite;
 }
 
 .photoFrame {
@@ -336,6 +325,11 @@
   object-fit: cover;
   object-position: top;
   display: block;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
 }
 
 /* ==========================================================================
@@ -1473,4 +1467,5 @@
   .spinning { animation: none; }
   .projectsSpinner { animation: none; }
   .archSkeleton { animation: none; opacity: 0.5; }
+  .profileImage { animation: none; }
 }
