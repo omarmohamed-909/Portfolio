@@ -123,12 +123,6 @@ const Home = () => {
             <div className={styles.container}>
               <div className={styles.heroContent}>
                 <div>
-                  <div className={styles.heroSpec}>
-                    <div className={styles.heroLabel}>
-                      <span className={styles.heroDot} />
-                      {GetRoles?.length > 0 ? GetRoles[0] : "Full-Stack Developer"}
-                    </div>
-                  </div>
                   <h1 className={styles.heroName}>
                     {MainHomeData?.DisplayName || "Developer"}
                   </h1>
