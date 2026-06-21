@@ -9,7 +9,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "setup": "node setup.js",
-    "fill-data": "node fill-data.js"
+    "fill-data": "node fill-data.js",
+    "migrate-categories": "node scripts/migrateCategories.js"
   },
   "keywords": [],
   "author": "Omar",

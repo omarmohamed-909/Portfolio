@@ -12,21 +12,14 @@ import { resolveAssetUrl } from "../../lib/assetUrl.js";
 import { Code2, Server, Database, FileCode, ScanSearch, Brain, Box, Cloud, Wrench, Layers } from "lucide-react";
 import "../../../src/App.css";
 
-const getCategoryIcon = (catName) => {
-  const lowerCat = (catName || "").toLowerCase();
-  if (lowerCat.includes("front")) return Code2;
-  if (lowerCat.includes("back")) return Server;
-  if (lowerCat.includes("data") && !lowerCat.includes("base")) return ScanSearch;
-  if (lowerCat.includes("database")) return Database;
-  if (lowerCat.includes("language")) return FileCode;
-  if (lowerCat.includes("vision")) return ScanSearch;
-  if (lowerCat.includes("core") || lowerCat.includes("algorithm")) return Brain;
-  if (lowerCat.includes("3d") || lowerCat.includes("media") || lowerCat.includes("pipeline")) return Box;
-  if (lowerCat.includes("cloud") || lowerCat.includes("infra")) return Cloud;
-  if (lowerCat.includes("devops") || lowerCat.includes("tool")) return Wrench;
-  if (lowerCat.includes("state")) return Layers;
-  return Code2;
+const CATEGORY_ICON_MAP = {
+  Code2, Server, Database, FileCode, ScanSearch,
+  Brain, Box, Cloud, Wrench, Layers,
 };
+
+function getCategoryIcon(iconName) {
+  return CATEGORY_ICON_MAP[iconName] || Code2;
+}
 
 const SkillsPage = () => {
   const [skillsData, setSkillsData] = useState([]);
@@ -54,17 +47,22 @@ const SkillsPage = () => {
         const raw = skillsRes.data;
         const apiSkills = Array.isArray(raw) ? raw : raw?.SkillsData || raw?.data || raw?.skills || [];
         const groupedSkills = apiSkills.reduce((acc, skill) => {
-          const category = skill.Category;
-          if (!acc[category]) acc[category] = [];
-          acc[category].push({
+          const cat = skill.Category;
+          const catKey = cat?._id || cat;
+          if (!acc[catKey]) {
+            acc[catKey] = {
+              category: cat?.name || cat || "Uncategorized",
+              icon: cat?.icon || "Code2",
+              skills: [],
+            };
+          }
+          acc[catKey].skills.push({
             name: skill.SkillName,
             level: skill.Skill_Level,
           });
           return acc;
         }, {});
-        const formattedSkills = Object.entries(groupedSkills).map(
-          ([category, skills]) => ({ category, skills })
-        );
+        const formattedSkills = Object.values(groupedSkills);
         setSkillsData(formattedSkills);
 
         // Transform projects
@@ -297,7 +295,7 @@ const SkillsPage = () => {
                   <div className={styles.categoryHeader}>
                     <div className={styles.categoryTitleGroup}>
                       <span className={styles.categoryIconWrap}>
-                        {(() => { const Icon = getCategoryIcon(category.category); return <Icon size={16} />; })()}
+                        {(() => { const Icon = getCategoryIcon(category.icon); return <Icon size={16} />; })()}
                       </span>
                       <h3 className={styles.categoryTitle}>
                         {category.category}

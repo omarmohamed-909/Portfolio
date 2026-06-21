@@ -83,7 +83,21 @@ Router.delete("/skills/delete/skill/:id", isAdminOnly, async (req, res) => {
 
 Router.get("/show/skills", async (req, res) => {
   try {
-    const SkillsData = await Skills.find();
+    let SkillsData = await Skills.find().populate("Category");
+    SkillsData = SkillsData.map((skill) => {
+      const cat = skill.Category;
+      if (!cat || (typeof cat === "object" && !cat.name)) {
+        const plain = skill.toObject();
+        plain.Category = { _id: null, name: "Uncategorized", icon: "Code2", order: 0 };
+        return plain;
+      }
+      if (typeof cat === "string") {
+        const plain = skill.toObject();
+        plain.Category = { _id: null, name: cat, icon: "Code2", order: 0 };
+        return plain;
+      }
+      return skill;
+    });
     return res.status(200).json(SkillsData);
   } catch (err) {
     return res

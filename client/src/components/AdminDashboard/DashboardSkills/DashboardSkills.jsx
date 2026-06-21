@@ -7,22 +7,10 @@ import axios from "axios";
 import { Backend_Root_Url } from "../../../config/AdminUrl.js";
 import { motion, AnimatePresence } from "framer-motion";
 
-const CATEGORIES = [
-  "Frontend",
-  "Backend",
-  "Database",
-  "Languages",
-  "Computer Vision & Data",
-  "Core CS & Algorithms",
-  "3D & Media Pipelines",
-  "Cloud & Infra",
-  "DevOps & Tools",
-  "State Management",
-];
-
 const DashboardSkills = ({ userRole }) => {
   //Authentication check
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
   useEffect(() => {
     const checkAuth = async () => {
       const { isAuthenticated } = await verifyJWTToken();
@@ -31,6 +19,7 @@ const DashboardSkills = ({ userRole }) => {
         return;
       }
       fetchSkills();
+      fetchCategories();
     };
     checkAuth();
   }, [navigate]);
@@ -43,7 +32,6 @@ const DashboardSkills = ({ userRole }) => {
         withCredentials: true,
       });
 
-      // Transform API data to match component structure
       const raw = response.data;
       const skillsArray = Array.isArray(raw) ? raw : raw?.SkillsData || raw?.data || raw?.skills || [];
       const transformedData = (Array.isArray(skillsArray) ? skillsArray : []).map((skill) => ({
@@ -64,6 +52,15 @@ const DashboardSkills = ({ userRole }) => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`${Backend_Root_Url}/api/show/categories`, { withCredentials: true });
+      setCategories(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+    }
+  };
+
   const addSkill = async (skillData) => {
     try {
       const response = await axios.post(
@@ -79,7 +76,6 @@ const DashboardSkills = ({ userRole }) => {
         }
       );
 
-      // Refresh skills after successful add
       await fetchSkills();
       return { success: true };
     } catch (error) {
@@ -107,7 +103,6 @@ const DashboardSkills = ({ userRole }) => {
         }
       );
 
-      // Refresh skills after successful edit
       await fetchSkills();
       return { success: true };
     } catch (error) {
@@ -199,7 +194,10 @@ const DashboardSkills = ({ userRole }) => {
     });
 
     if (data) {
-      setFormData(data);
+      setFormData({
+        ...data,
+        category: data.category?._id || "",
+      });
     } else {
       setFormData({
         name: "",
@@ -264,7 +262,7 @@ const DashboardSkills = ({ userRole }) => {
       errors.name = "Skill name is required";
     }
 
-    if (!formData.category || formData.category.trim() === "") {
+    if (!formData.category) {
       errors.category = "Category is required";
     }
 
@@ -301,12 +299,12 @@ const DashboardSkills = ({ userRole }) => {
     }
   };
 
-  // Group skills by category
   const groupedSkills = skillsData.reduce((acc, skill) => {
-    if (!acc[skill.category]) {
-      acc[skill.category] = [];
+    const catKey = skill.category?._id || skill.category;
+    if (!acc[catKey]) {
+      acc[catKey] = { name: skill.category?.name || skill.category || "Uncategorized", skills: [] };
     }
-    acc[skill.category].push(skill);
+    acc[catKey].skills.push(skill);
     return acc;
   }, {});
 
@@ -395,7 +393,7 @@ const DashboardSkills = ({ userRole }) => {
                     onClick={() => setIsCategoryOpen((prev) => !prev)}
                   >
                     <span className={formData.category ? styles.selectValue : styles.selectPlaceholder}>
-                      {formData.category || "Select a category"}
+                      {categories.find((c) => c._id === formData.category)?.name || formData.category || "Select a category"}
                     </span>
                     <ChevronDown
                       size={16}
@@ -404,19 +402,19 @@ const DashboardSkills = ({ userRole }) => {
                   </div>
                   {isCategoryOpen && (
                     <ul className={styles.selectMenu}>
-                      {CATEGORIES.map((cat) => (
+                      {categories.map((cat) => (
                         <li
-                          key={cat}
-                          className={`${styles.selectOption} ${formData.category === cat ? styles.selectOptionActive : ""}`}
+                          key={cat._id}
+                          className={`${styles.selectOption} ${formData.category === cat._id ? styles.selectOptionActive : ""}`}
                           onClick={() => {
-                            setFormData((prev) => ({ ...prev, category: cat }));
+                            setFormData((prev) => ({ ...prev, category: cat._id }));
                             setIsCategoryOpen(false);
                           }}
                         >
-                          {formData.category === cat && (
+                          {formData.category === cat._id && (
                             <span className={styles.selectOptionCheckmark}>&#10003;</span>
                           )}
-                          {cat}
+                          {cat.name}
                         </li>
                       ))}
                     </ul>
@@ -523,17 +521,17 @@ const DashboardSkills = ({ userRole }) => {
         </div>
       ) : (
         <div className={styles.skillsContainer}>
-          {Object.entries(groupedSkills).map(([category, skills]) => (
-            <div key={category} className={styles.categorySection}>
-              <h3 className={styles.categoryTitle}>{category}</h3>
+          {Object.entries(groupedSkills).map(([catKey, group]) => (
+            <div key={catKey} className={styles.categorySection}>
+              <h3 className={styles.categoryTitle}>{group.name}</h3>
               <div className={styles.skillsGrid}>
-                {skills.map((skill) => (
+                {group.skills.map((skill) => (
                   <div key={skill.id} className={styles.skillCard}>
                     <div className={styles.skillHeader}>
                       <div className={styles.skillInfo}>
                         <h4>{skill.name}</h4>
                         <span className={styles.skillCategory}>
-                          {skill.category}
+                          {skill.category?.name || skill.category}
                         </span>
                       </div>
                       <div className={styles.skillActions}>

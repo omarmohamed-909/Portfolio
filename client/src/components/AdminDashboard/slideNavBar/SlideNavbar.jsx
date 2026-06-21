@@ -22,6 +22,7 @@ import {
   Mail,
   BookOpen,
   ClipboardList,
+  Layers,
 } from "lucide-react";
 
 const navVariants = {
@@ -82,6 +83,7 @@ const SlideNavbar = ({
     { id: "about", label: "About", icon: User },
     { id: "projects", label: "Projects", icon: Briefcase },
     { id: "skills", label: "Skills", icon: Zap },
+    { id: "categories", label: "Categories", icon: Layers },
     { id: "cv", label: "CV", icon: FileText },
     { id: "footer", label: "Footer", icon: Settings },
     { id: "blockhistory", label: "Block History", icon: Shield },

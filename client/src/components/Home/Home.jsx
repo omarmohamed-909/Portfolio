@@ -8,26 +8,18 @@ import "../../App.css";
 import { Backend_Root_Url } from "../../config/AdminUrl.js";
 import { resolveAssetUrl } from "../../lib/assetUrl.js";
 import { getTechIcon } from "../../lib/techIcons.jsx";
-import { ArrowRight, Download, Eye, ExternalLink, Code2, Server, Database, Wrench, FileCode, ScanSearch, Brain, Box, Cloud, Layers, Github } from "lucide-react";
+import { ArrowRight, Download, Eye, ExternalLink, Github, Code2, Server, Database, FileCode, ScanSearch, Brain, Box, Cloud, Wrench, Layers } from "lucide-react";
 import useHomeData from "../../hooks/useHomeData";
 import useTypewriter from "../../hooks/useTypewriter";
 import styles from "./Home.module.css";
 
-/* ── Render helpers ────────────────────────────────────────── */
-const getCategoryIcon = (catName) => {
-  const lowerCat = (catName || "").toLowerCase();
-  if (lowerCat.includes("front")) return Code2;
-  if (lowerCat.includes("back")) return Server;
-  if (lowerCat.includes("data")) return Database;
-  if (lowerCat.includes("database")) return Database;
-  if (lowerCat.includes("language")) return FileCode;
-  if (lowerCat.includes("computer vision") || lowerCat.includes("vision")) return ScanSearch;
-  if (lowerCat.includes("core") || lowerCat.includes("algorithm")) return Brain;
-  if (lowerCat.includes("3d") || lowerCat.includes("media") || lowerCat.includes("pipeline")) return Box;
-  if (lowerCat.includes("cloud") || lowerCat.includes("infra")) return Cloud;
-  if (lowerCat.includes("devops") || lowerCat.includes("tool")) return Wrench;
-  if (lowerCat.includes("state")) return Layers;
-  return Code2;
+const CATEGORY_ICON_MAP = {
+  Code2, Server, Database, FileCode, ScanSearch,
+  Brain, Box, Cloud, Wrench, Layers,
+};
+
+const getCategoryIcon = (iconName) => {
+  return CATEGORY_ICON_MAP[iconName] || Code2;
 };
 
 const getProjectImageSrc = (imageName) => {
@@ -210,7 +202,7 @@ const Home = () => {
               ) : (
                 <div className={styles.archGrid}>
                   {archData.map((group) => {
-                    const IconComponent = getCategoryIcon(group.category);
+                    const IconComponent = getCategoryIcon(group.icon);
                     return (
                       <div key={group.category} className={styles.archGroup}>
                         <div className={styles.archGroupHeader}>

@@ -9,6 +9,7 @@ import DashboardSEO from "../DashboardSEO/DashboardSEO";
 import DashboardAbout from "../DashboardAbout/DashboardAbout";
 import DashboardProjects from "../DashboardProjects/DashboardProjects";
 import DashboardSkills from "../DashboardSkills/DashboardSkills";
+import DashboardCategories from "../DashboardCategories/DashboardCategories";
 import DashboardCV from "../DashboardCV/DashboardCV";
 import DashboardFooter from "../DashboardFooter/DashboardFooter";
 import DashboardBlockHistory from "../DashboardBlockHistory/DashboardBlockHistory";
@@ -156,6 +157,7 @@ const Dashboard = () => {
       about: "About",
       projects: "Projects",
       skills: "Skills",
+      categories: "Categories",
       cv: "CV",
       footer: "Footer",
       blockhistory: "Block History",
@@ -188,6 +190,9 @@ const Dashboard = () => {
           break;
         case "skills":
           sectionContent = <DashboardSkills userRole={userRole} />;
+          break;
+        case "categories":
+          sectionContent = <DashboardCategories userRole={userRole} />;
           break;
         case "cv":
           sectionContent = <DashboardCV userRole={userRole} />;

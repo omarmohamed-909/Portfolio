@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 const SkillsSchema = new mongoose.Schema({
   Category: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
     required: true,
-    minlength: 1,
   },
   SkillName: {
     type: String,

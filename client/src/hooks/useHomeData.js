@@ -35,15 +35,17 @@ const groupArchitectureData = (skills) => {
   const grouped = {};
   const order = [];
   (skills || []).forEach(skill => {
-    const cat = skill?.Category?.trim();
-    if (!cat) return;
-    if (!grouped[cat]) {
-      grouped[cat] = [];
-      order.push(cat);
+    const cat = skill?.Category;
+    const catName = cat?.name?.trim ? cat.name.trim() : (typeof cat === "string" ? cat.trim() : "");
+    const catIcon = cat?.icon || "Code2";
+    if (!catName) return;
+    if (!grouped[catName]) {
+      grouped[catName] = { icon: catIcon, items: [] };
+      order.push(catName);
     }
-    grouped[cat].push({ name: skill.SkillName, detail: skill.Detail || "", level: skill.Skill_Level || 0 });
+    grouped[catName].items.push({ name: skill.SkillName, detail: skill.Detail || "", level: skill.Skill_Level || 0 });
   });
-  return order.map(cat => ({ category: cat, items: grouped[cat] }));
+  return order.map(catName => ({ category: catName, icon: grouped[catName].icon, items: grouped[catName].items }));
 };
 
 export default function useHomeData() {
@@ -136,6 +138,8 @@ export default function useHomeData() {
         setArchError("Failed to load architecture data.");
       }
       setArchLoading(false);
+
+
 
       if (githubRes.status === "fulfilled") {
         setGitStats({ ...githubRes.value.data, loading: false });
