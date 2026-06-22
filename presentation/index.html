@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkedIn Carousel — Omar Mohamed · Dynamic MERN Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ───────────────────────────────────────────── */
+:root {
+  --bg-deep:    #070B14;
+  --bg-surface: #0D1117;
+  --bg-panel:   #111827;
+  --border:     #1E2D45;
+  --border-hi:  rgba(0,212,255,0.22);
+  --cyan:       #00D4FF;
+  --cyan-dim:   rgba(0,212,255,0.12);
+  --cyan-glow:  rgba(0,212,255,0.30);
+  --teal:       #2DD4BF;
+  --purple:     #A78BFA;
+  --red:        #F87171;
+  --ink:        #E8EAF0;
+  --ink-muted:  #7A8299;
+  --ink-dim:    #4A5568;
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background: #000;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 40px;
+}
+
+/* ── SLIDE SHELL (1920x1080) ──────────────────────────── */
+.slide {
+  width: 1920px;
+  min-height: 1080px;
+  background: var(--bg-deep);
+  color: var(--ink);
+  padding: 100px 140px 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+}
+
+/* dot grid */
+.slide::before {
+  content:"";
+  position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(0,212,255,0.18) 1.5px, transparent 1.5px);
+  background-size: 40px 40px;
+  opacity: 0.08;
+  pointer-events:none;
+}
+
+/* top cyan accent line */
+.slide::after {
+  content:"";
+  position:absolute;
+  top:0; left:140px; right:140px;
+  height:3px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0.4;
+}
+
+.slide-inner {
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  height:100%;
+  gap:0;
+}
+
+/* split layout for horizontal slides */
+.layout-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+/* ── TYPE ─────────────────────────────────────────────── */
+.kicker {
+  font-family:'Sora',sans-serif;
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin-bottom:32px;
+}
+
+h1 {
+  font-family:'Sora',sans-serif;
+  font-size:84px;
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:-0.02em;
+  color:var(--ink);
+  text-wrap:balance;
+  margin-bottom:40px;
+}
+
+h2 {
+  font-family:'Sora',sans-serif;
+  font-size:64px;
+  font-weight:700;
+  line-height:1.1;
+  letter-spacing:-0.02em;
+  color:var(--ink);
+  margin-bottom:32px;
+}
+
+.sub {
+  font-size:32px;
+  line-height:1.6;
+  color:var(--ink-muted);
+}
+
+.hi  { color:var(--ink); font-weight:600; }
+.cy  { color:var(--cyan); font-weight:600; }
+.tl  { color:var(--teal); font-weight:600; }
+
+/* ── ACCENT LINE / RULE ───────────────────────────────── */
+.rule {
+  width:60px; height:4px;
+  background:var(--cyan);
+  border-radius:2px;
+  margin-bottom:40px;
+}
+
+/* ── BULLET LIST ──────────────────────────────────────── */
+.blist {
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  margin-top:12px;
+}
+.blist li {
+  font-size:32px;
+  line-height:1.5;
+  color:var(--ink-muted);
+  display:flex;
+  align-items:baseline;
+  gap:20px;
+}
+.blist li::before {
+  content:"";
+  display:inline-block;
+  width:8px; height:8px;
+  border-radius:50%;
+  background:var(--cyan);
+  flex-shrink:0;
+  margin-top:14px;
+}
+
+/* ── CALLOUT BLOCK ────────────────────────────────────── */
+.callout {
+  margin-top:60px;
+  padding:36px 40px;
+  border-radius:16px;
+  background:var(--cyan-dim);
+  border:1px solid var(--border-hi);
+}
+.callout p { font-size:32px; line-height:1.6; color:var(--ink); font-weight:600; }
+
+/* ── IMAGE FRAME ──────────────────────────────────────── */
+.frame {
+  border-radius:16px;
+  border:1px solid var(--border);
+  overflow:hidden;
+  position:relative;
+  background: var(--bg-surface);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+.frame img { width:100%; height:auto; display:block; }
+
+/* browser bar */
+.browser-bar {
+  background:var(--bg-panel);
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid var(--border);
+}
+.dot { width:14px; height:14px; border-radius:50%; }
+.dot.r{background:#F87171;} .dot.y{background:#FBBF24;} .dot.g{background:#34D399;}
+.url-bar {
+  flex:1;
+  background:var(--bg-deep);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:8px 16px;
+  font-size:18px;
+  color:var(--ink-muted);
+  font-family:'Inter',sans-serif;
+}
+
+/* ── TAGS ─────────────────────────────────────────────── */
+.tags { display:flex; flex-wrap:wrap; gap:16px; margin-top:40px; }
+.tag {
+  background:rgba(0,212,255,0.08);
+  border:1px solid rgba(0,212,255,0.22);
+  color:#a5f3fc;
+  padding:14px 28px;
+  border-radius:50px;
+  font-size:24px;
+  font-weight:600;
+  font-family:'Sora',sans-serif;
+  letter-spacing:0.01em;
+}
+
+/* ── COMPARISON TABLE ─────────────────────────────────── */
+.table { width:100%; margin-top:40px; }
+.trow {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  padding:28px 0;
+  border-bottom:1px solid var(--border);
+  gap:32px;
+  align-items:center;
+}
+.trow:last-child { border-bottom:none; }
+.tc { font-size:30px; line-height:1.4; }
+.tc.lbl { color:var(--ink-muted); font-weight:500; }
+.tc.bad { color:#F87171; }
+.tc.good{ color:var(--teal); font-weight:600; }
+.thead .tc { font-size:26px; font-weight:700; }
+
+/* ── SECURITY GRID ────────────────────────────────────── */
+.sec-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  margin-top:40px;
+}
+.sec-item {
+  background:var(--bg-surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:32px 32px;
+  display:flex;
+  gap:20px;
+  align-items:flex-start;
+}
+.sec-icon {
+  font-size:36px;
+  flex-shrink:0;
+  margin-top:2px;
+}
+.sec-label { font-size:24px; font-weight:700; color:var(--ink); margin-bottom:8px; }
+.sec-desc  { font-size:20px; line-height:1.55; color:var(--ink-muted); }
+
+/* ── STATS ROW ────────────────────────────────────────── */
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:28px;
+  margin-top:40px;
+}
+.stat-box {
+  background:var(--bg-surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:40px 32px;
+  text-align:center;
+}
+.stat-num {
+  font-family:'Sora',sans-serif;
+  font-size:72px;
+  font-weight:800;
+  color:var(--cyan);
+  line-height:1;
+  letter-spacing:-0.02em;
+}
+.stat-lbl {
+  font-size:20px;
+  font-weight:600;
+  color:var(--ink-muted);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  margin-top:12px;
+}
+
+/* ── DEMO CRED BOX ────────────────────────────────────── */
+.cred-box {
+  background:var(--bg-surface);
+  border:1px solid var(--border-hi);
+  border-radius:16px;
+  padding:40px 48px;
+  margin-top:36px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:32px;
+}
+.cred-label { font-size:16px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:12px; }
+.cred-val   { font-family:'Sora',sans-serif; font-size:32px; font-weight:600; color:var(--cyan); }
+
+/* ── SITE BOX ─────────────────────────────────────────── */
+.site-box {
+  padding:48px 48px;
+  border:1px dashed rgba(0,212,255,0.35);
+  background:var(--cyan-dim);
+  text-align:center;
+  margin-top:40px;
+  border-radius: 16px;
+}
+.site-label { font-size:16px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:16px; }
+.site-url   { font-family:'Sora',sans-serif; font-size:56px; font-weight:800; color:var(--cyan); letter-spacing:-0.01em; }
+
+/* ── SLIDE FOOTER ─────────────────────────────────────── */
+.slide-footer {
+  position:absolute;
+  bottom:44px; left:140px; right:140px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  z-index:3;
+}
+.brand-name {
+  font-family:'Sora',sans-serif;
+  font-size:16px;
+  font-weight:700;
+  color:var(--ink-dim);
+  letter-spacing:0.07em;
+  text-transform:uppercase;
+}
+.footer-right {
+  display:flex;
+  align-items:center;
+  gap:24px;
+}
+.pg {
+  font-family:'Sora',sans-serif;
+  font-size:18px;
+  font-weight:600;
+  color:var(--ink-dim);
+  letter-spacing:0.08em;
+}
+.swipe {
+  font-family:'Sora',sans-serif;
+  font-size:24px;
+  color:var(--cyan);
+  opacity:0.65;
+}
+
+/* ── SPLIT FRAME ─────────────────────────────────────── */
+.split-frames {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+.split-label {
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--ink-dim);
+  margin-top:16px;
+  text-align:center;
+}
+
+/* ── PRINT ────────────────────────────────────────────── */
+@media print {
+  body { background:none; gap:0; padding:0; }
+  .slide { border-radius:0; border:none; page-break-after:always; width:100%; min-height:100vh; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════ SLIDE 1 — HOOK ════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="kicker">Dynamic MERN Portfolio · 2026</div>
+    <div class="rule"></div>
+    <h1>Your portfolio<br>shouldn't need you<br>to update it.</h1>
+    <p class="sub" style="max-width:900px">
+      I built a <span class="hi">full-stack CMS</span> on top of my personal portfolio —
+      every project, post, and SEO setting is managed from a dashboard,
+      <span class="hi">no code touch required.</span>
+    </p>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">1 / 10</span><span class="swipe">→</span></div></div>
+</div>
+
+<!-- ════════════ SLIDE 2 — PROBLEM ════════════ -->
+<div class="slide">
+  <div class="slide-inner" style="max-width: 1200px">
+    <div class="kicker">The Problem</div>
+    <div class="rule"></div>
+    <h2>Static portfolios<br>hold you hostage.</h2>
+    <ul class="blist" style="margin-top:40px">
+      <li>Add a project? <span class="hi">Edit JSX, commit, redeploy.</span></li>
+      <li>Write a post? <span class="hi">Create a Markdown file, push.</span></li>
+      <li>Fix SEO? <span class="hi">Hunt through component code.</span></li>
+      <li>Read a contact message? <span class="hi">Dig through server logs.</span></li>
+    </ul>
+    <div class="callout" style="margin-top:60px; border-left:4px solid var(--red); background:rgba(248,113,113,0.07); border-color:rgba(248,113,113,0.30)">
+      <p style="color:var(--red)">The developer becomes a prisoner of their own portfolio.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">2 / 10</span><span class="swipe">→</span></div></div>
+</div>
+
+<!-- ════════════ SLIDE 3 — SOLUTION ════════════ -->
+<div class="slide">
+  <div class="slide-inner layout-split">
+    <div>
+      <div class="kicker">The Solution</div>
+      <div class="rule"></div>
+      <h2>One codebase.<br>Full content control.<br>Zero redeployments.</h2>
+      <p class="sub" style="margin-top:16px">
+        A protected <span class="hi">Admin Dashboard</span> lets you manage every piece of content
+        on the live site — from a browser, in under 60 seconds.
+      </p>
+    </div>
+    <div class="frame">
+      <div class="browser-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="url-bar">omarombark.me</span>
+      </div>
+      <img src="images/homepage.png" alt="Portfolio homepage — omarombark.me">
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">3 / 10</span><span class="swipe">→</span></div></div>
+</div>
+
+<!-- ════════════ SLIDE 4 — DASHBOARD + SEO SPLIT ════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div>
+      <div class="kicker">Admin Dashboard</div>
+      <div class="rule"></div>
+      <h2>Full control — projects, content, and SEO from one place.</h2>
+      <p class="sub">
+        Every piece of content is manageable from the dashboard.
+        Changes go live <span class="hi">instantly</span> — no build, no deploy.
+      </p>
+    </div>
+    <div class="split-frames" style="margin-top:56px; gap:40px">
+      <div>
+        <div class="frame">
+          <div class="browser-bar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="url-bar" style="font-size:14px">/admin/projects</span>
+          </div>
+          <img src="images/edit-project.png" alt="Projects CRUD dashboard">
+        </div>
+        <div class="split-label" style="font-size:18px; margin-top:20px">Projects Management</div>
+      </div>
+      <div>
+        <div class="frame">
+          <div class="browser-bar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="url-bar" style="font-size:14px">/admin/seo</span>
+          </div>
+          <img src="images/dashboard.png" alt="SEO Manager panel">
+        </div>
+        <div class="split-label" style="font-size:18px; margin-top:20px">SEO Per Page</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">4 / 10</span><span class="swipe">→</span></div></div>
+</div>
+
+<!-- ════════════ SLIDE 5 — MESSAGES INBOX ════════════ -->
+<div class="slide">
+  <div class="slide-inner layout-split">
+    <div>
+      <div class="kicker">Contact Management</div>
+      <div class="rule"></div>
+      <h2>Every message.<br>Never lost again.</h2>
+      <p class="sub">
+        Visitor messages land in the dashboard inbox and trigger an
+        <span class="hi">instant email via Resend API.</span><br><br>
+        Filter by status, reply directly, delete — all from one view.
+      </p>
+    </div>
+    <div class="frame">
+      <div class="browser-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="url-bar">omarombark.me/admin/messages</span>
+      </div>
+      <img src="images/messages.jpeg" alt="Messages inbox dashboard">
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">5 / 10</span><span class="swipe">→</span></div></div>
+</div>
+
+<!-- ════════════ SLIDE 6 — SECURITY ════════════ -->
+<div class="slide">
+  <div class="slide-inner">
+    <div class="kicker">Security Architecture</div>
+    <div class="rule"></div>
+    <h2>Three roles. Every endpoint guarded.</h2>
+    <p class="sub" style="margin-bottom:0">
+      Admin · Viewer · Public — enforced by RBAC middleware server-side.
+      The Viewer account exists purely for safe live demos.
+    </p>
+    <div class="sec-grid">
+      <div class="sec-item">
+        <div class="sec-icon">🍪</div>
+        <div>
+          <div class="sec-label">HttpOnly Cookies</div>
+          <div class="sec-desc">JWT never touches localStorage — immune to XSS token theft.</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">🛡️</div>
+        <div>
+          <div class="sec-label">DOMPurify + Helmet</div>
+          <div class="sec-desc">User HTML sanitized before DOM injection. CSP headers enforced.</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">🔒</div>
+        <div>
+          <div class="sec-label">Strict CORS</div>
+          <div class="sec-desc">API accepts requests from one configured origin only — no wildcards.</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">🚫</div>
+        <div>
+          <div class="sec-label">RBAC Guard</div>
+          <div class="sec-desc">Viewer accounts receive 403 on any mutation — server-side, no exceptions.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">6 / 10</span><span class="swipe">→</span></div></div>
+</div>
+
+<!-- ════════════ SLIDE 7 — TECH STACK ════════════ -->
+<div class="slide">
+  <div class="slide-inner" style="max-width: 1400px">
+    <div class="kicker">Technology</div>
+    <div class="rule"></div>
+    <h2>Modern, production-grade stack.</h2>
+    <p class="sub">
+      One shared REST API serves both the public site and the Admin Dashboard —
+      <span class="hi">single source of truth.</span>
+    </p>
+    <div class="tags">
+      <span class="tag">React 19</span>
+      <span class="tag">Vite</span>
+      <span class="tag">Node.js</span>
+      <span class="tag">Express</span>
+      <span class="tag">MongoDB</span>
+      <span class="tag">Mongoose</span>
+      <span class="tag">Tailwind CSS</span>
+      <span class="tag">Framer Motion</span>
+      <span class="tag">Radix UI</span>
+      <span class="tag">JWT + bcrypt</span>
+      <span class="tag">Helmet</span>
+      <span class="tag">DOMPurify</span>
+      <span class="tag">Cloudinary</span>
+      <span class="tag">Resend API</span>
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">7 / 10</span><span class="swipe">→</span></div></div>
+</div>
+
+<!-- ════════════ SLIDE 8 — COMPARISON ════════════ -->
+<div class="slide">
+  <div class="slide-inner" style="max-width: 1500px">
+    <div class="kicker">The Transformation</div>
+    <div class="rule"></div>
+    <h2>Static portfolio vs. living platform.</h2>
+    <div class="table">
+      <div class="trow thead" style="border-bottom:2px solid var(--border)">
+        <div class="tc lbl">Task</div>
+        <div class="tc bad">Static Portfolio</div>
+        <div class="tc good">Dynamic Portfolio</div>
+      </div>
+      <div class="trow">
+        <div class="tc lbl">Add a project</div>
+        <div class="tc bad">Edit JSX → commit → deploy</div>
+        <div class="tc good">Click "Add" in dashboard</div>
+      </div>
+      <div class="trow">
+        <div class="tc lbl">Write a blog post</div>
+        <div class="tc bad">Create .md file → push</div>
+        <div class="tc good">Rich-text editor, live</div>
+      </div>
+      <div class="trow">
+        <div class="tc lbl">Update SEO</div>
+        <div class="tc bad">Hunt through component code</div>
+        <div class="tc good">SEO panel per page</div>
+      </div>
+      <div class="trow">
+        <div class="tc lbl">Time to update</div>
+        <div class="tc bad">15+ minutes</div>
+        <div class="tc good">Under 60 seconds</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">8 / 10</span><span class="swipe">→</span></div></div>
+</div>
+
+<!-- ════════════ SLIDE 9 — LIVE DEMO ════════════ -->
+<div class="slide">
+  <div class="slide-inner" style="align-items:center; text-align:center">
+    <div class="kicker" style="text-align:center">Live Demo</div>
+    <div class="rule" style="margin:0 auto 40px"></div>
+    <h2 style="text-align:center">Try it live. No risk.</h2>
+    <p class="sub" style="max-width:900px; text-align:center; margin-top:16px">
+      I set up a <span class="hi">Viewer Guest account</span> — explore the full Admin Dashboard
+      without touching live data. Read-only, server-enforced.
+    </p>
+    
+    <div class="layout-split" style="margin-top:60px; width:100%; gap:40px">
+      <div class="site-box" style="margin-top:0; height:100%; display:flex; flex-direction:column; justify-content:center">
+        <div class="site-label">Live Product</div>
+        <div class="site-url">omarombark.me</div>
+      </div>
+      <div class="cred-box" style="margin-top:0; height:100%">
+        <div>
+          <div class="cred-label">Email</div>
+          <div class="cred-val" style="font-size:28px">guest@omarombark.me</div>
+        </div>
+        <div>
+          <div class="cred-label">Password</div>
+          <div class="cred-val" style="font-size:28px">guest123</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">9 / 10</span><span class="swipe">→</span></div></div>
+</div>
+
+<!-- ════════════ SLIDE 10 — CTA ════════════ -->
+<div class="slide">
+  <div class="slide-inner" style="align-items:center; text-align:center">
+    <div class="stats" style="width:100%; margin-bottom:80px; margin-top:0">
+      <div class="stat-box">
+        <div class="stat-num">3</div>
+        <div class="stat-lbl">User Roles</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">25+</div>
+        <div class="stat-lbl">REST Endpoints</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">0</div>
+        <div class="stat-lbl">Redeploys to update</div>
+      </div>
+    </div>
+    <h1 style="font-size:80px; text-align:center">Let's connect.</h1>
+    <p class="sub" style="max-width:800px; text-align:center; margin-top:0">
+      If this mindset resonates — reach out or share with someone who'd find it useful.
+    </p>
+    <div style="margin-top:60px; display:flex; flex-direction:column; gap:12px; align-items:center">
+      <p style="font-size:36px; font-weight:800; font-family:'Sora',sans-serif; color:var(--ink); letter-spacing:-0.01em">Omar Mohamed</p>
+      <p style="font-size:22px; color:var(--cyan); font-weight:600; letter-spacing:0.04em; text-transform:uppercase">MERN Stack Developer</p>
+    </div>
+    <div class="tags" style="justify-content:center; margin-top:60px">
+      <span class="tag">omarombark.me</span>
+      <span class="tag">github.com/omarmohamed-909</span>
+      <span class="tag">linkedin.com/in/omar-mohamed-454915298</span>
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand-name">Omar Mohamed · MERN Stack Developer</span><div class="footer-right"><span class="pg">10 / 10</span></div></div>
+</div>
+
+</body>
+</html>

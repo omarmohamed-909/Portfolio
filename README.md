@@ -1,147 +1,184 @@
-﻿# 🚀 Omar Mohamed | Dynamic MERN Portfolio
+<div align="center">
+  <h1>🚀 Dynamic MERN Portfolio & CMS</h1>
+  <p><strong>The self-managing portfolio that needs no developer to update.</strong></p>
 
-This repository contains my fully dynamic, full-stack personal portfolio application built with the MERN stack. It features a separate backend and frontend, designed to showcase projects, skills, and resume details, all controllable via a secure Admin Dashboard.
+  <p>
+    <a href="#live-demo">Live Demo</a> •
+    <a href="#the-problem--solution">The Problem</a> •
+    <a href="#architecture">Architecture</a> •
+    <a href="#engineering-highlights">Engineering</a> •
+    <a href="#getting-started">Getting Started</a>
+  </p>
 
-## Visuals 🖼️
+  ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+  ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+  ![Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+  ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+  ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+</div>
 
-Here's a quick preview of my dynamic portfolio in action:
+---
 
-| Main Portfolio Page                                          | Admin Dashboard                                                     |
-| ------------------------------------------------------------ | ------------------------------------------------------------------- |
-| <img src="main.png" alt="Main Page Screenshot" width="400"/> | <img src="admin2.png" alt="Admin Dashboard Screenshot" width="400"/> |
+## 🛑 The Problem vs. 🟢 The Solution
 
+Developer portfolios often become a maintenance trap. Every time you want to add a project, update a skill, or fix a typo, you have to open the codebase, edit JSX files, commit, and redeploy. 
 
-## Table of Contents
+**This project solves that by transforming a static portfolio into a living platform.**
 
-- [Features](#features-)
-- [Tech Stack](#tech-stack-)
-- [Prerequisites](#prerequisites)
-- [Environment Variables](#environment-variables)
-- [Installation and Deployment](#installation-and-deployment)
-- [Available Scripts](#available-scripts)
-- [MongoDB Setup](#mongodb-setup)
-- [Contact Page Configuration](#contact-page-configuration)
-- [Connect with Me](#connect-with-me)
+| ❌ Static Portfolios | ✅ This Dynamic Portfolio |
+| :--- | :--- |
+| **Add a project**: Edit JSX → commit → deploy | **Add a project**: Click "Add" in the Admin Dashboard |
+| **Write a blog post**: Create markdown file → push | **Write a blog post**: Use the rich-text editor in the dashboard |
+| **Update SEO**: Hunt through component code | **Update SEO**: Set meta tags per page via the SEO panel |
+| **Read messages**: Check server logs or 3rd party apps | **Read messages**: Dashboard inbox + auto-email via Resend |
+| **Time to update**: 15+ minutes | **Time to update**: Under 60 seconds |
 
-## Features ✨
+---
 
-This dynamic portfolio is built to be high-performing, secure, and easily manageable:
+## 🌟 Live Product & Demos
 
-- **Dynamic Content Management**: 🚀 An intuitive admin dashboard allows for CRUD operations on projects, skills, SEO metadata, and CV updates without touching the codebase.
-- **Dark & Light Mode**: 🌓 Seamless theme toggling with custom CSS variables for high-contrast UI/UX.
-- **Responsive Design**: 📱 Modern and responsive design using CSS Grid/Flexbox, ensuring a seamless experience across all devices.
-- **Contact Page**: 📧 Fully functional contact page using Resend API for direct communication.
-- **Secure Admin Access**: 🔒 The admin panel is secured with encrypted passwords (Bcrypt) and JWT (JSON Web Token) authentication.
-- **Contact Rate Limiting**: 🛡️ Implements rate limiting on the contact page to prevent abuse and spam.
+This is real, running software. Experience the difference:
 
-## Tech Stack 🛠️
+### Public Site
+Browse projects, read posts, and explore skills — every word and image is served live from MongoDB, editable at any time from the dashboard.
+👉 **[omarombark.me](https://omarombark.me)**
 
-- **Frontend:** React.js (Vite), CSS Modules, Context API
-- **Backend:** Node.js, Express.js, RESTful APIs
-- **Database:** MongoDB (Mongoose)
-- **Security:** JWT, Bcrypt, Rate Limiting
-- **Third-party Services:** Cloudinary (Images), Resend (Emails)
+### Admin Dashboard (CMS)
+A full Content Management System in your hands. Create, edit, and delete projects and blog posts with rich media support. Changes reflect on the live site instantly — no build step, no deployment.
 
-## Prerequisites
+| Main Portfolio Page | Admin Dashboard |
+| :---: | :---: |
+| <img src="./main2.png" alt="Main Page Screenshot" width="400"/> | <img src="./admin.png" alt="Admin Dashboard Screenshot" width="400"/> |
 
-Before you begin, ensure you have met the following requirements:
+---
 
+## 🏛️ Architecture: Under the Hood
+
+Clean, layered, and decoupled architecture.
+
+* **Client Layer**: React (Vite) powering both the public site and the Admin Dashboard. They share the same API and single source of truth.
+* **Network Layer**: HTTPS, strict CORS, and JWT Bearer tokens stored securely in `HttpOnly` Cookies.
+* **API Layer**: Express REST API protected by role-based authorization middleware (RBAC guards on every write endpoint).
+* **Application Layer**: Business logic separated into controllers, services, and validation schemas.
+* **Infrastructure Layer**: MongoDB (Mongoose) for data, Cloudinary for image storage, and Resend for email delivery.
+
+---
+
+## 🧠 Engineering Highlights
+
+The hard parts, done right. This project is built to production-grade standards.
+
+### 🔐 Role-Based Access Control (RBAC) + JWT
+Three distinct roles (**Admin**, **Viewer**, and **Public**) enforced on every endpoint. Viewer accounts (designed for safe live demos) hit a `403 Forbidden` on any mutation attempt—enforced server-side, with no exceptions.
+
+### 🏗️ Secure Cross-Domain Cookie Auth
+Tokens are never stored in `localStorage`. JWTs are stored in `HttpOnly` cookies, making them immune to XSS token theft. Configured with `SameSite=None` and `Secure` to allow cross-domain authentication between the Vercel frontend and DigitalOcean backend.
+
+### 🛡️ XSS Prevention & Security Headers
+All user-generated content (like rich-text blog posts) is sanitized using **DOMPurify** before DOM injection. **Helmet** enforces a strict Content Security Policy (CSP) as a second layer of defense.
+
+### 🔍 Dynamic SEO injected via React
+React is client-rendered, meaning meta tags often don't exist on first load for crawlers. This is solved by fetching server-aware SEO data per route and injecting it dynamically using `react-helmet`.
+
+### 🖼️ Media Pipeline & Email Integration
+**Cloudinary** handles all image uploads, returning optimized URLs, transformations, and thumbnails automatically. The **Resend API** delivers contact form submissions directly to the dashboard inbox and your personal email in real-time.
+
+---
+
+## 🛠️ Tech Stack
+
+**🖥️ Frontend**
+* React 19 · Vite · Tailwind CSS · Framer Motion · Radix UI · React Router
+
+**⚙️ Backend**
+* Node.js · Express · JWT · bcrypt · Helmet · DOMPurify · CORS
+
+**🗄️ Data & Services**
+* MongoDB · Mongoose · Cloudinary · Resend API
+
+---
+
+## 📊 By the Numbers
+
+* **2** Platforms (Web UI + REST API)
+* **3** User Roles (Admin, Viewer, Public)
+* **5+** Content Modules (Projects, Blog, SEO, Skills, Messages)
+* **25+** REST Endpoints
+* **100%** Dynamic Content (Zero redeployments needed to update content)
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to run the complete platform locally.
+
+### Prerequisites
 1. **Node.js** (LTS version recommended)
-2. **MongoDB** (Local or MongoDB Atlas)
-3. **Resend Account** (For contact form email delivery)
-4. **JWT Secret Generator** (For backend security)
+2. **MongoDB** (Local or Atlas)
+3. **Cloudinary Account** (For image uploads)
+4. **Resend Account** (For email delivery)
 
-## Environment Variables
-
-⚠️ **CRITICAL CONFIGURATION WARNINGS** ⚠️
-
-Create a `.env` file in both the `server` and `client` directories based on the provided examples.
-
-### Backend (`/server/.env`)
-
-```env
-BACKEND_PORT=5000
-FRONTEND_PORT=3000
-Mongo_URL=mongodb://127.0.0.1:27017/dynamic_portfolio  # Or your MongoDB Atlas URL
-JWT_SECRET=your_jwt_secret_here
-Admin_Url=admin
-RESEND_API=your_resend_api_key
-RESEND_MAIL_DOMAIN=                      # Leave empty if not using a custom domain
-ADMIN_MAIL=your-verified@email.com       # Email receiving contact messages
-CUSTOM_DOMAIN=                           # Leave empty for localhost
-```
-
-### Frontend (`/client/.env`)
-
-```env
-VITE_FRONTEND_ADMIN_URL=admin            # Must match Admin_Url from backend
-VITE_BACKEND_ROOT_URL=http://localhost:5000  # Full path of backend server
-```
-
-## Installation and Deployment
-
-Follow the steps below to run this project locally:
-
-### Step 1: Clone the Repository
-
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/omarmohamed-909/Portfolio.git
 cd Portfolio
 ```
 
-### Step 2: Backend Setup
+### 2. Environment Variables
+Create a `.env` file in both the `/server` and `/client` directories.
 
+**`/server/.env`**
+```env
+BACKEND_PORT=5000
+FRONTEND_PORT=3000
+Mongo_URL=mongodb://127.0.0.1:27017/dynamic_portfolio
+JWT_SECRET=your_jwt_secret_here
+Admin_Url=admin
+RESEND_API=your_resend_api_key
+ADMIN_MAIL=your-verified@email.com
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+**`/client/.env`**
+```env
+VITE_FRONTEND_ADMIN_URL=admin
+VITE_BACKEND_ROOT_URL=http://localhost:5000
+```
+
+### 3. Backend Setup
 ```bash
 cd server
 npm install
+node create-admin # Creates the initial admin user
+node setup # Seeds default SEO and Home data
+npm run dev
 ```
 
-After configuring your `.env` file, create the Admin User and Seed Default Data:
-
-```bash
-node create-admin
-node setup
-```
-
-### Step 3: Frontend Setup
-
+### 4. Frontend Setup
 Open a new terminal window:
-
 ```bash
 cd client
 npm install
-```
-
-### Step 4: Run the Application
-
-From the root directory, start both servers concurrently (if you have the root package.json configured), or run them separately:
-
-**Backend:**
-
-```bash
-cd server
 npm run dev
 ```
 
-**Frontend:**
-
-```bash
-cd client
-npm run dev
-```
-
-- Frontend: http://localhost:3000
-- Admin page: http://localhost:3000/admin
-- Backend API: http://localhost:5000
-
-## Connect with Me 🤝
-
-I'm always open to discussing web development, new projects, or potential opportunities.
-
-- **Email:** om1478711@gmail.com
-- **LinkedIn:** [Omar Mohamed](https://www.linkedin.com/in/omar-mohamed-454915298?utm_source=share_via&utm_content=profile&utm_medium=member_android)
-- **GitHub:** [omarmohamed-909](https://github.com/omarmohamed-909)
+**Access Points:**
+- Public Site: `http://localhost:3000`
+- Admin Dashboard: `http://localhost:3000/admin`
+- API Root: `http://localhost:5000`
 
 ---
 
-Built with ❤️ by Omar Mohamed
+## 🤝 Let's Connect
+
+Available for questions and a live walkthrough.
+
+* **Email:** om1478711@gmail.com
+* **LinkedIn:** [Omar Mohamed](https://www.linkedin.com/in/omar-mohamed-454915298)
+* **Website:** [omarombark.me](https://omarombark.me)
+
+<div align="center">
+  <sub>Built with ❤️ by Omar Mohamed</sub>
+</div>
