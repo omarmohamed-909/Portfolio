@@ -24,10 +24,10 @@ const Navbar = () => {
 
   const navItems = [
     { name: "Home", href: "/" },
+    { name: "About", href: "/about" },
     { name: "Projects", href: "/projects" },
     { name: "Skills", href: "/skills" },
     { name: "Blog", href: "/blog" },
-    { name: "About", href: "/about" },
     { name: "Full Cv", href: "/cv" },
     { name: "Contact", href: "/contact" },
   ];
