@@ -30,7 +30,6 @@ const SkillsPage = () => {
   const [isSkillModalOpen, setIsSkillModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
-  const [barsAnimated, setBarsAnimated] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,7 +84,6 @@ const SkillsPage = () => {
         setProjects(transformedProjects);
 
         setLoading(false);
-        setTimeout(() => setBarsAnimated(true), 200);
       } catch (err) {
         console.error("Failed to fetch data:", err);
         setError("Failed to load skills data. Please try again later.");
@@ -127,30 +125,15 @@ const SkillsPage = () => {
     setSelectedProject(null);
   };
 
-  const getSkillLevelColor = (level) => {
-    if (level >= 90) return styles.expert;
-    if (level >= 75) return styles.advanced;
-    if (level >= 60) return styles.intermediate;
-    return styles.beginner;
-  };
-
-  const getSkillLevelText = (level) => {
-    if (level >= 90) return "Expert";
-    if (level >= 75) return "Advanced";
-    if (level >= 60) return "Intermediate";
-    return "Beginner";
-  };
-
   const calculateStats = () => {
     const totalSkills = skillsData.reduce(
       (total, category) => total + category.skills.length,
       0
     );
     const allSkills = skillsData.flatMap((category) => category.skills);
-    const expertSkills = allSkills.filter((skill) => skill.level >= 75).length;
     const categories = skillsData.length;
 
-    return { totalSkills, expertSkills, categories };
+    return { totalSkills, categories };
   };
 
   const stats = calculateStats();
@@ -311,26 +294,6 @@ const SkillsPage = () => {
                             </span>
                             <span className={styles.skillNameText}>{skill.name}</span>
                           </span>
-                          <div className={styles.skillLevel}>
-                            <span
-                              className={`${
-                                styles.levelBadge
-                              } ${getSkillLevelColor(skill.level)}`}
-                            >
-                              {getSkillLevelText(skill.level)}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className={styles.progressContainer}>
-                          <div className={styles.progressBar}>
-                            <div
-                              className={`${
-                                styles.progressFill
-                              } ${getSkillLevelColor(skill.level)}`}
-                              style={{ transform: `scaleX(${barsAnimated ? skill.level / 100 : 0})` }}
-                            ></div>
-                          </div>
                         </div>
                       </div>
                     ))}
@@ -350,10 +313,6 @@ const SkillsPage = () => {
               <div className={styles.statCard}>
                 <div className={styles.statNumber}>{stats.categories}</div>
                 <div className={styles.statLabel}>Categories</div>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statNumber}>{stats.expertSkills}</div>
-                <div className={styles.statLabel}>High-Level</div>
               </div>
             </div>
           </section>
