@@ -147,17 +147,10 @@ const SkillsPage = () => {
       0
     );
     const allSkills = skillsData.flatMap((category) => category.skills);
-    const averageLevel =
-      allSkills.length > 0
-        ? Math.round(
-            allSkills.reduce((sum, skill) => sum + skill.level, 0) /
-              allSkills.length
-          )
-        : 0;
     const expertSkills = allSkills.filter((skill) => skill.level >= 75).length;
     const categories = skillsData.length;
 
-    return { totalSkills, averageLevel, expertSkills, categories };
+    return { totalSkills, expertSkills, categories };
   };
 
   const stats = calculateStats();
@@ -326,9 +319,6 @@ const SkillsPage = () => {
                             >
                               {getSkillLevelText(skill.level)}
                             </span>
-                            <span className={styles.levelPercentage}>
-                              {skill.level}%
-                            </span>
                           </div>
                         </div>
 
@@ -364,10 +354,6 @@ const SkillsPage = () => {
               <div className={styles.statCard}>
                 <div className={styles.statNumber}>{stats.expertSkills}</div>
                 <div className={styles.statLabel}>High-Level</div>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statNumber}>{stats.averageLevel}%</div>
-                <div className={styles.statLabel}>Average Level</div>
               </div>
             </div>
           </section>
