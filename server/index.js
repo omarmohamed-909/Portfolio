@@ -32,6 +32,14 @@ const __dirname = path.dirname(__filename);
 
 const BACKEND_PORT = process.env.PORT || process.env.BACKEND_PORT || 5000;
 const FRONTEND_PORT = process.env.FRONTEND_PORT || 3000;
+const configuredFrontendOrigins = (
+  process.env.FRONTEND_URLS ||
+  process.env.FRONTEND_URL ||
+  ""
+)
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/$/, ""))
+  .filter(Boolean);
 
 const cleanCustomDomain = () => {
   // Check if CUSTOM_DOMAIN exists and is not empty after trimming
@@ -58,49 +66,51 @@ const cleanCustomDomain = () => {
 
 const customDomain = cleanCustomDomain();
 
-
-
 const app = express();
 
 // Derive allowed frontend origin for CSP
 const frontendOrigin = customDomain
   ? customDomain
-  : `http://localhost:${FRONTEND_PORT}`;
+  : configuredFrontendOrigins[0] || `http://localhost:${FRONTEND_PORT}`;
 
 // Security headers via helmet
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" },
-  // Content Security Policy: blocks inline script injection (XSS)
-  // while allowing the resources the app actually needs.
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      // Scripts: only same-origin (no inline scripts → blocks XSS)
-      scriptSrc: ["'self'"],
-      // Styles: same-origin + inline (many component libraries need this)
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      // Fonts: Google Fonts CDN
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      // Images: same-origin + Cloudinary (uploads) + data URIs
-      imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
-      // API connections: same-origin + the backend itself
-      connectSrc: ["'self'", frontendOrigin],
-      // No embedded frames allowed
-      frameSrc: ["'none'"],
-      // Block object/embed tags
-      objectSrc: ["'none'"],
-      // Upgrade HTTP to HTTPS when possible
-      upgradeInsecureRequests: process.env.NODE_ENV === "production" ? [] : null,
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    // Content Security Policy: blocks inline script injection (XSS)
+    // while allowing the resources the app actually needs.
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        // Scripts: only same-origin (no inline scripts → blocks XSS)
+        scriptSrc: ["'self'"],
+        // Styles: same-origin + inline (many component libraries need this)
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        // Fonts: Google Fonts CDN
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        // Images: same-origin + Cloudinary (uploads) + data URIs
+        imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
+        // API connections: same-origin + the backend itself
+        connectSrc: ["'self'", frontendOrigin],
+        // No embedded frames allowed
+        frameSrc: ["'none'"],
+        // Block object/embed tags
+        objectSrc: ["'none'"],
+        // Upgrade HTTP to HTTPS when possible
+        upgradeInsecureRequests:
+          process.env.NODE_ENV === "production" ? [] : null,
+      },
+      // Report-only in dev so it doesn't break anything; enforced in prod
+      reportOnly: process.env.NODE_ENV !== "production",
     },
-    // Report-only in dev so it doesn't break anything; enforced in prod
-    reportOnly: process.env.NODE_ENV !== "production",
-  },
-  // HSTS: only meaningful in production behind HTTPS
-  strictTransportSecurity: process.env.NODE_ENV === "production"
-    ? { maxAge: 31536000, includeSubDomains: true }
-    : false,
-  referrerPolicy: { policy: "no-referrer-when-downgrade" },
-}));
+    // HSTS: only meaningful in production behind HTTPS
+    strictTransportSecurity:
+      process.env.NODE_ENV === "production"
+        ? { maxAge: 31536000, includeSubDomains: true }
+        : false,
+    referrerPolicy: { policy: "no-referrer-when-downgrade" },
+  }),
+);
 
 // Selective Cache-Control based on path
 app.use((req, res, next) => {
@@ -120,15 +130,24 @@ app.use(express.json());
 // SINGLE CORS configuration
 app.use(
   cors({
-    origin: [
-      `http://[::1]:${FRONTEND_PORT}`,
-      `http://127.0.0.1:${FRONTEND_PORT}`,
-      `http://localhost:${FRONTEND_PORT}`,
-      "http://localhost:3000",
-      "http://127.0.0.1:3000",
-      "https://www.omarombark.me",
-      "https://omarombark.me"
-    ],
+    origin: (origin, callback) => {
+      const allowedOrigins = new Set([
+        `http://[::1]:${FRONTEND_PORT}`,
+        `http://127.0.0.1:${FRONTEND_PORT}`,
+        `http://localhost:${FRONTEND_PORT}`,
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://www.omarombark.me",
+        "https://omarombark.me",
+        ...configuredFrontendOrigins,
+      ]);
+
+      if (!origin || allowedOrigins.has(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Origin is not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: [
@@ -153,11 +172,19 @@ app.use(
     optionsSuccessStatus: 200,
     preflightContinue: false,
     maxAge: 86400,
-  })
+  }),
 );
 
-dbconnection();
 app.set("trust proxy", true); // for cloudflare or etc ..
+
+app.use(async (req, res, next) => {
+  try {
+    await dbconnection();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.get("/", (req, res) => {
   res.send("Server Alive");
@@ -185,6 +212,10 @@ app.use("/api/", EditExperience);
 app.use("/api/", BlogRouter);
 app.use("/api/", ActivityLogRouter);
 
-app.listen(BACKEND_PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${BACKEND_PORT}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(BACKEND_PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${BACKEND_PORT}`);
+  });
+}
+
+export default app;
