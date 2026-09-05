@@ -223,9 +223,6 @@ const Home = () => {
                               <div className={styles.techInfo}>
                                 <span className={styles.techName}>{item.name}</span>
                                 {item.detail && <span className={styles.techDetail}>{item.detail}</span>}
-                                <div className={styles.skillLevelBar}>
-                                  <div className={styles.skillLevelFill} style={{ width: `${item.level}%` }} />
-                                </div>
                               </div>
                             </div>
                           ))}
@@ -434,20 +431,11 @@ const Home = () => {
             {/* Top Languages */}
             <div className={styles.languagesCard}>
               <div className={styles.languagesHeader}>Top Languages</div>
-              <div className={styles.langBar}>
-                {gitStats.languages.map((lang) => (
-                  <div
-                    key={lang.name}
-                    className={styles.langBarSegment}
-                    style={{ width: `${lang.percentage}%`, background: lang.color }}
-                  />
-                ))}
-              </div>
               <div className={styles.langLabels}>
                 {gitStats.languages.map((lang) => (
                   <span key={lang.name}>
                     <span className={styles.langDot} style={{ background: lang.color }} />
-                    {lang.name} {lang.percentage}%
+                    {lang.name}
                   </span>
                 ))}
               </div>
